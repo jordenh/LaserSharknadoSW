@@ -1,17 +1,19 @@
-# Object files
+# blacklist some other stuff
 *.o
-
-# Libraries
-*.lib
-*.a
-
-# Shared objects (inc. Windows DLLs)
-*.dll
-*.so
-*.so.*
-*.dylib
-
-# Executables
-*.exe
-*.out
-*.app
+*.d
+*.bsp
+*.gdb
+*.x
+*.qip
+*.sopcinfo
+*.html
+*.hdb
+*.dpi
+*.cdb
+*.kpt
+*.qmsg
+*.rdb
+*.bpm
+*.summary
+*.done
+*.flock
