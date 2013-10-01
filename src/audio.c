@@ -88,7 +88,11 @@ int setupAudioInterrupt(alt_up_audio_dev **audio, volatile int somethingForIrq)
 
     void *irqInt = (void*)&somethingForIrq;
 
-    return alt_ic_isr_register(AUDIO_0_IRQ_INTERRUPT_CONTROLLER_ID, AUDIO_0_IRQ, playLaserInterrupt, irqInt, 0x0);
+	#ifdef ALT_ENHANCED_INTERRUPT_API_PRESENT
+	return alt_ic_isr_register(AUDIO_0_IRQ_INTERRUPT_CONTROLLER_ID, AUDIO_0_IRQ, playLaserInterrupt, irqInt, 0x0);
+	#else
+	return alt_irq_register(AUDIO_0_IRQ, irqInt, playLaserInterrupt);
+	#endif
 }
 
 void playAudioMono(unsigned int *buffer, int length) {
