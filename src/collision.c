@@ -3,6 +3,7 @@
 #include "collision.h"
 
 #include "player.h"
+#include "stubs.h"
 //#include "bullet.h"
 //#include "shark.h"
 

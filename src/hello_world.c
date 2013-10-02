@@ -25,6 +25,8 @@
 #include "system.h"
 #include "altera_nios2_qsys_irq.h"
 #include "sys/alt_irq.h"
+#include "displacement.h"
+#include "collision.h"
 
 #define switches (volatile char *) 0x1001060
 #define leds (char *) 0x1001070
@@ -36,7 +38,7 @@ int main()
 	// SD card must be opened before audio is setup
 	openSdCard();
 	setupAudio();
-
+	setupDisplacement();
 
 	//***
 
