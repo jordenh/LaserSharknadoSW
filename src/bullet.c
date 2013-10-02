@@ -11,5 +11,10 @@ void eraseBullet(Bullet *bullet){
 void moveRight(Bullet *bullet){
 	eraseBullet(bullet);
 	bullet->x = bullet->x + 1;
+	if (bullet->x >= SCREEN_WIDTH)
+	{
+		bullet->status = NOTACTIVE;
+		return;
+	}
 	drawBullet(bullet);
 }
