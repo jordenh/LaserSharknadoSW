@@ -2,13 +2,8 @@
 
 #include "collision.h"
 
-#include "player.h"
-#include "stubs.h"
-//#include "bullet.h"
-//#include "shark.h"
-
 int isBulletCollidingWithShark(Shark *shark, Bullet *bullet) {
-	if (bullet->direction == LEFT) {
+	if (bullet->status == SHARKBULLET) {
 		// No friendly fire
 		return FALSE;
 	}
@@ -28,13 +23,13 @@ int isBulletCollidingWithShark(Shark *shark, Bullet *bullet) {
 }
 
 int isBulletCollidingWithPlayer(Player *player, Bullet *bullet) {
-	if (bullet->direction == RIGHT) {
+	if (bullet->status == PLAYERBULLET) {
 		// No friendly fire
 		return FALSE;
 	}
 
 	if (bullet->x >= player->x &&
-		bullet->x <= player->x + PLAYER_LENGTH) {
+		bullet->x <= player->x + PLAYER_WIDTH) {
 		// Have x region
 		
 		if (bullet->y >= player->y &&

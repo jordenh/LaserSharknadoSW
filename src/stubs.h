@@ -9,8 +9,6 @@
 #define FALSE 0
 #define SHARK_LENGTH 37
 #define SHARK_HEIGHT 20
-#define PLAYER_LENGTH 20
-#define PLAYER_HEIGHT 20
 
 // Forward declaration
 struct Displacement;
@@ -23,16 +21,5 @@ struct Shark {
 };
 
 typedef struct Shark Shark;
-
-typedef struct {
-	int x;
-	int y;
-} Player;
-
-typedef struct {
-	int x;
-	int y;
-	int direction;
-} Bullet;
 
 #endif

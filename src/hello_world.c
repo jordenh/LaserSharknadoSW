@@ -39,6 +39,7 @@ int main()
 	openSdCard();
 	setupAudio();
 	setupDisplacement();
+	setupVga();
 
 	//***
 
@@ -60,38 +61,87 @@ int main()
 
 	printf("hello, world!\n");
 
+	// initialise the player
+	Player *player;
+	player->x = 10;
+	player->y = 90;
+	drawPlayer(player);
 
-	/*
-	alt_up_pixel_buffer_dma_dev* pixel_buffer = setUp();
-	clearScreen(pixel_buffer);
-	drawLine(pixel_buffer, 64, 0, 64, 240, 0xFFFF);
-	drawLine(pixel_buffer, 64, 0, 320, 240, 0xFFFF);
-	drawLine(pixel_buffer, 64, 240, 320, 0, 0xFFFF);
-	drawLine(pixel_buffer, 64, 80, 320, 80, 0xFFFF);
-	drawBox(pixel_buffer, 10, 90, 54, 150, 0xFFFF);
-	printLine();
+	// initialise array of bullets
+	Bullet *bulletArray;
+	bulletArray = malloc(NUM_BULLETS*sizeof(Bullet));
 
-	char keys;
-	setHardwareTimerPeriod(5 * CLOCK_FREQ);
-	startHardwareTimer(); */
-
-/*	while (1)
+	int i = 0;
+	for (i = 0; i < NUM_BULLETS; i++)
 	{
-		keys = IORD_8DIRECT(0x1001080, 0);
-		// *leds = keys;
-		IOWR_16DIRECT(0x1001070, 0, keys);
-	}*/
-	short int debounce = 0;
-	while(1) {
-		if ((IORD_8DIRECT(keys, 0)) != 0x00 && debounce == 0) {
-			debounce = 1;
+		bulletArray[i].status = NOTACTIVE;
+	}
 
-		} else if ((IORD_8DIRECT(keys, 0)) == 0x00 && debounce == 1){
-			debounce = 0;
-			playLaser();
+	int count = 0;
+	short int debounce = 0;
+	char keyInput;
+	char key2;
+
+	setHardwareTimerPeriod(CLOCK_FREQ/30);
+	startHardwareTimer();
+
+	// main game loop;
+	while(1)
+	{
+		if (hasHardwareTimerExpired() == 1)
+		{
+			startHardwareTimer();
+			count++;
+			if (count%30 == 0)
+			{
+				printf("%i: Timer has expired\n", count/30);
+			}
+
+			keyInput = IORD_8DIRECT(keys, 0);
+			key2 = keyInput/4;
+			key2 = keyInput & 0x0001;
+
+			if ((key2 == 0x01) && debounce == 0) {
+				debounce = 1;
+			} else if ((key2 == 0x00) && debounce == 1){
+				debounce = 0;
+
+				int index = 0;
+				while (index < NUM_BULLETS)
+				{
+					if (bulletArray[index].status == NOTACTIVE)
+					{
+						bulletArray[index].x = player->x + PLAYER_WIDTH + 1;
+						bulletArray[index].y = player->y + 0.5*PLAYER_HEIGHT;
+						bulletArray[index].status = PLAYERBULLET;
+						drawBullet(&bulletArray[index]);
+						break;
+					}
+					index++;
+				}
+
+				playLaser();
+			}
+
+			if (count%2 == 0) {
+				i = 0;
+				for (i = 0; i < NUM_BULLETS; i++) {
+					if (bulletArray[i].status != NOTACTIVE) {
+						moveRight(&bulletArray[i]);
+					}
+				}
+			}
+
+			if (keyInput == 0x02) {
+				printf("Key 0");
+				moveUp(player);
+			}
+			if (keyInput == 0x04) {
+				printf("Key 1");
+				moveDown(player);
+			}
 		}
 	}
-	audioTest();
 
 	return 0;
 }
