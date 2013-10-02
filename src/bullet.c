@@ -13,5 +13,3 @@ void moveRight(Bullet *bullet){
 	bullet->x = bullet->x + 1;
 	drawBullet(bullet);
 }
-
-
