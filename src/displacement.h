@@ -3,6 +3,8 @@
 
 #include <time.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include "system.h"
 #include "stubs.h"
 
 #define DISPLACEMENT_LENGTH 128

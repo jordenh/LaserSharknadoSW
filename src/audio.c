@@ -29,12 +29,31 @@ int DEBUG = 0;
 int toneLength = 122;
 unsigned int tone[122];
 
+volatile unsigned int *playCursor;
+volatile short int status;
+
 unsigned int *laserBuffer;
-volatile unsigned int *laserCursor;
 unsigned int laserBufferLength;
 unsigned int laserFileWordLength;
 
+unsigned int *playerDeathBuffer;
+unsigned int playerDeathBufferLength;
+unsigned int playerDeathFileWordLength;
+
+unsigned int *sharkDeathBuffer;
+unsigned int sharkDeathBufferLength;
+unsigned int sharkDeathFileWordLength;
+
+unsigned int *themeBuffer;
+unsigned int themeBufferLength;
+unsigned int themeFileWordLength;
+
 volatile int somethingForIrq;
+
+unsigned int **getActiveBuffer(void);
+int getActiveBufferLength(void);
+int getActiveFileWordLength(void);
+int setupAudioInterrupt(alt_up_audio_dev *audio, volatile int somethingForIrq);
 
 void setupAudio()
 {
@@ -70,16 +89,33 @@ void setupAudio()
 		printf("Successfully setup audio interrupts.\n");
 	}
 
-	laserFileWordLength = 38384;//laserii//(getWavFileLength("laseri.wav") / 2);// laser i = 26200;/*looked in hex file *///
+	laserFileWordLength = 38384;
 	printf("File Length is: %x\n", laserFileWordLength);
-	readWavFile("laserii.wav", laserFileWordLength, laserBuffer);
+	unsigned int **ptrToLaserBuffer = &laserBuffer;
+	readWavFile("laserii.wav", laserFileWordLength, ptrToLaserBuffer);
+
+	// Need to setup playerDeathSound
+	playerDeathFileWordLength = 0x0000DB00 / 2;
+	unsigned int **ptrToPlayerDeathBuffer = &playerDeathBuffer;
+	readWavFile("pdie.wav", playerDeathFileWordLength, ptrToPlayerDeathBuffer);
+
+	// Need to setup sharkDeathSound
+	sharkDeathFileWordLength = 0x00007000 / 2;
+	unsigned int **ptrToSharkDeathBuffer = &sharkDeathBuffer;
+	readWavFile("sdie.wav", sharkDeathFileWordLength, ptrToSharkDeathBuffer);
+
+	themeFileWordLength = 0x00063E00 / 2;
+	unsigned int **ptrToThemeBuffer = &themeBuffer;
+	readWavFile("theme.wav", themeFileWordLength, ptrToThemeBuffer);
+
+	status = NONE;
 
 	if (DEBUG == 1 && error == false) {
 		printf("Successfully setup sound.\n");
 	}
 }
 
-int setupAudioInterrupt(alt_up_audio_dev **audio, volatile int somethingForIrq)
+int setupAudioInterrupt(alt_up_audio_dev *audio, volatile int somethingForIrq)
 {
     // Need to disable both audio interrupts before setting them up
     // otherwise you get stuck in them when they are setup
@@ -167,34 +203,8 @@ void testTone(void)
 	}
 }
 
-void playLaser1(void) {
-	unsigned int fileWordLength = 38384;//laserii//(getWavFileLength("laseri.wav") / 2);// laser i = 26200;/*looked in hex file *///
-	printf("File Length is: %x\n", fileWordLength);
-	readWavFile("laserii.wav", fileWordLength, laserBuffer);
-
-	int free, len;
-	int wrap = 0;
-	unsigned int *cursor = laserBuffer;
-	for (;;) {
-		free = alt_up_audio_write_fifo_space(audio, ALT_UP_AUDIO_RIGHT);
-		if (free > 1) {
-			if ((int)cursor + free >= (int)laserBuffer + (2 * fileWordLength)) {
-				// Wrap around
-				len = fileWordLength - free;
-				wrap = 1;
-			} else {
-				len = free;
-				wrap = 0;
-			}
-			playAudio(cursor, len, cursor, len);
-			cursor = wrap == 1 ? laserBuffer : cursor + len;
-		}
-	}
-}
-
-void readWavFile(char *wavFileName, unsigned int fileWordLength, unsigned int *buffer) {
-	laserBuffer = malloc(fileWordLength * 2); //words are 2 bytes // this line should be changed
-
+void readWavFile(char *wavFileName, unsigned int fileWordLength, unsigned int **buffer) {
+	unsigned int *tempBuffer = malloc(fileWordLength * 2);
 	short int fileHandle = openFile(wavFileName);
 	if (fileHandle == -1) {
 		printf("Error opening %s\n", wavFileName);
@@ -207,12 +217,13 @@ void readWavFile(char *wavFileName, unsigned int fileWordLength, unsigned int *b
 	unsigned int word = readWord(fileHandle);
 	printf("first word is %x\n", word);
 	while (i < fileWordLength) {
-		laserBuffer[i++] = word;
+		tempBuffer[i++] = word;
 		word = readWord(fileHandle);
 	}
 	printf("reached EOF\n");
 
 	closeFile(fileHandle);
+	(*buffer) = tempBuffer;
 	return;
 }
 
@@ -222,7 +233,26 @@ void playLaser(void) {
 		printf("Playing laser via interrupt.\n");
 	}
 
-	laserCursor = laserBuffer;
+	status = LASER;
+	playCursor = laserBuffer;
+	alt_up_audio_enable_write_interrupt(audio);
+}
+
+void playPlayerDeath(void) {
+	status = PLAYER_DEATH;
+	playCursor = playerDeathBuffer;
+	alt_up_audio_enable_write_interrupt(audio);
+}
+
+void playSharkDeath(void) {
+	status = SHARK_DEATH;
+	playCursor = sharkDeathBuffer;
+	alt_up_audio_enable_write_interrupt(audio);
+}
+
+void playTheme(void) {
+	status = THEME;
+	playCursor = themeBuffer;
 	alt_up_audio_enable_write_interrupt(audio);
 }
 
@@ -234,14 +264,57 @@ static void playLaserInterrupt(void* isr_context, alt_u32 id) {
 	int len;
 	unsigned int free = alt_up_audio_write_fifo_space(audio, ALT_UP_AUDIO_RIGHT);
 	if (free > 1) {
-		if ((int)laserCursor + free >= (int)laserBuffer + (2 * laserFileWordLength)) {
+		int activeFileWordLength = getActiveFileWordLength();
+		if ((int)playCursor + free >= (int)getActiveBufferLength + (2 * activeFileWordLength)) {
 			// Last chunk to play
-			len = laserFileWordLength - free;
+			len = activeFileWordLength - free;
 			alt_up_audio_disable_write_interrupt(audio);
 		} else {
 			len = free;
 		}
-		playAudioMono((unsigned int *)laserCursor, len);
-		laserCursor += len;
+		playAudioMono((unsigned int *)playCursor, len);
+		playCursor += len;
 	}
+}
+
+unsigned int **getActiveBuffer(void) {
+	switch(status) {
+	case LASER:
+		return (unsigned int **)(&laserBuffer);
+	case PLAYER_DEATH:
+		return (unsigned int **)(&playerDeathBuffer);
+	case SHARK_DEATH:
+		return (unsigned int **)(&sharkDeathBuffer);
+	case THEME:
+		return (unsigned int **)(&sharkDeathBuffer);
+	}
+	return (unsigned int **)FAIL;
+}
+
+int getActiveBufferLength(void) {
+	switch(status) {
+	case LASER:
+		return (int)laserBufferLength;
+	case PLAYER_DEATH:
+		return (int)playerDeathBufferLength;
+	case SHARK_DEATH:
+		return (int)(&sharkDeathBuffer);
+	case THEME:
+		return (int)(&themeBuffer);
+	}
+	return FAIL;
+}
+
+int getActiveFileWordLength(void) {
+	switch(status) {
+	case LASER:
+		return laserFileWordLength;
+	case PLAYER_DEATH:
+		return playerDeathFileWordLength;
+	case SHARK_DEATH:
+		return sharkDeathFileWordLength;
+	case THEME:
+		return themeFileWordLength;
+	}
+	return FAIL;
 }

@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include "displacement.h"
 
 Displacement verticalDisplacementFunctionUp[DISPLACEMENT_LENGTH];
