@@ -12,7 +12,7 @@
 					<folderInfo id="preference.org.eclipse.cdt.managedbuilder.core.configurationDataProvider.1761286602." name="/" resourcePath="">
 						<toolChain id="altera.nios2.mingw.gcc4.1733198678" name="MinGW Nios II GCC4" superClass="altera.nios2.mingw.gcc4">
 							<targetPlatform id="altera.nios2.mingw.gcc4.296940409" name="Nios II" superClass="altera.nios2.mingw.gcc4"/>
-							<builder buildPath="${workspace_loc://LaserSharknado}" id="cdt.managedbuild.target.gnu.builder.cygwin.base.959760092" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" superClass="cdt.managedbuild.target.gnu.builder.cygwin.base"/>
+							<builder buildPath="${workspace_loc://LSN}" id="cdt.managedbuild.target.gnu.builder.cygwin.base.959760092" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" superClass="cdt.managedbuild.target.gnu.builder.cygwin.base"/>
 							<tool id="cdt.managedbuild.tool.gnu.assembler.cygwin.base.907924396" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.cygwin.base">
 								<option id="gnu.both.asm.option.include.paths.1640181517" name="Include paths (-I)" superClass="gnu.both.asm.option.include.paths"/>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.873511346" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
@@ -192,7 +192,12 @@
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.cygwin.93180510" superClass="cdt.managedbuild.tool.gnu.c.compiler.input.cygwin"/>
 							</tool>
-							<tool id="cdt.managedbuild.tool.gnu.c.linker.cygwin.base.516750775" name="Cygwin C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.cygwin.base"/>
+							<tool id="cdt.managedbuild.tool.gnu.c.linker.cygwin.base.516750775" name="Cygwin C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.cygwin.base">
+								<inputType id="cdt.managedbuild.tool.gnu.c.linker.input.780100633" superClass="cdt.managedbuild.tool.gnu.c.linker.input">
+									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
+									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
+								</inputType>
+							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.cpp.linker.cygwin.base.1335412687" name="Cygwin C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.cygwin.base">
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.1803891384" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>

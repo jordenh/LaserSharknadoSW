@@ -29,6 +29,7 @@
 #define switches (volatile char *) 0x1001060
 #define leds (char *) 0x1001070
 #define keys (volatile char *) 0x1001080
+#define atariCommands (volatile char *) 0x10010b0
 
 int main()
 {
@@ -79,15 +80,21 @@ int main()
 		// *leds = keys;
 		IOWR_16DIRECT(0x1001070, 0, keys);
 	}*/
+
+	short int atariCmds = 0; // allUp = 0, upLeft = 1, upRight = 2, upFire = 3.
 	short int debounce = 0;
 	while(1) {
-		if ((IORD_8DIRECT(keys, 0)) != 0x00 && debounce == 0) {
-			debounce = 1;
+		atariCmds = (IORD_8DIRECT(atariCommands, 0) & 0x0F);
+		IOWR_16DIRECT(leds, 0, atariCmds);
 
-		} else if ((IORD_8DIRECT(keys, 0)) == 0x00 && debounce == 1){
-			debounce = 0;
+		if ((atariCmds & 0x08) != 0x00 && debounce == 0) {
+			debounce = 1;
 			playLaser();
+
+		} else if ((atariCmds & 0x08) == 0x00 && debounce == 1){
+			debounce = 0;
 		}
+
 	}
 	audioTest();
 
