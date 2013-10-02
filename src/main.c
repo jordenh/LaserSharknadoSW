@@ -21,6 +21,7 @@
 #include "timer.h"
 #include "sd_card.h"
 #include "vga.h"
+#include "bmp.h"
 #include "io.h"
 #include "system.h"
 #include "altera_nios2_qsys_irq.h"
