@@ -16,7 +16,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "altera_up_avalon_character_lcd.h"
+#include "lcd.h"
 #include "audio.h"
 #include "timer.h"
 #include "sd_card.h"
@@ -32,34 +32,31 @@
 #define leds (char *) 0x1001070
 #define keys (volatile char *) 0x1001080
 
-int main()
-{
-	// Mandatory setup code for peripherals
-	// SD card must be opened before audio is setup
-	openSdCard();
+int init() {
+	if(openSdCard() == -1 ) {
+		printf("Error: Failed to open sd card\n");
+		return -1;
+	} else {
+		printf("Opened SD card\n");
+	}
+
+	if(init_lcd() == -1 ) {
+		printf("Error: could not open character LCD device\n");
+		return -1;
+	} else {
+		printf("LCD Initialized\n");
+	}
+
+	initVga();
 	setupAudio();
 	setupDisplacement();
-	setupVga();
 
-	//***
+	return 0;
+}
 
-	alt_up_character_lcd_dev * char_lcd_dev;
-	// open the Character LCD port
-	char_lcd_dev = alt_up_character_lcd_open_dev ("/dev/character_lcd_0");//("/dev/Char_LCD_16x2");
-	if ( char_lcd_dev == NULL)
-		printf ("Error: could not open character LCD device\n");
-	else
-		printf ("Opened character LCD device\n");
-	/* Initialize the character display */
-	alt_up_character_lcd_init (char_lcd_dev);
-	/* Write "Welcome to" in the first row */
-	alt_up_character_lcd_string(char_lcd_dev, "Welcome to");
-	/* Write "the DE2 board" in the second row */
-	char second_row[] = "the DE2 board\0";
-	alt_up_character_lcd_set_cursor_pos(char_lcd_dev, 0, 1);
-	alt_up_character_lcd_string(char_lcd_dev, second_row);
-
-	printf("hello, world!\n");
+int main() {
+	if(init() == -1)
+		return -1;
 
 	// initialise the player
 	Player *player;
