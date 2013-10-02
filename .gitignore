@@ -17,4 +17,9 @@
 *.summary
 *.done
 *.flock
+*.cproject
+create-this-app
+*.elf
+*.map
+*.objdump
 Makefile
