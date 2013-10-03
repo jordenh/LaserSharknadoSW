@@ -124,7 +124,7 @@ int main() {
 					index++;
 				}
 
-				//playLaser();
+				playLaser();
 			}
 
 			if (count % 2 == 0) {
