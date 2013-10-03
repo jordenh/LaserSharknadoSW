@@ -277,6 +277,7 @@ static void playSoundISR(void* isr_context, alt_u32 id) {
 		printf("Entering playSoundISR.\n");
 	}
 	if (status == NONE) {
+		alt_up_audio_disable_write_interrupt(audio);
 		return;
 	}
 	int len;
@@ -312,6 +313,9 @@ static void playSoundISR(void* isr_context, alt_u32 id) {
 		if (status == NONE) {
 			playCursor = NULL;
 		}
+	} else {
+		// Interrupt should not be triggered if there is no space
+		alt_up_audio_disable_write_interrupt(audio);
 	}
 }
 
@@ -354,5 +358,6 @@ int getActiveFileWordLength(void) {
 	case THEME:
 		return themeFileWordLength;
 	}
+	printf("Error: unable to get active file word length.\n");
 	return FAIL;
 }
