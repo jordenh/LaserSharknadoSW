@@ -43,6 +43,7 @@ BMP *sharkBmp;
 BMP* parseBmp(char *fileName);
 void parseBmps();
 void freeBmps();
-int drawBmp(BMP *bmp, int x, int y);
+void drawBmp(BMP *bmp, int x, int y);
+void eraseBmp(BMP *bmp, int x, int y);
 
 #endif

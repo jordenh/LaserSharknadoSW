@@ -1,5 +1,11 @@
 #include "player.h"
 
+void initPlayer() {
+	player->x = 10;
+	player->y = 90;
+	drawPlayer(player);
+}
+
 void drawPlayer(Player *player) {
 	drawBox(player->x, player->y, player->x + PLAYER_WIDTH, player->y + PLAYER_HEIGHT, 0xFFFF);
 }

@@ -11,7 +11,8 @@ typedef struct {
 	int y;
 } Shark;
 
-void drawShark(int x, int y);
-void moveShark();
+void drawShark(Shark *shark, int x, int y);
+void eraseShark(Shark *shark);
+void moveShark(Shark *shark, int x, int y);
 
 #endif

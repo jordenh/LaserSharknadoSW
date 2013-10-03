@@ -68,7 +68,7 @@ void freeBmps(){
 	free(sharkBmp->rgb);
 }
 
-int drawBmp (BMP *bmp, int x, int y) {
+void drawBmp (BMP *bmp, int x, int y) {
 	int i,j;
 	int color;
 
@@ -78,6 +78,14 @@ int drawBmp (BMP *bmp, int x, int y) {
 			drawLine(x + j, y + i, x + j, y + i, color);
 		}
 	}
+}
 
-	return 0;
+void eraseBmp (BMP *bmp, int x, int y) {
+	int i, j;
+
+	for(i = 0; i < bmp->infoheader.height; i++) {
+			for(j = 0; j < bmp->infoheader.width; j++){
+				drawLine(x + j, y + i, x + j, y + i, 0);
+			}
+	}
 }

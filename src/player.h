@@ -15,6 +15,8 @@ typedef struct {
 	int y;
 } Player;
 
+Player *player;
+
 void drawPlayer(Player *player);
 void erasePlayer(Player *player);
 void moveUp(Player *player);

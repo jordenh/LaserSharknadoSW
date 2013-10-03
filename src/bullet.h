@@ -18,6 +18,9 @@ typedef struct {
 	bulletstatus status;
 } Bullet;
 
+Bullet *bulletArray;
+
+void initBullets();
 void drawBullet(Bullet *bullet);
 void eraseBullet(Bullet *bullet);
 void moveRight(Bullet *bullet);
