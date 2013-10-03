@@ -32,16 +32,17 @@
 #define switches (volatile char *) 0x1001060
 #define leds (char *) 0x1001070
 #define keys (volatile char *) 0x1001080
+#define atariInput (volatile char *) 0x10010b0
 
 int init() {
-	if(openSdCard() == -1 ) {
+	if (openSdCard() == -1) {
 		printf("Error: Failed to open sd card\n");
 		return -1;
 	} else {
 		printf("Opened SD card\n");
 	}
 
-	if(init_lcd() == -1 ) {
+	if (init_lcd() == -1) {
 		printf("Error: could not open character LCD device\n");
 		return -1;
 	} else {
@@ -56,22 +57,21 @@ int init() {
 }
 
 int main() {
-	if(init() == -1)
+	if (init() == -1)
 		return -1;
 
-	// initialise the player
+	// Initialize the player
 	Player *player;
 	player->x = 10;
 	player->y = 90;
 	drawPlayer(player);
 
-	// initialise array of bullets
+	// initialize array of bullets
 	Bullet *bulletArray;
-	bulletArray = malloc(NUM_BULLETS*sizeof(Bullet));
+	bulletArray = malloc(NUM_BULLETS * sizeof(Bullet));
 
 	int i = 0;
-	for (i = 0; i < NUM_BULLETS; i++)
-	{
+	for (i = 0; i < NUM_BULLETS; i++) {
 		bulletArray[i].status = NOTACTIVE;
 	}
 
@@ -79,38 +79,44 @@ int main() {
 	short int debounce = 0;
 	char keyInput;
 	char key2;
+	char atariButtons;
+	char atariUp;
+	char atariDown;
+	char atariFire;
 
-	setHardwareTimerPeriod(CLOCK_FREQ/30);
+	setHardwareTimerPeriod(CLOCK_FREQ / 30);
 	startHardwareTimer();
 
 	// main game loop;
-	while(1)
-	{
-		if (hasHardwareTimerExpired() == 1)
-		{
+	while(1) {
+		if (hasHardwareTimerExpired() == 1) {
 			startHardwareTimer();
 			count++;
-			if (count%30 == 0)
-			{
-				printf("%i: Timer has expired\n", count/30);
+			if (count % 30 == 0) {
+				printf("%i: Timer has expired\n", count / 30);
 			}
 
 			keyInput = IORD_8DIRECT(keys, 0);
-			key2 = keyInput/4;
+			key2 = keyInput / 4;
 			key2 = keyInput & 0x0001;
+			atariButtons = (IORD_8DIRECT(atariInput, 0) & 0x0F);
+			atariFire = atariButtons & 0x08;
+			atariUp = atariButtons & 0x02;
+			atariDown = atariButtons & 0x04;
+			IOWR_16DIRECT(leds, 0, atariButtons);
 
-			if ((key2 == 0x01) && debounce == 0) {
+			//if ((key2 == 0x01) && debounce == 0) {
+			if ((atariFire == 0x00) && debounce == 0) {
 				debounce = 1;
-			} else if ((key2 == 0x00) && debounce == 1){
+			//} else if ((key2 == 0x00) && debounce == 1){
+			} else if ((atariFire != 0x00) && debounce == 1){
 				debounce = 0;
 
 				int index = 0;
-				while (index < NUM_BULLETS)
-				{
-					if (bulletArray[index].status == NOTACTIVE)
-					{
+				while (index < NUM_BULLETS) {
+					if (bulletArray[index].status == NOTACTIVE) {
 						bulletArray[index].x = player->x + PLAYER_WIDTH + 1;
-						bulletArray[index].y = player->y + 0.5*PLAYER_HEIGHT;
+						bulletArray[index].y = player->y + 0.5 * PLAYER_HEIGHT;
 						bulletArray[index].status = PLAYERBULLET;
 						drawBullet(&bulletArray[index]);
 						break;
@@ -121,7 +127,7 @@ int main() {
 				playLaser();
 			}
 
-			if (count%2 == 0) {
+			if (count % 2 == 0) {
 				i = 0;
 				for (i = 0; i < NUM_BULLETS; i++) {
 					if (bulletArray[i].status != NOTACTIVE) {
@@ -130,12 +136,12 @@ int main() {
 				}
 			}
 
-			if (keyInput == 0x02) {
-				printf("Key 0");
+			if (atariUp != 0x00) {
+				//printf("Key 0");
 				moveUp(player);
 			}
-			if (keyInput == 0x04) {
-				printf("Key 1");
+			if (atariDown != 0x00) {
+				//printf("Key 1");
 				moveDown(player);
 			}
 		}

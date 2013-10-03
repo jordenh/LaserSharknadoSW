@@ -3,8 +3,8 @@
 # This script creates the blank_project application in this directory.
 
 
-BSP_DIR=C:/Users/SarahLynn/Documents/School/School3/EECE381/LSN/LSN_bsp/
-QUARTUS_PROJECT_DIR=C:/Users/SarahLynn/Documents/School/School3/EECE381/LSN/HDL/
+BSP_DIR=C:/Users/jorde_000/Documents/GitHub/LSN/
+QUARTUS_PROJECT_DIR=C:/Users/jorde_000/Documents/GitHub/LSN/HDL/
 NIOS2_APP_GEN_ARGS="--elf-name LSN.elf --no-src --set OBJDUMP_INCLUDE_SOURCE 1"
 
 
