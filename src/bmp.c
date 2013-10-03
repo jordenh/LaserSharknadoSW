@@ -37,6 +37,12 @@ BMP* parseBmp (char *fileName) {
 			(bmp->rgb + offset)->b = (readByte(fh) & 0xF1) >> 3;
 			(bmp->rgb + offset)->g = (readByte(fh) & 0xFC) >> 2;
 			(bmp->rgb + offset)->r = (readByte(fh) & 0xF1) >> 3;
+
+			//Filter out the pink pixels
+			if (((bmp->rgb + offset)->b == 0x1E) && ((bmp->rgb + offset)->g == 0) && ((bmp->rgb + offset)->r == 0x1E)) {
+				(bmp->rgb + offset)->b = 0x0;
+				(bmp->rgb + offset)->r = 0x0;
+			}
 		}
 
 		if((BYTES_PER_PIXEL*bmp->infoheader.width) % 4 != 0) {
@@ -51,10 +57,20 @@ BMP* parseBmp (char *fileName) {
 	return bmp;
 }
 
-int drawBmp (char *fileName, int x, int y) {
+void parseBmps() {
+	splashBmp = parseBmp("splash.bmp");
+	sharkBmp = parseBmp("shark.bmp");
+	//parseBmp("player.bmp");
+}
+
+void freeBmps(){
+	free(splashBmp->rgb);
+	free(sharkBmp->rgb);
+}
+
+int drawBmp (BMP *bmp, int x, int y) {
 	int i,j;
 	int color;
-	BMP *bmp = parseBmp(fileName);
 
 	for(i = 0; i < bmp->infoheader.height; i++) {
 		for(j = 0; j < bmp->infoheader.width; j++){

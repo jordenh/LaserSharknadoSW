@@ -4,6 +4,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include "stubs.h"
+#include "shark.h"
 
 #define DISPLACEMENT_LENGTH 128
 
@@ -19,7 +20,7 @@ typedef struct Displacement Displacement;
 struct Shark;
 
 void setupDisplacement(void);
-void setToRandomDisplacement(struct Shark *shark);
+void setToRandomDisplacement(Shark *shark);
 
 extern Displacement verticalDisplacementFunctionUp[DISPLACEMENT_LENGTH];
 extern Displacement verticalDisplacementFunctionDown[DISPLACEMENT_LENGTH];

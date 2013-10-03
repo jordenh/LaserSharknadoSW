@@ -22,12 +22,13 @@
 #include "sd_card.h"
 #include "vga.h"
 #include "bmp.h"
+#include "shark.h"
+#include "displacement.h"
+#include "collision.h"
 #include "io.h"
 #include "system.h"
 #include "altera_nios2_qsys_irq.h"
 #include "sys/alt_irq.h"
-#include "displacement.h"
-#include "collision.h"
 
 #define switches (volatile char *) 0x1001060
 #define leds (char *) 0x1001070
@@ -52,12 +53,17 @@ int init() {
 	setupAudio();
 	setupDisplacement();
 
+	parseBmps();
+
 	return 0;
 }
 
 int main() {
 	if(init() == -1)
 		return -1;
+
+	drawShark(0, 0);
+	return 0;
 
 	// initialise the player
 	Player *player;
@@ -141,5 +147,6 @@ int main() {
 		}
 	}
 
+	freeBmps();
 	return 0;
 }

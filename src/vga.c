@@ -19,8 +19,6 @@ void initVga()
 
 void clearScreen()
 {
-	printf("Clearing Screen!\n");
-
 	alt_up_pixel_buffer_dma_clear_screen(pixel_buffer, 0);
 }
 
