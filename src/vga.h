@@ -12,7 +12,7 @@
 alt_up_pixel_buffer_dma_dev* pixel_buffer;
 alt_up_char_buffer_dev *char_buffer;
 
-void setupVga();
+void initVga();
 void clearScreen();
 void drawLine(int x0, int y0, int x1, int y1, int color);
 void printLine();
