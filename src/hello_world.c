@@ -31,7 +31,7 @@
 #define switches (volatile char *) 0x1001060
 #define leds (char *) 0x1001070
 #define keys (volatile char *) 0x1001080
-#define atariCommands (volatile char *) 0x10010b0
+#define atariInput (volatile char *) 0x10010b0
 
 int main()
 {
@@ -77,38 +77,22 @@ int main()
 	{
 		bulletArray[i].status = NOTACTIVE;
 	}
-	/*
-<<<<<<< HEAD
-
-	short int atariCmds = 0; // allUp = 0, upLeft = 1, upRight = 2, upFire = 3.
-	short int debounce = 0;
-	while(1) {
-		atariCmds = (IORD_8DIRECT(atariCommands, 0) & 0x0F);
-		IOWR_16DIRECT(leds, 0, atariCmds);
-
-		if ((atariCmds & 0x08) != 0x00 && debounce == 0) {
-			debounce = 1;
-			playLaser();
-
-		} else if ((atariCmds & 0x08) == 0x00 && debounce == 1){
-			debounce = 0;
-======= */
-
 
 	int count = 0;
+	short int debounce = 0;
 	char keyInput;
 	char key2;
-	short int atariCmds = 0; // allUp = 0, upLeft = 1, upRight = 2, upFire = 3.
-	short int debounce = 0;
+	char atariButtons;
+	char atariUp;
+	char atariDown;
+	char atariFire;
 
 	setHardwareTimerPeriod(CLOCK_FREQ/30);
 	startHardwareTimer();
 
 	// main game loop;
-	while(1)
-	{
-		if (hasHardwareTimerExpired() == 1)
-		{
+	while(1) {
+		if (hasHardwareTimerExpired() == 1) {
 			startHardwareTimer();
 			count++;
 			if (count%30 == 0)
@@ -116,19 +100,21 @@ int main()
 				printf("%i: Timer has expired\n", count/30);
 			}
 
-			atariCmds = (IORD_8DIRECT(atariCommands, 0) & 0x0F);
-			IOWR_16DIRECT(leds, 0, atariCmds);
 			keyInput = IORD_8DIRECT(keys, 0);
 			key2 = keyInput/4;
 			key2 = keyInput & 0x0001;
+			atariButtons = (IORD_8DIRECT(atariInput, 0) & 0x0F);
+			atariFire = atariButtons & 0x08;
+			atariUp = atariButtons & 0x02;
+			atariDown = atariButtons & 0x04;
+			IOWR_16DIRECT(leds, 0, atariButtons);
 
-			if (((atariCmds & 0x08) != 0x00) && debounce == 0) {
+			//if ((key2 == 0x01) && debounce == 0) {
+			if ((atariFire == 0x00) && debounce == 0) {
 				debounce = 1;
-				printf("rising_edge found\n");
-			} else if (((atariCmds & 0x08) == 0x00) && debounce == 1){
+			//} else if ((key2 == 0x00) && debounce == 1){
+			} else if ((atariFire != 0x00) && debounce == 1){
 				debounce = 0;
-
-				printf("falling_edge found1\n");
 
 				int index = 0;
 				while (index < NUM_BULLETS)
@@ -143,17 +129,8 @@ int main()
 					}
 					index++;
 				}
-				printf("falling_edge found2\n");
-				playLaser();
-				printf("falling_edge found3\n");
-			}
 
-			if ((atariCmds & 0x08) != 0x00 && debounce == 0) {
-				debounce = 1;
-				playLaser();
-
-			} else if ((atariCmds & 0x08) == 0x00 && debounce == 1){
-				debounce = 0;
+				//playLaser();
 			}
 
 			if (count%2 == 0) {
@@ -165,16 +142,15 @@ int main()
 				}
 			}
 
-			if ((atariCmds & 0x02) != 0x00) {
-				printf("Key 0");
+			if (atariUp != 0x00) {
+				//printf("Key 0");
 				moveUp(player);
 			}
-			if ((atariCmds & 0x04) != 0x00) {
-				printf("Key 1");
+			if (atariDown != 0x00) {
+				//printf("Key 1");
 				moveDown(player);
 			}
 		}
-
 	}
 
 	return 0;
