@@ -3,13 +3,21 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "vga.h"
 #include "altera_up_avalon_video_character_buffer_with_dma.h"
 #include "altera_up_avalon_video_pixel_buffer_dma.h"
 
-alt_up_pixel_buffer_dma_dev* setUp(void);
-void clearScreen(alt_up_pixel_buffer_dma_dev* pixel_buffer);
-void drawLine(alt_up_pixel_buffer_dma_dev* pixel_buffer, int x0, int y0, int x1, int y1, int color);
-void printLine(void);
-void drawBox(alt_up_pixel_buffer_dma_dev* pixel_buffer, int x0, int y0, int x1, int y1, int color);
+#define PLAYER_WIDTH 37
+#define PLAYER_HEIGHT 20
+
+typedef struct {
+	int x;
+	int y;
+} Player;
+
+void drawPlayer(Player *player);
+void erasePlayer(Player *player);
+void moveUp(Player *player);
+void moveDown(Player *player);
 
 #endif
