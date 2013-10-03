@@ -18,5 +18,3 @@ void moveRight(Bullet *bullet){
 	}
 	drawBullet(bullet);
 }
-
-
