@@ -1,7 +1,7 @@
 #include "bullet.h"
 
 void drawBullet(Bullet *bullet){
-	drawLine(bullet->x, bullet->y, bullet->x + BULLET_LENGTH, bullet->y, 0xFF00);
+	drawLine(bullet->x, bullet->y, bullet->x + BULLET_LENGTH, bullet->y, convert24BitRgbTo16(0xFF000C));//0xFF00);
 }
 
 void eraseBullet(Bullet *bullet){
