@@ -4,20 +4,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "vga.h"
-#include "altera_up_avalon_video_character_buffer_with_dma.h"
-#include "altera_up_avalon_video_pixel_buffer_dma.h"
+#include "bmp.h"
 
-#define PLAYER_WIDTH 37
-#define PLAYER_HEIGHT 20
+#define PLAYER_WIDTH 30
+#define PLAYER_HEIGHT 30
 
 typedef struct {
-	int x;
-	int y;
+	int x, prevX;
+	int y, prevY;
 } Player;
 
-void drawPlayer(Player *player);
-void erasePlayer(Player *player);
-void moveUp(Player *player);
-void moveDown(Player *player);
+Player player;
+
+void initPlayer();
+void drawPlayer();
+void erasePlayer();
+void moveUpPlayer();
+void moveDownPlayer();
 
 #endif

@@ -1,19 +1,3 @@
-/*
- * "Hello World" example.
- *
- * This example prints 'Hello from Nios II' to the STDOUT stream. It runs on
- * the Nios II 'standard', 'full_featured', 'fast', and 'low_cost' example
- * designs. It runs with or without the MicroC/OS-II RTOS and requires a STDOUT
- * device in your system's hardware.
- * The memory footprint of this hosted application is ~69 kbytes by default
- * using the standard reference design.
- *
- * For a reduced footprint version of this template, and an explanation of how
- * to reduce the memory footprint for a given application, see the
- * "small_hello_world" template.
- *
- */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include "lcd.h"
@@ -22,12 +6,13 @@
 #include "sd_card.h"
 #include "vga.h"
 #include "bmp.h"
+#include "shark.h"
+#include "displacement.h"
+#include "collision.h"
 #include "io.h"
 #include "system.h"
 #include "altera_nios2_qsys_irq.h"
 #include "sys/alt_irq.h"
-#include "displacement.h"
-#include "collision.h"
 #include "score.h"
 
 #define switches (volatile char *) 0x1001060
@@ -55,7 +40,11 @@ int init(struct scores * gameScores) {
 	setupDisplacement();
 	initScoreBoard(gameScores);
 
+	parseBmps();
+	initBullets();
+	initPlayer();
 
+	setHardwareTimerPeriod(CLOCK_FREQ/30);
 	return 0;
 }
 
@@ -89,6 +78,7 @@ int main() {
 			}
 
 	int count = 0;
+	short int edgeDetect = 0;
 	short int debounce = 0;
 	char SWInput;
 	char scoreInitials[15];// = malloc(sizeof(char) * NUMINITIALS); // scores wont exceed 10, and names are 3
@@ -96,7 +86,7 @@ int main() {
 	short int scoresShown = 0;
 	printf("scoreInitials got addr: %x\n", scoreInitials);
 	char keyInput;
-	char key2;
+	int position = 0;
 
 	char atariButtons;
 	char atariUp;
@@ -105,6 +95,10 @@ int main() {
 	int j,k;
 
 	setHardwareTimerPeriod(CLOCK_FREQ / 30);
+
+	Shark *shark1 = malloc(sizeof(Shark));
+
+	drawShark(shark1, 100, 0);
 	startHardwareTimer();
 
 	// main game loop;
@@ -112,24 +106,21 @@ int main() {
 		if (hasHardwareTimerExpired() == 1) {
 			startHardwareTimer();
 			count++;
+/*<<<<<<< HEAD
 			if (count % 30 == 0) {
 				printf("%i: Timer has expired\n", count / 30);
 			}
 
 			SWInput = IORD_8DIRECT(switches, 0);
 			keyInput = IORD_8DIRECT(keys, 0);
-			key2 = keyInput / 4;
-			key2 = keyInput & 0x0001;
 			atariButtons = (IORD_8DIRECT(atariInput, 0) & 0x0F);
 			atariFire = atariButtons & 0x08;
 			atariUp = atariButtons & 0x02;
 			atariDown = atariButtons & 0x04;
 			IOWR_16DIRECT(leds, 0, atariButtons);
 
-			//if ((key2 == 0x01) && debounce == 0) {
 			if ((atariFire == 0x00) && debounce == 0) {
 				debounce = 1;
-			//} else if ((key2 == 0x00) && debounce == 1){
 			} else if ((atariFire != 0x00) && debounce == 1){
 				debounce = 0;
 
@@ -145,7 +136,7 @@ int main() {
 					index++;
 				}
 
-				playLaser();
+				//playLaser();
 				//playTheme();
 			}
 
@@ -186,8 +177,70 @@ int main() {
 				scoresShown = 0;
 			}
 
+======= */
+			keyInput = IORD_8DIRECT(KEYS_BASE, 0);
+			SWInput = IORD_8DIRECT(switches, 0);
+			atariButtons = (IORD_8DIRECT(atariInput, 0) & 0x0F);
+			atariFire = atariButtons & 0x08;
+			atariUp = atariButtons & 0x02;
+			atariDown = atariButtons & 0x04;
+			IOWR_16DIRECT(leds, 0, atariButtons);
+
+			if (count%30 == 0)
+				printf("%i: Timer has expired\n", count/30);
+
+			moveShark(shark1, 100, position++);
+
+			if ((atariFire == 0x00) && (edgeDetect == 0)) {
+				edgeDetect = 1;
+			} else if ((atariFire != 0x00) && (edgeDetect == 1)) {
+				edgeDetect = 0;
+				createBullet(PLAYERBULLET);
+			}
+
+			if (count%2 == 0) {
+				moveAllBullets();
+			}
+
+			if (atariUp != 0x00) {
+				moveUpPlayer();
+			} else if (atariDown != 0x00) {
+				moveDownPlayer();
+			} else {
+				drawPlayer();
+			}
+			if ((SWInput & 0x80) != 0) {
+				if(scoresShown == 0){
+					for(i = 0; i < NUMSCORES; i++) {
+						scoreInitials[0] = gameScores.highScoreBoardInits[i][0];
+						scoreInitials[1] = gameScores.highScoreBoardInits[i][1];
+						scoreInitials[2] = gameScores.highScoreBoardInits[i][2];
+
+						//for(j = 0; j < )
+
+						alt_up_char_buffer_string(char_buffer,scoreInitials , 40, 30 + i);
+					}
+				}
+				scoresShown = 1;
+			} else {
+				if(scoresShown == 1){
+					alt_up_char_buffer_clear(char_buffer);
+				}
+				scoresShown = 0;
+			}
+
+			drawAllBullets();
+
+			alt_up_pixel_buffer_dma_swap_buffers(pixel_buffer);
+			while(alt_up_pixel_buffer_dma_check_swap_buffers_status(pixel_buffer));
+
+			eraseShark(shark1);
+			eraseAllBullets();
+			erasePlayer();
+//>>>>>>> cc52c7640605ea4841072893b27068e7149bfb29
 		}
 	}
 
+	freeBmps();
 	return 0;
 }

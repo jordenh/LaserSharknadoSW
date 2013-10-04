@@ -49,21 +49,21 @@ void timer_test(void) {
 	printf(" Setting timer period to 5 seconds.\n");
 	timer_period = 5 * CLOCK_FREQ;
 	// Setting the period registers must be done in 2 steps as they are only 16 bits wide
-	IOWR_16DIRECT(MY_HW_ONLY_TIMER_BASE, 8, timer_period & 0xFFFF); // less significant word
-	IOWR_16DIRECT(MY_HW_ONLY_TIMER_BASE,12, timer_period >> 16); // more significant word
+	IOWR_16DIRECT(HAL_SYSTEM_TIMER_BASE, 8, timer_period & 0xFFFF); // less significant word
+	IOWR_16DIRECT(HAL_SYSTEM_TIMER_BASE,12, timer_period >> 16); // more significant word
 	printf(" Stopping Timer\n");
-	status = IORD_16DIRECT(MY_HW_ONLY_TIMER_BASE, 0); // read status registers
+	status = IORD_16DIRECT(HAL_SYSTEM_TIMER_BASE, 0); // read status registers
 	// Write the control registers
 	if(status & 0x2) {
-		IOWR_16DIRECT(MY_HW_ONLY_TIMER_BASE, 4, 1 << 3); // stop the timer if it was started
+		IOWR_16DIRECT(HAL_SYSTEM_TIMER_BASE, 4, 1 << 3); // stop the timer if it was started
 	}
 	printf(" Starting Timer\n");
-	IOWR_16DIRECT(MY_HW_ONLY_TIMER_BASE, 4, 1 << 2); // start the timer
+	IOWR_16DIRECT(HAL_SYSTEM_TIMER_BASE, 4, 1 << 2); // start the timer
 
 	printf("  Waiting for timer to expire...\n");
 	done = 0;
 	while(! done) {
-		status = IORD_16DIRECT(MY_HW_ONLY_TIMER_BASE, 0); // read status registers
+		status = IORD_16DIRECT(HAL_SYSTEM_TIMER_BASE, 0); // read status registers
 		done = status & 0x1;
 	}
 	printf(" 5 seconds timer is done\n");
@@ -73,23 +73,23 @@ void timer_test(void) {
 // ie 5 seconds would be 5 * CLOCK_FREQ
 void setHardwareTimerPeriod(int period)
 {
-	IOWR_16DIRECT(MY_HW_ONLY_TIMER_BASE, 8, period & 0xFFFF); // less significant word
-	IOWR_16DIRECT(MY_HW_ONLY_TIMER_BASE,12, period >> 16); // more significant word
+	IOWR_16DIRECT(HAL_SYSTEM_TIMER_BASE, 8, period & 0xFFFF); // less significant word
+	IOWR_16DIRECT(HAL_SYSTEM_TIMER_BASE,12, period >> 16); // more significant word
 }
 
 int isHardwareTimerRunning(void)
 {
-	int status = IORD_16DIRECT(MY_HW_ONLY_TIMER_BASE, 0);
+	int status = IORD_16DIRECT(HAL_SYSTEM_TIMER_BASE, 0);
 	return status & 0x2; // not totally sure on this
 }
 
 int hasHardwareTimerExpired(void)
 {
-	return IORD_16DIRECT(MY_HW_ONLY_TIMER_BASE, 0);
+	return IORD_16DIRECT(HAL_SYSTEM_TIMER_BASE, 0);
 }
 
 void startHardwareTimer(void)
 {
-	IOWR_16DIRECT(MY_HW_ONLY_TIMER_BASE, 4, 1 << 2);
+	IOWR_16DIRECT(HAL_SYSTEM_TIMER_BASE, 4, 1 << 2);
 }
 
