@@ -140,11 +140,11 @@ int main() {
 
 			if (atariUp != 0x00) {
 				//printf("Key 0");
-				moveUp(player);
+				moveUp(&player);
 			}
 			if (atariDown != 0x00) {
 				//printf("Key 1");
-				moveDown(player);
+				moveDown(&player);
 			}
 		}
 	}
