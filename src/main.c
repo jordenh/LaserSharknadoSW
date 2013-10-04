@@ -60,10 +60,10 @@ int main() {
 		return -1;
 
 	// Initialize the player
-	Player *player;
-	player->x = 10;
-	player->y = 90;
-	drawPlayer(player);
+	Player player;// = malloc(sizeof(Player));
+	player.x = 10;
+	player.y = 90;
+	drawPlayer(&player);
 
 	// initialize array of bullets
 	Bullet *bulletArray;
@@ -78,11 +78,12 @@ int main() {
 	short int debounce = 0;
 	char keyInput;
 	char key2;
-
+	//timer_test();
 	setHardwareTimerPeriod(CLOCK_FREQ / 30);
 	startHardwareTimer();
 
 	// main game loop;
+	//printf("Entering main loop\n");
 	while (1) {
 		if (hasHardwareTimerExpired() == 1) {
 			startHardwareTimer();
@@ -103,8 +104,8 @@ int main() {
 				int index = 0;
 				while (index < NUM_BULLETS) {
 					if (bulletArray[index].status == NOTACTIVE) {
-						bulletArray[index].x = player->x + PLAYER_WIDTH + 1;
-						bulletArray[index].y = player->y + 0.5 * PLAYER_HEIGHT;
+						bulletArray[index].x = player.x + PLAYER_WIDTH + 1;
+						bulletArray[index].y = player.y + 0.5 * PLAYER_HEIGHT;
 						bulletArray[index].status = PLAYERBULLET;
 						drawBullet(&bulletArray[index]);
 						break;
@@ -126,11 +127,11 @@ int main() {
 
 			if (keyInput == 0x02) {
 				printf("Key 0");
-				moveUp(player);
+				moveUp(&player);
 			}
 			if (keyInput == 0x04) {
 				printf("Key 1");
-				moveDown(player);
+				moveDown(&player);
 			}
 		}
 	}
