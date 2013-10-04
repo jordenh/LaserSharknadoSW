@@ -2,7 +2,6 @@
 
 #include "score.h"
 
-
 char * scoreFileName = "scores.txt";
 
 void initScoreBoard(struct scores gameScores) {
