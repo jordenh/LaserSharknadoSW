@@ -45,6 +45,9 @@ int getActiveFileWordLength(void);
 int setupAudioInterrupt(alt_up_audio_dev *audio, volatile int somethingForIrq);
 void playAudio(unsigned int *leftBuffer, int leftLength, unsigned int *rightBuffer, int rightLength);
 void loadLaser(void);
+void loadPlayerDeath(void);
+void loadSharkDeath(void);
+void loadTheme(void);
 
 void setupAudio()
 {
@@ -75,16 +78,6 @@ void setupAudio()
 
     loadLaser();
 
-	// Need to setup playerDeathSound
-	//playerDeathFileWordLength = 0x0000DAFF/ 2;
-	//unsigned int **ptrToPlayerDeathBuffer = &playerDeathBuffer; // initialize other buffers yo?
-	//readWavFile("pdie.wav", playerDeathFileWordLength, ptrToPlayerDeathBuffer);
-
-	// Need to setup sharkDeathSound
-	//sharkDeathFileWordLength = 0x00006FFF / 2;
-	//unsigned int **ptrToSharkDeathBuffer = &sharkDeathBuffer;
-	//readWavFile("sdie.wav", sharkDeathFileWordLength, ptrToSharkDeathBuffer);
-
 	//themeFileWordLength = 0x00063E00 / 2;
 	//unsigned int **ptrToThemeBuffer = &themeBuffer;
 	//readWavFile("theme.wav", themeFileWordLength, ptrToThemeBuffer);
@@ -112,13 +105,36 @@ int setupAudioInterrupt(alt_up_audio_dev *audio, volatile int somethingForIrq)
 	#endif
 }
 
-void loadLaser()
-{
+void loadLaser() {
 	if (loaded != LASER) {
 		audioFileWordLength = 38384;
 		printf("File Length is: %x\n", audioFileWordLength);
 		readWavFile("laserii.wav", audioFileWordLength);
 		loaded = LASER;
+	}
+}
+
+void loadPlayerDeath() {
+	if (loaded != PLAYER_DEATH) {
+		audioFileWordLength = 0x0000DAFF / 2;
+		readWavFile("pdie.wav", audioFileWordLength);
+		loaded = PLAYER_DEATH;
+	}
+}
+
+void loadSharkDeath() {
+	if (loaded != SHARK_DEATH) {
+		audioFileWordLength = 0x0000DAFF / 2;
+		readWavFile("sdie.wav", audioFileWordLength);
+		loaded = SHARK_DEATH;
+	}
+}
+
+void loadTheme() {
+	if (loaded != THEME) {
+		audioFileWordLength = 0x00063E00 / 2;
+		readWavFile("theme.wav", audioFileWordLength);
+		loaded = THEME;
 	}
 }
 
@@ -223,20 +239,26 @@ void playLaser(void) {
 }
 
 void playPlayerDeath(void) {
+	loadPlayerDeath();
 	status = PLAYER_DEATH;
 	playCursor = audioBuffer;
+	playedWords = 0;
 	alt_up_audio_enable_write_interrupt(audio);
 }
 
 void playSharkDeath(void) {
+	loadSharkDeath();
 	status = SHARK_DEATH;
 	playCursor = audioBuffer;
+	playedWords = 0;
 	alt_up_audio_enable_write_interrupt(audio);
 }
 
 void playTheme(void) {
+	loadTheme();
 	status = THEME;
 	playCursor = audioBuffer;
+	playedWords = 0;
 	alt_up_audio_enable_write_interrupt(audio);
 }
 
@@ -254,8 +276,7 @@ static void playSoundISR(void* isr_context, alt_u32 id) {
 	unsigned end = (unsigned)(audioBuffer) + (2 * audioFileWordLength);
 	if (free >= 1) {
 		if (((int)playCursor + free >= end) ||
-			 (playedWords + free) >= audioFileWordLength ||
-			  i >= 128) {
+			 (playedWords + free) >= audioFileWordLength) {
 			// Last chunk to play
 			len = end - (int)playCursor;
 			alt_up_audio_disable_write_interrupt(audio);

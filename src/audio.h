@@ -20,5 +20,6 @@ void playLaser(void);
 void playPlayerDeath(void);
 void playSharkDeath(void);
 void playTheme(void);
+void playPlayerDeath(void);
 
 #endif

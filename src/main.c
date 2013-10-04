@@ -113,7 +113,8 @@ int main() {
 					index++;
 				}
 
-				playLaser();
+				//playLaser();
+				playTheme();
 			}
 
 			if (count % 2 == 0) {
