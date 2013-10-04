@@ -16,7 +16,6 @@
 
 #define switches (volatile char *) 0x1001060
 #define leds (char *) 0x1001070
-#define keys (volatile char *) 0x1001080
 
 int init() {
 	if(openSdCard() == -1 ) {
@@ -54,7 +53,8 @@ int main() {
 
 	if(init() == -1)
 		return -1;
-	Shark *shark1;
+
+	Shark *shark1 = malloc(sizeof(Shark));
 
 	drawShark(shark1, 100, 0);
 
@@ -71,9 +71,8 @@ int main() {
 
 			moveShark(shark1, 100, position++);
 
-			keyInput = IORD_8DIRECT(keys, 0);
-			key2 = keyInput/4;
-			key2 = keyInput & 0x0001;
+			keyInput = IORD_8DIRECT(KEYS_BASE, 0);
+			key2 = (keyInput/4) & 0x0001;
 
 			if ((key2 == 0x01) && debounce == 0) {
 				debounce = 1;
@@ -106,18 +105,18 @@ int main() {
 			}
 
 			if (keyInput == 0x02) {
-				printf("Key 0");
-				moveUp(player);
-			}
-			if (keyInput == 0x04) {
-				printf("Key 1");
-				moveDown(player);
+				moveUp();
+			} else if (keyInput == 0x04) {
+				moveDown();
+			} else {
+				drawPlayer();
 			}
 
 			alt_up_pixel_buffer_dma_swap_buffers(pixel_buffer);
 			while(alt_up_pixel_buffer_dma_check_swap_buffers_status(pixel_buffer));
 
 			eraseShark(shark1);
+			erasePlayer();
 		}
 	}
 

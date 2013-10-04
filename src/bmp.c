@@ -1,10 +1,9 @@
 #include "bmp.h"
 
-BMP* parseBmp (char *fileName) {
+void parseBmp (char *fileName, BMP *bmp) {
 	int i, j, k;
 	int pixels, rowOffset, offset;
 	short int fh;
-	BMP *bmp;
 
 	fh = openFile(fileName);
 
@@ -53,19 +52,26 @@ BMP* parseBmp (char *fileName) {
 	}
 
 	closeFile(fh);
-
-	return bmp;
 }
 
 void parseBmps() {
-	splashBmp = parseBmp("splash.bmp");
-	sharkBmp = parseBmp("shark.bmp");
-	//parseBmp("player.bmp");
+	splashBmp = malloc(sizeof(BMP));
+	sharkBmp = malloc(sizeof(BMP));
+	playerBmp = malloc(sizeof(BMP));
+
+	//parseBmp("splash.bmp", splashBmp);
+	parseBmp("shark.bmp", sharkBmp);
+	parseBmp("player.bmp", playerBmp);
 }
 
 void freeBmps(){
 	free(splashBmp->rgb);
+	free(playerBmp->rgb);
 	free(sharkBmp->rgb);
+
+	free(splashBmp);
+	free(sharkBmp);
+	free(playerBmp);
 }
 
 void drawBmp (BMP *bmp, int x, int y) {
