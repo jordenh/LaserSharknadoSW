@@ -1,25 +1,38 @@
 #include "player.h"
 
-void drawPlayer(Player *player) {
-	drawBox(player->x, player->y, player->x + PLAYER_WIDTH, player->y + PLAYER_HEIGHT, 0xFFFF);
+void initPlayer() {
+	player.x = 10;
+	player.y = 90;
+	player.prevX = 0;
+	player.prevY = 0;
+	drawBmp(playerBmp, player.x, player.y);
 }
 
-void erasePlayer(Player *player) {
-	drawBox(player->x, player->y, player->x + PLAYER_WIDTH, player->y + PLAYER_HEIGHT, 0x0000);
+void drawPlayer() {
+	drawBmp(playerBmp, player.x, player.y);
 }
 
-void moveUp(Player *player) {
-	if (player->y > 0) {
-		erasePlayer(player);
-		player->y = player->y - 1;
-		drawPlayer(player);
+void erasePlayer() {
+	eraseBmp(playerBmp, player.prevX, player.prevY);
+}
+
+void moveUpPlayer() {
+	if (player.y > 0) {
+		player.prevX = player.x;
+		player.prevY = player.y;
+
+		player.y = player.y - 1;
+		drawBmp(playerBmp, player.x, player.y);
 	}
 }
-void moveDown(Player *player)
+void moveDownPlayer()
 {
-	if (player->y < SCREEN_HEIGHT - PLAYER_HEIGHT) {
-		erasePlayer(player);
-		player->y = player->y + 1;
-		drawPlayer(player);
+	if (player.y < SCREEN_HEIGHT - PLAYER_HEIGHT) {
+		player.prevX = player.x;
+		player.prevY = player.y;
+
+		player.y = player.y + 1;
+		drawBmp(playerBmp, player.x, player.y);
 	}
 }
+

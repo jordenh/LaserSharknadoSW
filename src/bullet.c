@@ -1,20 +1,93 @@
 #include "bullet.h"
 
-void drawBullet(Bullet *bullet){
-	drawLine(bullet->x, bullet->y, bullet->x + BULLET_LENGTH, bullet->y, convert24BitRgbTo16(0xFF000C));//0xFF00);
+void initBullets() {
+	int i = 0;
+
+	for (i = 0; i < NUM_BULLETS; i++)
+		bulletArray[i].status = NOTACTIVE;
 }
 
-void eraseBullet(Bullet *bullet){
-	drawLine(bullet->x, bullet->y, bullet->x + BULLET_LENGTH, bullet->y, 0x0000);
+void createBullet(bulletstatus status) {
+	int index = 0;
+	while (index < NUM_BULLETS) {
+		if (bulletArray[index].status == NOTACTIVE)	{
+			bulletArray[index].x = player.x + PLAYER_WIDTH + 1;
+			bulletArray[index].y = player.y + 0.5*PLAYER_HEIGHT;
+			bulletArray[index].status = PLAYERBULLET;
+			drawBullet(&bulletArray[index]);
+			break;
+		}
+		index++;
+	}
+
+	playLaser();
 }
 
-void moveRight(Bullet *bullet){
-	eraseBullet(bullet);
-	bullet->x = bullet->x + 1;
-	if (bullet->x >= SCREEN_WIDTH)
-	{
+void moveAllBullets() {
+	int i;
+
+	for (i = 0; i < NUM_BULLETS; i++) {
+		if (bulletArray[i].status == PLAYERBULLET) {
+			moveBulletRight(&bulletArray[i]);
+		} else if (bulletArray[i].status == SHARKBULLET) {
+			moveBulletLeft(&bulletArray[i]);
+		}
+	}
+}
+
+void drawAllBullets() {
+	int i;
+
+	for (i = 0; i < NUM_BULLETS; i++) {
+		if (bulletArray[i].status != NOTACTIVE) {
+			drawBullet(&bulletArray[i]);
+		}
+	}
+}
+
+void eraseAllBullets() {
+	int i;
+
+	for (i = 0; i < NUM_BULLETS; i++) {
+		if (bulletArray[i].status != NOTACTIVE) {
+			eraseBullet(&bulletArray[i]);
+		}
+	}
+}
+
+void drawBullet(Bullet *bullet) {
+	int i;
+
+	for (i = 0; i < BULLET_LENGTH; i++) {
+		drawPixel(bullet->x + i, bullet->y, convert24BitRgbTo16(0xFF000C));
+	}
+}
+
+void eraseBullet(Bullet *bullet) {
+	int i;
+	for (i = 0; i < BULLET_LENGTH; i++) {
+		drawPixel(bullet->prevX + i, bullet->prevY, 0x0000);
+	}
+}
+
+void moveBulletRight(Bullet *bullet) {
+	bullet->prevX = bullet->x;
+	bullet->prevY = bullet->y;
+
+	bullet->x = bullet->x + 2;
+	if (bullet->x >= SCREEN_WIDTH) {
 		bullet->status = NOTACTIVE;
 		return;
 	}
-	drawBullet(bullet);
+}
+
+void moveBulletLeft(Bullet *bullet) {
+	bullet->prevX = bullet->x;
+	bullet->prevY = bullet->y;
+
+	bullet->x = bullet->x - 2;
+	if (bullet->x >= SCREEN_WIDTH) {
+		bullet->status = NOTACTIVE;
+		return;
+	}
 }

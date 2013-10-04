@@ -5,7 +5,6 @@
 #include<stdlib.h>
 #include "vga.h"
 #include "sd_card.h"
-#include "altera_up_avalon_video_pixel_buffer_dma.h"
 
 #define BYTES_PER_PIXEL 3
 
@@ -38,7 +37,14 @@ typedef struct {
 	RGB *rgb;
 } BMP;
 
-BMP* parseBmp(char *fileName);
-int drawBmp(char *fileName, int x, int y);
+BMP *splashBmp;
+BMP *playerBmp;
+BMP *sharkBmp;
+
+void parseBmp(char *fileName, BMP *bmp);
+void parseBmps();
+void freeBmps();
+void drawBmp(BMP *bmp, int x, int y);
+void eraseBmp(BMP *bmp, int x, int y);
 
 #endif
