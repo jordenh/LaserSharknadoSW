@@ -91,7 +91,7 @@ int main() {
 	int count = 0;
 	short int debounce = 0;
 	char SWInput;
-	char scoreInitials[4];// = malloc(sizeof(char) * NUMINITIALS);
+	char scoreInitials[15];// = malloc(sizeof(char) * NUMINITIALS); // scores wont exceed 10, and names are 3
 	scoreInitials[3] = '\0';
 	short int scoresShown = 0;
 	printf("scoreInitials got addr: %x\n", scoreInitials);
@@ -172,6 +172,9 @@ int main() {
 						scoreInitials[0] = gameScores.highScoreBoardInits[i][0];
 						scoreInitials[1] = gameScores.highScoreBoardInits[i][1];
 						scoreInitials[2] = gameScores.highScoreBoardInits[i][2];
+
+						//for(j = 0; j < )
+
 						alt_up_char_buffer_string(char_buffer,scoreInitials , 40, 30 + i);
 					}
 				}
