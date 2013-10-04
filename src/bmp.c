@@ -28,6 +28,7 @@ BMP* parseBmp (char *fileName) {
 
 	pixels = bmp->infoheader.width * bmp->infoheader.height;
 	bmp->rgb = malloc(BYTES_PER_PIXEL * pixels);
+	printf("size of bmp->rgb %x", bmp->rgb);
 
 	for(i = 0; i < bmp->infoheader.height; i++) {
 		rowOffset = i*bmp->infoheader.width;
