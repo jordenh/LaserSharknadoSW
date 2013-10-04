@@ -3,8 +3,6 @@
 void initBullets() {
 	int i = 0;
 
-	bulletArray = malloc(NUM_BULLETS*sizeof(Bullet));
-
 	for (i = 0; i < NUM_BULLETS; i++)
 		bulletArray[i].status = NOTACTIVE;
 }
@@ -60,14 +58,14 @@ void eraseAllBullets() {
 void drawBullet(Bullet *bullet) {
 	int i;
 
-	for (i = 0; i < NUM_BULLETS; i++) {
+	for (i = 0; i < BULLET_LENGTH; i++) {
 		drawPixel(bullet->x + i, bullet->y, 0xFF00);
 	}
 }
 
 void eraseBullet(Bullet *bullet) {
 	int i;
-	for (i = 0; i < NUM_BULLETS; i++) {
+	for (i = 0; i < BULLET_LENGTH; i++) {
 		drawPixel(bullet->prevX + i, bullet->prevY, 0x0000);
 	}
 }
@@ -76,7 +74,7 @@ void moveBulletRight(Bullet *bullet) {
 	bullet->prevX = bullet->x;
 	bullet->prevY = bullet->y;
 
-	bullet->x = bullet->x + 1;
+	bullet->x = bullet->x + 2;
 	if (bullet->x >= SCREEN_WIDTH) {
 		bullet->status = NOTACTIVE;
 		return;
@@ -87,7 +85,7 @@ void moveBulletLeft(Bullet *bullet) {
 	bullet->prevX = bullet->x;
 	bullet->prevY = bullet->y;
 
-	bullet->x = bullet->x - 1;
+	bullet->x = bullet->x - 2;
 	if (bullet->x >= SCREEN_WIDTH) {
 		bullet->status = NOTACTIVE;
 		return;

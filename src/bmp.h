@@ -38,9 +38,10 @@ typedef struct {
 } BMP;
 
 BMP *splashBmp;
+BMP *playerBmp;
 BMP *sharkBmp;
 
-BMP* parseBmp(char *fileName);
+void parseBmp(char *fileName, BMP *bmp);
 void parseBmps();
 void freeBmps();
 void drawBmp(BMP *bmp, int x, int y);

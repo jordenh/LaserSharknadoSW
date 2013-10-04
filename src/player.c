@@ -3,29 +3,36 @@
 void initPlayer() {
 	player.x = 10;
 	player.y = 90;
-	drawPlayer(player);
+	player.prevX = 0;
+	player.prevY = 0;
+	drawBmp(playerBmp, player.x, player.y);
 }
 
 void drawPlayer() {
-	drawBox(player.x, player.y, player.x + PLAYER_WIDTH, player.y + PLAYER_HEIGHT, 0xFFFF);
+	drawBmp(playerBmp, player.x, player.y);
 }
 
 void erasePlayer() {
-	drawBox(player.x, player.y, player.x + PLAYER_WIDTH, player.y + PLAYER_HEIGHT, 0x0000);
+	eraseBmp(playerBmp, player.prevX, player.prevY);
 }
 
 void moveUpPlayer() {
 	if (player.y > 0) {
-		erasePlayer(player);
+		player.prevX = player.x;
+		player.prevY = player.y;
+
 		player.y = player.y - 1;
-		drawPlayer(player);
+		drawBmp(playerBmp, player.x, player.y);
 	}
 }
 void moveDownPlayer()
 {
 	if (player.y < SCREEN_HEIGHT - PLAYER_HEIGHT) {
-		erasePlayer(player);
+		player.prevX = player.x;
+		player.prevY = player.y;
+
 		player.y = player.y + 1;
-		drawPlayer(player);
+		drawBmp(playerBmp, player.x, player.y);
 	}
 }
+

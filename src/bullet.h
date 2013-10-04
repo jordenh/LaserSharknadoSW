@@ -19,7 +19,7 @@ typedef struct {
 	bulletstatus status;
 } Bullet;
 
-Bullet *bulletArray;
+Bullet bulletArray[NUM_BULLETS];
 
 void initBullets();
 void createBullet(bulletstatus status);

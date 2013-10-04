@@ -16,7 +16,6 @@
 
 #define switches (volatile char *) 0x1001060
 #define leds (char *) 0x1001070
-#define keys (volatile char *) 0x1001080
 
 int init() {
 	if(openSdCard() == -1 ) {
@@ -46,7 +45,7 @@ int init() {
 
 int main() {
 	int count = 0;
-	short int debounce = 0;
+	short int edgeDetect = 0;
 	char keyInput;
 	char key2;
 	int i;
@@ -54,7 +53,8 @@ int main() {
 
 	if(init() == -1)
 		return -1;
-	Shark *shark1;
+
+	Shark *shark1 = malloc(sizeof(Shark));
 
 	drawShark(shark1, 100, 0);
 
@@ -71,14 +71,12 @@ int main() {
 
 			moveShark(shark1, 100, position++);
 
-			keyInput = IORD_8DIRECT(keys, 0);
-			key2 = keyInput/4;
-			key2 = keyInput & 0x0001;
+			keyInput = IORD_8DIRECT(KEYS_BASE, 0);
 
-			if ((key2 == 0x01) && debounce == 0) {
-				debounce = 1;
-			} else if ((key2 == 0x00) && debounce == 1){
-				debounce = 0;
+			if ((keyInput == 0x04) && (edgeDetect == 0)) {
+				edgeDetect = 1;
+			} else if ((keyInput != 0x04) && (edgeDetect == 1)) {
+				edgeDetect = 0;
 				createBullet(PLAYERBULLET);
 			}
 
@@ -86,13 +84,12 @@ int main() {
 				moveAllBullets();
 			}
 
-			if (keyInput == 0x02) {
-				printf("Key 0");
+			if (keyInput == 0x01) {
 				moveUpPlayer();
-			}
-			if (keyInput == 0x04) {
-				printf("Key 1");
+			} else if (keyInput == 0x02) {
 				moveDownPlayer();
+			} else {
+				drawPlayer();
 			}
 
 			drawAllBullets();
@@ -102,6 +99,7 @@ int main() {
 
 			eraseShark(shark1);
 			eraseAllBullets();
+			erasePlayer();
 		}
 	}
 
