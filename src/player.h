@@ -15,11 +15,12 @@ typedef struct {
 	int y;
 } Player;
 
-Player *player;
+Player player;
 
-void drawPlayer(Player *player);
-void erasePlayer(Player *player);
-void moveUp(Player *player);
-void moveDown(Player *player);
+void initPlayer();
+void drawPlayer();
+void erasePlayer();
+void moveUpPlayer();
+void moveDownPlayer();
 
 #endif

@@ -58,7 +58,7 @@ BMP* parseBmp (char *fileName) {
 }
 
 void parseBmps() {
-	splashBmp = parseBmp("splash.bmp");
+	//splashBmp = parseBmp("splash.bmp");
 	sharkBmp = parseBmp("shark.bmp");
 	//parseBmp("player.bmp");
 }

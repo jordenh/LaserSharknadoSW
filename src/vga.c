@@ -34,15 +34,15 @@ void drawLine(int x0, int y0, int x1, int y1, int color)
 {
 	if (y0 == y1)
 	{
-		alt_up_pixel_buffer_dma_draw_hline(pixel_buffer, x0, x1, y0, color, 0);
+		alt_up_pixel_buffer_dma_draw_hline(pixel_buffer, x0, x1, y0, color, 1);
 	}
 	else if (x0 == x1)
 	{
-		alt_up_pixel_buffer_dma_draw_hline(pixel_buffer, x0, y0, y1, color, 0);
+		alt_up_pixel_buffer_dma_draw_hline(pixel_buffer, x0, y0, y1, color, 1);
 	}
 	else
 	{
-		alt_up_pixel_buffer_dma_draw_line(pixel_buffer, x0, y0, x1, y1, color, 0);
+		alt_up_pixel_buffer_dma_draw_line(pixel_buffer, x0, y0, x1, y1, color, 1);
 	}
 }
 

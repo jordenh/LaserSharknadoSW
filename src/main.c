@@ -79,45 +79,29 @@ int main() {
 				debounce = 1;
 			} else if ((key2 == 0x00) && debounce == 1){
 				debounce = 0;
-
-				int index = 0;
-				while (index < NUM_BULLETS)
-				{
-					if (bulletArray[index].status == NOTACTIVE)
-					{
-						bulletArray[index].x = player->x + PLAYER_WIDTH + 1;
-						bulletArray[index].y = player->y + 0.5*PLAYER_HEIGHT;
-						bulletArray[index].status = PLAYERBULLET;
-						drawBullet(&bulletArray[index]);
-						break;
-					}
-					index++;
-				}
-
-				playLaser();
+				createBullet(PLAYERBULLET);
 			}
 
 			if (count%2 == 0) {
-				for (i = 0; i < NUM_BULLETS; i++) {
-					if (bulletArray[i].status != NOTACTIVE) {
-						moveRight(&bulletArray[i]);
-					}
-				}
+				moveAllBullets();
 			}
 
 			if (keyInput == 0x02) {
 				printf("Key 0");
-				moveUp(player);
+				moveUpPlayer();
 			}
 			if (keyInput == 0x04) {
 				printf("Key 1");
-				moveDown(player);
+				moveDownPlayer();
 			}
+
+			drawAllBullets();
 
 			alt_up_pixel_buffer_dma_swap_buffers(pixel_buffer);
 			while(alt_up_pixel_buffer_dma_check_swap_buffers_status(pixel_buffer));
 
 			eraseShark(shark1);
+			eraseAllBullets();
 		}
 	}
 
