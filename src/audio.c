@@ -29,24 +29,13 @@ int DEBUG = 0;
 int toneLength = 122;
 unsigned int tone[122];
 
-volatile unsigned int *playCursor;
 volatile short int status;
+volatile short int loaded;
 
-unsigned int *laserBuffer;
-unsigned int laserBufferLength;
-unsigned int laserFileWordLength;
-
-unsigned int *playerDeathBuffer;
-unsigned int playerDeathBufferLength;
-unsigned int playerDeathFileWordLength;
-
-unsigned int *sharkDeathBuffer;
-unsigned int sharkDeathBufferLength;
-unsigned int sharkDeathFileWordLength;
-
-unsigned int *themeBuffer;
-unsigned int themeBufferLength;
-unsigned int themeFileWordLength;
+volatile unsigned int *playCursor;
+static unsigned int *audioBuffer;
+unsigned int audioFileWordLength;
+unsigned int playedWords;
 
 volatile int somethingForIrq;
 
@@ -55,6 +44,10 @@ int getActiveBufferLength(void);
 int getActiveFileWordLength(void);
 int setupAudioInterrupt(alt_up_audio_dev *audio, volatile int somethingForIrq);
 void playAudio(unsigned int *leftBuffer, int leftLength, unsigned int *rightBuffer, int rightLength);
+void loadLaser(void);
+void loadPlayerDeath(void);
+void loadSharkDeath(void);
+void loadTheme(void);
 
 void setupAudio()
 {
@@ -74,13 +67,6 @@ void setupAudio()
 	} else if (DEBUG == 1) {
 		printf("Successfully opened audio codec.\n");
 	}
-
-	int amp = 10000000;
-	//printf("Amp is %d\n", amp);
-	int i;
-	for (i = 0; i < toneLength; i++) {
-		tone[i] = amp * sin((float)i * 3.141592 / 122.0);//* (PI / 8.0));
-    }
     int interruptStatus = setupAudioInterrupt(audio, somethingForIrq);
 
     if (interruptStatus < 0) {
@@ -90,20 +76,7 @@ void setupAudio()
 		printf("Successfully setup audio interrupts.\n");
 	}
 
-	laserFileWordLength = 38384;
-	printf("File Length is: %x\n", laserFileWordLength);
-	unsigned int **ptrToLaserBuffer = &laserBuffer;
-	readWavFile("laserii.wav", laserFileWordLength, ptrToLaserBuffer);
-
-	// Need to setup playerDeathSound
-	//playerDeathFileWordLength = 0x0000DAFF/ 2;
-	//unsigned int **ptrToPlayerDeathBuffer = &playerDeathBuffer; // initialize other buffers yo?
-	//readWavFile("pdie.wav", playerDeathFileWordLength, ptrToPlayerDeathBuffer);
-
-	// Need to setup sharkDeathSound
-	//sharkDeathFileWordLength = 0x00006FFF / 2;
-	//unsigned int **ptrToSharkDeathBuffer = &sharkDeathBuffer;
-	//readWavFile("sdie.wav", sharkDeathFileWordLength, ptrToSharkDeathBuffer);
+    loadLaser();
 
 	//themeFileWordLength = 0x00063E00 / 2;
 	//unsigned int **ptrToThemeBuffer = &themeBuffer;
@@ -132,12 +105,45 @@ int setupAudioInterrupt(alt_up_audio_dev *audio, volatile int somethingForIrq)
 	#endif
 }
 
+void loadLaser() {
+	if (loaded != LASER) {
+		audioFileWordLength = 38384;
+		printf("File Length is: %x\n", audioFileWordLength);
+		readWavFile("laserii.wav", audioFileWordLength);
+		loaded = LASER;
+	}
+}
+
+void loadPlayerDeath() {
+	if (loaded != PLAYER_DEATH) {
+		audioFileWordLength = 0x0000DAFF / 2;
+		readWavFile("pdie.wav", audioFileWordLength);
+		loaded = PLAYER_DEATH;
+	}
+}
+
+void loadSharkDeath() {
+	if (loaded != SHARK_DEATH) {
+		audioFileWordLength = 0x0000DAFF / 2;
+		readWavFile("sdie.wav", audioFileWordLength);
+		loaded = SHARK_DEATH;
+	}
+}
+
+void loadTheme() {
+	if (loaded != THEME) {
+		audioFileWordLength = 0x00063E00 / 2;
+		readWavFile("theme.wav", audioFileWordLength);
+		loaded = THEME;
+	}
+}
+
 void playAudioMono(int length) {
 	if (DEBUG == 1) {
 		printf("Playing audio.\n");
 	}
-	int left = alt_up_audio_write_fifo(audio, laserBuffer, length, ALT_UP_AUDIO_LEFT);
-	int right = alt_up_audio_write_fifo(audio, laserBuffer, length, ALT_UP_AUDIO_RIGHT);
+	int left = alt_up_audio_write_fifo(audio, (unsigned int *)playCursor, length, ALT_UP_AUDIO_LEFT);
+	int right = alt_up_audio_write_fifo(audio, (unsigned int *)playCursor, length, ALT_UP_AUDIO_RIGHT);
 	left++;
 	right++;
 	//playAudio(buffer, length, buffer, length);
@@ -187,34 +193,12 @@ void audioTest()
 	}
 }
 
-void testTone(void)
-{
-	unsigned int *toneBuffer = tone;
-	//int toneLen = 360;
-	int free, len;
-	int wrap = 0;
-
-	for (;;) {
-		free = alt_up_audio_write_fifo_space(audio, ALT_UP_AUDIO_RIGHT);
-		if (free > 1) {
-			if ((int)toneBuffer + free >= toneLength) {
-				// Wrap around
-				len = toneLength - free;
-				wrap = 1;
-			} else {
-				len = free;
-				wrap = 0;
-			}
-			playAudio(toneBuffer, len, toneBuffer, len);
-			toneBuffer = wrap == 1 ? tone : toneBuffer + len;
-		}
+void readWavFile(char *wavFileName, unsigned int fileWordLength) {
+	if (audioBuffer != NULL) {
+		free(audioBuffer);
 	}
-}
-
-void readWavFile(char *wavFileName, unsigned int fileWordLength, unsigned int **buffer) {
-	unsigned int *tempBuffer = malloc(fileWordLength * 2);
-	printf("size of tempBuffer %x", tempBuffer);
-	if (tempBuffer == NULL) {
+	audioBuffer = malloc(sizeof(unsigned int) * fileWordLength);
+	if (audioBuffer == NULL) {
 		printf("Error: insufficient memory to load audio file into memory.\n");
 	}
 
@@ -226,46 +210,55 @@ void readWavFile(char *wavFileName, unsigned int fileWordLength, unsigned int **
 
 	readPastWavHeader(fileHandle);
 
-	unsigned int i = 0;
+	unsigned int i;
 	unsigned int word = readWord(fileHandle);
-	printf("first word is %x\n", word);
-	while (i < fileWordLength) {
-		tempBuffer[i++] = word;
+	//printf("first word is %x\n", word);
+	for (i = 0; i < fileWordLength; i++) {
+		audioBuffer[i] = word;
 		word = readWord(fileHandle);
+		//printf("0x%x ", (int)word > 0 ? word : -1 * word);
 	}
-	printf("reached EOF\n");
+	//printf("reached EOF\n");
 
 	closeFile(fileHandle);
-	(*buffer) = tempBuffer;
 	return;
 }
 
+int i;
 // Plays laser once, using interrupts
 void playLaser(void) {
 	if (DEBUG == 1) {
 		printf("Playing laser via interrupt.\n");
 	}
-
+	i = 0;
+	loadLaser();
 	status = LASER;
-	playCursor = laserBuffer;
+	playCursor = audioBuffer;
+	playedWords = 0;
 	alt_up_audio_enable_write_interrupt(audio);
 }
 
 void playPlayerDeath(void) {
+	loadPlayerDeath();
 	status = PLAYER_DEATH;
-	playCursor = playerDeathBuffer;
+	playCursor = audioBuffer;
+	playedWords = 0;
 	alt_up_audio_enable_write_interrupt(audio);
 }
 
 void playSharkDeath(void) {
+	loadSharkDeath();
 	status = SHARK_DEATH;
-	playCursor = sharkDeathBuffer;
+	playCursor = audioBuffer;
+	playedWords = 0;
 	alt_up_audio_enable_write_interrupt(audio);
 }
 
 void playTheme(void) {
+	loadTheme();
 	status = THEME;
-	playCursor = themeBuffer;
+	playCursor = audioBuffer;
+	playedWords = 0;
 	alt_up_audio_enable_write_interrupt(audio);
 }
 
@@ -274,86 +267,29 @@ static void playSoundISR(void* isr_context) {
 #else
 static void playSoundISR(void* isr_context, alt_u32 id) {
 #endif
-	if (DEBUG == 1) {
-		printf("Entering playSoundISR.\n");
-	}
 	if (status == NONE) {
+		alt_up_audio_disable_write_interrupt(audio);
 		return;
 	}
 	int len;
-	unsigned int free = alt_up_audio_write_fifo_space(audio, ALT_UP_AUDIO_RIGHT);
-	if (free > 1) {
-		int activeFileWordLength = getActiveFileWordLength();
-		unsigned int **ptrToActiveBuffer = getActiveBuffer();
-		unsigned int *activeBuffer = *ptrToActiveBuffer;
-		activeBuffer = laserBuffer;
-		if (activeBuffer != laserBuffer &&
-			activeBuffer != playerDeathBuffer &&
-			activeBuffer != sharkDeathBuffer &&
-			activeBuffer != themeBuffer) {
-			printf("Error: invalid buffer state.\n");
-		}
-		if (activeFileWordLength == FAIL ||
-				ptrToActiveBuffer == 0) {
-			printf("Error: invalid audio state.\n");
-		}
-		if ((int)playCursor + free >= (int)(activeBuffer) + (2 * activeFileWordLength)) {
+	unsigned int free = alt_up_audio_write_fifo_space(audio, ALT_UP_AUDIO_LEFT);
+	unsigned end = (unsigned)(audioBuffer) + (2 * audioFileWordLength);
+	if (free >= 1) {
+		if (((int)playCursor + free >= end) ||
+			 (playedWords + free) >= audioFileWordLength) {
 			// Last chunk to play
-			len = activeFileWordLength - free;
+			len = end - (int)playCursor;
 			alt_up_audio_disable_write_interrupt(audio);
-			status = NONE;
-			if (DEBUG == 1) {
-				printf("done playing audio.\n");
-			}
 		} else {
 			len = free;
 		}
+		len = len > free ? free : len;
 		playAudioMono(len);
+		playedWords += len;
 		playCursor += len;
-		if (status == NONE) {
-			playCursor = NULL;
-		}
+	} else {
+		// Interrupt should not be triggered if there is no space
+		alt_up_audio_disable_write_interrupt(audio);
 	}
-}
-
-unsigned int **getActiveBuffer(void) {
-	switch(status) {
-	case LASER:
-		return (unsigned int **)(&laserBuffer);
-	case PLAYER_DEATH:
-		return (unsigned int **)(&playerDeathBuffer);
-	case SHARK_DEATH:
-		return (unsigned int **)(&sharkDeathBuffer);
-	case THEME:
-		return (unsigned int **)(&sharkDeathBuffer);
-	}
-	return (unsigned int **)0;
-}
-
-int getActiveBufferLength(void) {
-	switch(status) {
-	case LASER:
-		return (int)laserBufferLength;
-	case PLAYER_DEATH:
-		return (int)playerDeathBufferLength;
-	case SHARK_DEATH:
-		return (int)(sharkDeathBufferLength);
-	case THEME:
-		return (int)(themeBufferLength);
-	}
-	return FAIL;
-}
-
-int getActiveFileWordLength(void) {
-	switch(status) {
-	case LASER:
-		return laserFileWordLength;
-	case PLAYER_DEATH:
-		return playerDeathFileWordLength;
-	case SHARK_DEATH:
-		return sharkDeathFileWordLength;
-	case THEME:
-		return themeFileWordLength;
-	}
-	return FAIL;
+	i++;
 }

@@ -93,9 +93,11 @@ int main() {
 	char SWInput;
 	char scoreInitials[4];// = malloc(sizeof(char) * NUMINITIALS);
 	scoreInitials[3] = '\0';
+	short int scoresShown = 0;
 	printf("scoreInitials got addr: %x\n", scoreInitials);
 	char keyInput;
 	char key2;
+
 	char atariButtons;
 	char atariUp;
 	char atariDown;
@@ -144,6 +146,7 @@ int main() {
 				}
 
 				playLaser();
+				//playTheme();
 			}
 
 			if (count % 2 == 0) {
@@ -164,13 +167,20 @@ int main() {
 				moveDown(&player);
 			}
 			if ((SWInput & 0x80) != 0) {
-				for(i = 0; i < NUMSCORES; i++) {
-					scoreInitials[0] = gameScores.highScoreBoardInits[i][0];
-					scoreInitials[2] = gameScores.highScoreBoardInits[i][2];
-					scoreInitials[2] = gameScores.highScoreBoardInits[i][2];
-					printf("scoreInitials are: %s", scoreInitials);
-					alt_up_char_buffer_string(char_buffer,scoreInitials , 40, 30 + i*5);
+				if(scoresShown == 0){
+					for(i = 0; i < NUMSCORES; i++) {
+						scoreInitials[0] = gameScores.highScoreBoardInits[i][0];
+						scoreInitials[1] = gameScores.highScoreBoardInits[i][1];
+						scoreInitials[2] = gameScores.highScoreBoardInits[i][2];
+						alt_up_char_buffer_string(char_buffer,scoreInitials , 40, 30 + i);
+					}
 				}
+				scoresShown = 1;
+			} else {
+				if(scoresShown == 1){
+					alt_up_char_buffer_clear(char_buffer);
+				}
+				scoresShown = 0;
 			}
 
 		}
