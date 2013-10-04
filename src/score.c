@@ -4,19 +4,20 @@
 
 char * scoreFileName = "scores.txt";
 
-void initScoreBoard(struct scores gameScores) {
-	gameScores.currentPlayerScore = 0;
+void initScoreBoard(struct scores * gameScores) {
+	gameScores->currentPlayerScore = 0;
 	int i;
 	for (i = 0; i < NUMSCORES; i++){
-		gameScores.highScoreBoardInits[i] = malloc(sizeof(char) * 3);
-		if(gameScores.highScoreBoardInits[i] == NULL) {
+		//gameScores.highScoreBoardInits[i] = malloc(sizeof(char) * 3);
+		//printf("size of gameScore: %x, at %x",(sizeof(char) * 3), (unsigned int)gameScores.highScoreBoardInits[i]);
+		if(gameScores->highScoreBoardInits[i] == NULL) {
 			printf("Error in mallocing scoreboard Initials space. \n");
 		}
 	}
 	getHighScoreBoard(gameScores);
 }
 
-void getHighScoreBoard(struct scores gameScores) {
+void getHighScoreBoard(struct scores * gameScores) {
 	short int fileHandle = openFile(scoreFileName);
 	if (fileHandle == -1) {
 		printf("Error opening %s\n", scoreFileName);
@@ -31,7 +32,7 @@ void getHighScoreBoard(struct scores gameScores) {
 	for(i = 0; i < NUMSCORES; i++) {
 		for(j = 0; j < NUMINITIALS; j++){
 			readValue = readByte(fileHandle);
-			gameScores.highScoreBoardInits[i][j] = readValue;
+			gameScores->highScoreBoardInits[i][j] = readValue;
 		}
 		readValue = readByte(fileHandle);
 		/*
@@ -55,29 +56,36 @@ void getHighScoreBoard(struct scores gameScores) {
 		for(k = 0; k < numDigits; k++) {
 			currentScore += (scoreBuffer[k] - '0') * pow(10,(numDigits - 1 - k));
 		}
-		gameScores.highScoreBoard[i] = currentScore;
+		gameScores->highScoreBoard[i] = currentScore;
 
 		//printf("score: %d\n", currentScore);
 	}
-
+	for(i = 0; i < NUMSCORES; i++){
+		printf("test: %c%c%c\n", gameScores->highScoreBoardInits[i][0],gameScores->highScoreBoardInits[i][1],gameScores->highScoreBoardInits[i][2]);
+		printf("score: %d\n", gameScores->highScoreBoard[i]);
+	}
 	closeFile(fileHandle);
 	return;
 }
 
-void updateHighScoreBoard(struct scores gameScores) {
+void updateHighScoreBoard(struct scores * gameScores) {
 	int playerScore = getCurrentPlayerScore(gameScores);
 	unsigned short i;
 	for(i = 0; i < NUMSCORES; i++) {
-		if(playerScore > gameScores.highScoreBoard[i]) {
-
+		if(playerScore > gameScores->highScoreBoard[i]) {
+			break; // current index needs to be replaced by
 		}
 	}
+	//if i == NUMSCORES{
+	//write 0 - index as was previously, then write current high score, then write index-1 downto 1.
+	//} else
+	//return, since file is as updated as need be.
 }
 
-void updateCurrentPlayerScore(int deltaScore, struct scores gameScores) {
+void updateCurrentPlayerScore(int deltaScore, struct scores * gameScores) {
 
 }
 
-int getCurrentPlayerScore(struct scores gameScores) {
+int getCurrentPlayerScore(struct scores * gameScores) {
 	return -1;
 }

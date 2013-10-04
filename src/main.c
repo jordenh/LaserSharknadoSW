@@ -35,7 +35,7 @@
 #define keys (volatile char *) 0x1001080
 #define atariInput (volatile char *) 0x10010b0
 
-int init(struct scores gameScores) {
+int init(struct scores * gameScores) {
 	if (openSdCard() == -1) {
 		printf("Error: Failed to open sd card\n");
 		return -1;
@@ -62,32 +62,45 @@ int init(struct scores gameScores) {
 int main() {
 	struct scores gameScores;
 
-	if (init(gameScores) == -1)
+	if (init(&gameScores) == -1)
 		return -1;
 
+
+
 	// Initialize the player
-	Player *player; // = malloc(sizeof(Player));
-	player->x = 10;
-	player->y = 90;
-	drawPlayer(player);
+	Player player;
+	player.x = 10;
+	player.y = 90;
+	drawPlayer(&player);
 
 	// initialize array of bullets
-	Bullet *bulletArray;
-	bulletArray = malloc(NUM_BULLETS * sizeof(Bullet));
+	Bullet bulletArray[NUM_BULLETS];
+	//bulletArray = malloc(NUM_BULLETS * sizeof(Bullet));
+	//printf("size of bulletArray %x, at %x", (NUM_BULLETS * sizeof(Bullet)), (unsigned int)bulletArray);
 
 	int i = 0;
 	for (i = 0; i < NUM_BULLETS; i++) {
 		bulletArray[i].status = NOTACTIVE;
 	}
 
+	for(i = 0; i < NUMSCORES; i++){
+				printf("test: %c%c%c\n", gameScores.highScoreBoardInits[i][0],gameScores.highScoreBoardInits[i][1],gameScores.highScoreBoardInits[i][2]);
+				printf("score: %d\n", gameScores.highScoreBoard[i]);
+			}
+
 	int count = 0;
 	short int debounce = 0;
+	char SWInput;
+	char scoreInitials[4];// = malloc(sizeof(char) * NUMINITIALS);
+	scoreInitials[3] = '\0';
+	printf("scoreInitials got addr: %x\n", scoreInitials);
 	char keyInput;
 	char key2;
 	char atariButtons;
 	char atariUp;
 	char atariDown;
 	char atariFire;
+	int j,k;
 
 	setHardwareTimerPeriod(CLOCK_FREQ / 30);
 	startHardwareTimer();
@@ -101,6 +114,7 @@ int main() {
 				printf("%i: Timer has expired\n", count / 30);
 			}
 
+			SWInput = IORD_8DIRECT(switches, 0);
 			keyInput = IORD_8DIRECT(keys, 0);
 			key2 = keyInput / 4;
 			key2 = keyInput & 0x0001;
@@ -120,8 +134,8 @@ int main() {
 				int index = 0;
 				while (index < NUM_BULLETS) {
 					if (bulletArray[index].status == NOTACTIVE) {
-						bulletArray[index].x = player->x + PLAYER_WIDTH + 1;
-						bulletArray[index].y = player->y + 0.5 * PLAYER_HEIGHT;
+						bulletArray[index].x = player.x + PLAYER_WIDTH + 1;
+						bulletArray[index].y = player.y + 0.5 * PLAYER_HEIGHT;
 						bulletArray[index].status = PLAYERBULLET;
 						drawBullet(&bulletArray[index]);
 						break;
@@ -143,12 +157,22 @@ int main() {
 
 			if (atariUp != 0x00) {
 				//printf("Key 0");
-				moveUp(player);
+				moveUp(&player);
 			}
 			if (atariDown != 0x00) {
 				//printf("Key 1");
-				moveDown(player);
+				moveDown(&player);
 			}
+			if ((SWInput & 0x80) != 0) {
+				for(i = 0; i < NUMSCORES; i++) {
+					scoreInitials[0] = gameScores.highScoreBoardInits[i][0];
+					scoreInitials[2] = gameScores.highScoreBoardInits[i][2];
+					scoreInitials[2] = gameScores.highScoreBoardInits[i][2];
+					printf("scoreInitials are: %s", scoreInitials);
+					alt_up_char_buffer_string(char_buffer,scoreInitials , 40, 30 + i*5);
+				}
+			}
+
 		}
 	}
 

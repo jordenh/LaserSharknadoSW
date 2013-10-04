@@ -11,6 +11,20 @@
 #define NUMSCORES 10
 #define NUMINITIALS 3
 
+
+
+#include "lcd.h"
+#include "audio.h"
+#include "timer.h"
+#include "sd_card.h"
+#include "vga.h"
+#include "bmp.h"
+#include "io.h"
+#include "altera_nios2_qsys_irq.h"
+#include "sys/alt_irq.h"
+#include "displacement.h"
+#include "collision.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -21,16 +35,17 @@
 struct scores {
 	int currentPlayerScore;
 	int highScoreBoard[10];
-	unsigned char * highScoreBoardInits[10];
+	//unsigned char * highScoreBoardInits[10];
+	unsigned char highScoreBoardInits[10][3];
 };
 
-void initScoreBoard(struct scores gameScores);
+void initScoreBoard(struct scores * gameScores);
 
-void getHighScoreBoard(struct scores gameScores);
-void updateHighScoreBoard(struct scores gameScores);
+void getHighScoreBoard(struct scores * gameScores);
+void updateHighScoreBoard(struct scores * gameScores);
 
-void updateCurrentPlayerScore(int deltaScore, struct scores gameScores);
-int getCurrentPlayerScore(struct scores gameScores);
+void updateCurrentPlayerScore(int deltaScore, struct scores * gameScores);
+int getCurrentPlayerScore(struct scores * gameScores);
 
 
 #endif /* SCORE_H_ */

@@ -213,6 +213,7 @@ void testTone(void)
 
 void readWavFile(char *wavFileName, unsigned int fileWordLength, unsigned int **buffer) {
 	unsigned int *tempBuffer = malloc(fileWordLength * 2);
+	printf("size of tempBuffer %x", tempBuffer);
 	if (tempBuffer == NULL) {
 		printf("Error: insufficient memory to load audio file into memory.\n");
 	}
