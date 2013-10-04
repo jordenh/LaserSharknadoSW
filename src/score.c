@@ -2,19 +2,22 @@
 
 #include "score.h"
 
-struct scores gameScores;
-static char * scoreFileName = "scores.txt";
 
-void initScoreBoard(void) {
+char * scoreFileName = "scores.txt";
+
+void initScoreBoard(struct scores gameScores) {
 	gameScores.currentPlayerScore = 0;
 	int i;
 	for (i = 0; i < NUMSCORES; i++){
 		gameScores.highScoreBoardInits[i] = malloc(sizeof(char) * 3);
+		if(gameScores.highScoreBoardInits[i] == NULL) {
+			printf("Error in mallocing scoreboard Initials space. \n");
+		}
 	}
-	getHighScoreBoard();
+	getHighScoreBoard(gameScores);
 }
 
-void getHighScoreBoard(void) {
+void getHighScoreBoard(struct scores gameScores) {
 	short int fileHandle = openFile(scoreFileName);
 	if (fileHandle == -1) {
 		printf("Error opening %s\n", scoreFileName);
@@ -59,11 +62,11 @@ void getHighScoreBoard(void) {
 	}
 
 	closeFile(fileHandle);
+	return;
 }
 
-void updateHighScoreBoard(void) {
-	int maxScore = -1;
-	int playerScore = getCurrentPlayerScore();
+void updateHighScoreBoard(struct scores gameScores) {
+	int playerScore = getCurrentPlayerScore(gameScores);
 	unsigned short i;
 	for(i = 0; i < NUMSCORES; i++) {
 		if(playerScore > gameScores.highScoreBoard[i]) {
@@ -72,10 +75,10 @@ void updateHighScoreBoard(void) {
 	}
 }
 
-void updateCurrentPlayerScore(int deltaScore) {
+void updateCurrentPlayerScore(int deltaScore, struct scores gameScores) {
 
 }
 
-int getCurrentPlayerScore(void) {
-
+int getCurrentPlayerScore(struct scores gameScores) {
+	return -1;
 }

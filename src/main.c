@@ -35,7 +35,7 @@
 #define keys (volatile char *) 0x1001080
 #define atariInput (volatile char *) 0x10010b0
 
-int init() {
+int init(struct scores gameScores) {
 	if (openSdCard() == -1) {
 		printf("Error: Failed to open sd card\n");
 		return -1;
@@ -53,18 +53,20 @@ int init() {
 	initVga();
 	setupAudio();
 	setupDisplacement();
-	//initScoreBoard();
+	initScoreBoard(gameScores);
 
 
 	return 0;
 }
 
 int main() {
-	if (init() == -1)
+	struct scores gameScores;
+
+	if (init(gameScores) == -1)
 		return -1;
 
 	// Initialize the player
-	Player *player;
+	Player *player; // = malloc(sizeof(Player));
 	player->x = 10;
 	player->y = 90;
 	drawPlayer(player);

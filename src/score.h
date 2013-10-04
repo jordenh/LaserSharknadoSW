@@ -10,6 +10,7 @@
 
 #define NUMSCORES 10
 #define NUMINITIALS 3
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -23,13 +24,13 @@ struct scores {
 	unsigned char * highScoreBoardInits[10];
 };
 
-void initScoreBoard(void);
+void initScoreBoard(struct scores gameScores);
 
-void getHighScoreBoard(void);
-void updateHighScoreBoard(void);
+void getHighScoreBoard(struct scores gameScores);
+void updateHighScoreBoard(struct scores gameScores);
 
-void updateCurrentPlayerScore(int deltaScore);
-int getCurrentPlayerScore(void);
+void updateCurrentPlayerScore(int deltaScore, struct scores gameScores);
+int getCurrentPlayerScore(struct scores gameScores);
 
 
 #endif /* SCORE_H_ */
@@ -39,3 +40,4 @@ int getCurrentPlayerScore(void);
  * 3Initials score1 3Initials score2 3Initials score3 .... 3Initials score10
  *
  */
+
