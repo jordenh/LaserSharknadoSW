@@ -28,6 +28,7 @@
 #include "sys/alt_irq.h"
 #include "displacement.h"
 #include "collision.h"
+#include "score.h"
 
 #define switches (volatile char *) 0x1001060
 #define leds (char *) 0x1001070
@@ -52,6 +53,8 @@ int init() {
 	initVga();
 	setupAudio();
 	setupDisplacement();
+	//initScoreBoard();
+
 
 	return 0;
 }
