@@ -8,12 +8,12 @@ void drawShark(Shark *shark,int x, int y) {
 }
 
 void eraseShark(Shark *shark){
-	eraseBmp(sharkBmp, shark->x, shark->y);
+	eraseBmp(sharkBmp, shark->prevX, shark->prevY);
 }
 
 void moveShark(Shark *shark, int x, int y) {
-	eraseShark(shark);
-
+	shark->prevX = shark->x;
+	shark->prevY = shark->y;
 	shark->x = x;
 	shark->y = y;
 	drawBmp(sharkBmp, x, y);

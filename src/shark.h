@@ -7,8 +7,8 @@
 #define SHARK_HEIGHT 20
 
 typedef struct {
-	int x;
-	int y;
+	int x, prevX;
+	int y, prevY;
 } Shark;
 
 void drawShark(Shark *shark, int x, int y);

@@ -38,6 +38,7 @@ int init() {
 	setupDisplacement();
 	parseBmps();
 	initBullets();
+	initPlayer();
 
 	setHardwareTimerPeriod(CLOCK_FREQ/30);
 	return 0;
@@ -50,7 +51,6 @@ int main() {
 	char key2;
 	int i;
 	int position = 0;
-
 
 	if(init() == -1)
 		return -1;
@@ -69,7 +69,7 @@ int main() {
 			if (count%30 == 0)
 				printf("%i: Timer has expired\n", count/30);
 
-			moveShark(shark1, 100, ++position);
+			moveShark(shark1, 100, position++);
 
 			keyInput = IORD_8DIRECT(keys, 0);
 			key2 = keyInput/4;
@@ -113,6 +113,11 @@ int main() {
 				printf("Key 1");
 				moveDown(player);
 			}
+
+			alt_up_pixel_buffer_dma_swap_buffers(pixel_buffer);
+			while(alt_up_pixel_buffer_dma_check_swap_buffers_status(pixel_buffer));
+
+			eraseShark(shark1);
 		}
 	}
 

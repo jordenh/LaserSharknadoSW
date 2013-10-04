@@ -75,7 +75,7 @@ void drawBmp (BMP *bmp, int x, int y) {
 	for(i = 0; i < bmp->infoheader.height; i++) {
 		for(j = 0; j < bmp->infoheader.width; j++){
 			color = ((bmp->rgb + i*bmp->infoheader.width +j)->r << 11) | ((bmp->rgb + i*bmp->infoheader.width +j)->g << 5) | (bmp->rgb + i*bmp->infoheader.width +j)->b;
-			drawLine(x + j, y + i, x + j, y + i, color);
+			drawPixel(x + j, y + i, color);
 		}
 	}
 }
@@ -85,7 +85,7 @@ void eraseBmp (BMP *bmp, int x, int y) {
 
 	for(i = 0; i < bmp->infoheader.height; i++) {
 			for(j = 0; j < bmp->infoheader.width; j++){
-				drawLine(x + j, y + i, x + j, y + i, 0);
+				drawPixel(x + j, y + i, 0);
 			}
 	}
 }
