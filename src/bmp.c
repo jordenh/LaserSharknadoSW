@@ -1,10 +1,9 @@
 #include "bmp.h"
 
-BMP* parseBmp (char *fileName) {
+void parseBmp (char *fileName, BMP *bmp) {
 	int i, j, k;
 	int pixels, rowOffset, offset;
 	short int fh;
-	BMP *bmp;
 
 	fh = openFile(fileName);
 
@@ -38,6 +37,12 @@ BMP* parseBmp (char *fileName) {
 			(bmp->rgb + offset)->b = (readByte(fh) & 0xF1) >> 3;
 			(bmp->rgb + offset)->g = (readByte(fh) & 0xFC) >> 2;
 			(bmp->rgb + offset)->r = (readByte(fh) & 0xF1) >> 3;
+
+			//Filter out the pink pixels
+			if (((bmp->rgb + offset)->b == 0x1E) && ((bmp->rgb + offset)->g == 0) && ((bmp->rgb + offset)->r == 0x1E)) {
+				(bmp->rgb + offset)->b = 0x0;
+				(bmp->rgb + offset)->r = 0x0;
+			}
 		}
 
 		if((BYTES_PER_PIXEL*bmp->infoheader.width) % 4 != 0) {
@@ -48,21 +53,46 @@ BMP* parseBmp (char *fileName) {
 	}
 
 	closeFile(fh);
-
-	return bmp;
 }
 
-int drawBmp (char *fileName, int x, int y) {
+void parseBmps() {
+	splashBmp = malloc(sizeof(BMP));
+	sharkBmp = malloc(sizeof(BMP));
+	playerBmp = malloc(sizeof(BMP));
+
+	//parseBmp("splash.bmp", splashBmp);
+	parseBmp("shark.bmp", sharkBmp);
+	parseBmp("player.bmp", playerBmp);
+}
+
+void freeBmps(){
+	free(splashBmp->rgb);
+	free(playerBmp->rgb);
+	free(sharkBmp->rgb);
+
+	free(splashBmp);
+	free(sharkBmp);
+	free(playerBmp);
+}
+
+void drawBmp (BMP *bmp, int x, int y) {
 	int i,j;
 	int color;
-	BMP *bmp = parseBmp(fileName);
 
 	for(i = 0; i < bmp->infoheader.height; i++) {
 		for(j = 0; j < bmp->infoheader.width; j++){
 			color = ((bmp->rgb + i*bmp->infoheader.width +j)->r << 11) | ((bmp->rgb + i*bmp->infoheader.width +j)->g << 5) | (bmp->rgb + i*bmp->infoheader.width +j)->b;
-			drawLine(x + j, y + i, x + j, y + i, color);
+			drawPixel(x + j, y + i, color);
 		}
 	}
+}
 
-	return 0;
+void eraseBmp (BMP *bmp, int x, int y) {
+	int i, j;
+
+	for(i = 0; i < bmp->infoheader.height; i++) {
+			for(j = 0; j < bmp->infoheader.width; j++){
+				drawPixel(x + j, y + i, 0);
+			}
+	}
 }
