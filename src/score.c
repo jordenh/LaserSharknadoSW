@@ -27,7 +27,7 @@ void getHighScoreBoard(struct scores * gameScores) {
 	char readValue;
 	int currentScore;
 	int numDigits;
-	int scoreBuffer[10] = {0,0,0,0,0,0,0,0,0,0};
+	int scoreBuffer[MAXSCOREDIGITS];
 	int i,j,k;
 	for(i = 0; i < NUMSCORES; i++) {
 		for(j = 0; j < NUMINITIALS; j++){
@@ -42,8 +42,8 @@ void getHighScoreBoard(struct scores * gameScores) {
 		 */
 		//printf("test: %c%c%c\n", gameScores.highScoreBoardInits[i][0],gameScores.highScoreBoardInits[i][1],gameScores.highScoreBoardInits[i][2]);
 
-		for(k = 0; k < 10; k++){
-			scoreBuffer[k] = 0;
+		for(k = 0; k < MAXSCOREDIGITS; k++){
+			scoreBuffer[k] = -1;
 		}
 		k = 0;
 		numDigits = 0;
@@ -70,12 +70,48 @@ void getHighScoreBoard(struct scores * gameScores) {
 
 void updateHighScoreBoard(struct scores * gameScores) {
 	int playerScore = getCurrentPlayerScore(gameScores);
-	unsigned short i;
+	unsigned short i,j,k;
+	unsigned short scoreReplaceIndex;
+	unsigned short firstDigitFound;
+	unsigned short digit;
+	short int fileHandle = openFile(scoreFileName);
+	if (fileHandle == -1) {
+		printf("Error opening %s\n", scoreFileName);
+		return;
+	}
+
 	for(i = 0; i < NUMSCORES; i++) {
 		if(playerScore > gameScores->highScoreBoard[i]) {
+			scoreReplaceIndex = i;
 			break; // current index needs to be replaced by
 		}
 	}
+	//if(i != NUMSCORE){
+	// THIS SECTION CURRENTLY WRITES EXACTLY WHAT IS IN THE gameScores back into the file!
+	//needs to be modded to incorperate new score value!
+	if(1){
+		for(i = 0; i < NUMSCORES; i++) {
+			for(j = 0; j < NUMINITIALS; j++){
+				alt_up_sd_card_write(fileHandle, gameScores->highScoreBoardInits[i][j]);
+			}
+			alt_up_sd_card_write(fileHandle, ' ');
+			firstDigitFound = 0;
+			for(j = 0; j < MAXSCOREDIGITS; j++){
+				digit = ((int)(gameScores->highScoreBoard[i] / pow(10,(MAXSCOREDIGITS - 1 - j)))%10);
+				if(digit != 0 && firstDigitFound == 0){
+					firstDigitFound = 1;
+				}
+				if(firstDigitFound == 1){
+					alt_up_sd_card_write(fileHandle, (digit + '0'));
+				}
+			}
+			alt_up_sd_card_write(fileHandle, ' ');
+		}
+	}
+
+	closeFile(fileHandle);
+	return;
+
 	//if i == NUMSCORES{
 	//write 0 - index as was previously, then write current high score, then write index-1 downto 1.
 	//} else
@@ -89,3 +125,42 @@ void updateCurrentPlayerScore(int deltaScore, struct scores * gameScores) {
 int getCurrentPlayerScore(struct scores * gameScores) {
 	return -1;
 }
+
+void drawScore(struct scores * gameScores){
+	char scoreValues[15];// = malloc(sizeof(char) * NUMINITIALS); // scores wont exceed 10, and names are 3
+	int i,j;
+	int digit;
+	int firstNonZeroDig;
+	int xPos = 35;
+	int ypos = 25;
+
+	alt_up_char_buffer_string(char_buffer, "**HIGH SCORES**" , xPos, ypos - 2);
+
+	for(i = 0; i < NUMSCORES; i++) {
+		scoreValues[0] = gameScores->highScoreBoardInits[i][0];
+		scoreValues[1] = gameScores->highScoreBoardInits[i][1];
+		scoreValues[2] = gameScores->highScoreBoardInits[i][2];
+
+		scoreValues[3] = ' ';
+
+		firstNonZeroDig = 0;
+		for(j = 0; j < MAXSCOREDIGITS; j++){
+			digit = ((int)(gameScores->highScoreBoard[i] / pow(10,(MAXSCOREDIGITS - 1 - j))) % 10);
+			printf("digit: %d\n", digit);
+			if(digit == 0 && firstNonZeroDig == 0){
+				scoreValues[4+j] = ' ';
+			} else {
+				firstNonZeroDig = 1;
+				scoreValues[4+j] = (digit + '0');
+			}
+		}
+		scoreValues[4+MAXSCOREDIGITS] = '\0';
+
+		alt_up_char_buffer_string(char_buffer, scoreValues , xPos, ypos + i);
+	}
+}
+
+void clearScore(void){
+	alt_up_char_buffer_clear(char_buffer);
+}
+

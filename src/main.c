@@ -39,6 +39,7 @@ int init(struct scores * gameScores) {
 	setupAudio();
 	setupDisplacement();
 	initScoreBoard(gameScores);
+	updateHighScoreBoard(gameScores);
 
 	parseBmps();
 	initBullets();
@@ -81,10 +82,7 @@ int main() {
 	short int edgeDetect = 0;
 	short int debounce = 0;
 	char SWInput;
-	char scoreInitials[15];// = malloc(sizeof(char) * NUMINITIALS); // scores wont exceed 10, and names are 3
-	scoreInitials[3] = '\0';
 	short int scoresShown = 0;
-	printf("scoreInitials got addr: %x\n", scoreInitials);
 	char keyInput;
 	int position = 0;
 
@@ -131,6 +129,7 @@ int main() {
 				moveAllBullets();
 			}
 
+			//movements
 			if (atariUp != 0x00) {
 				moveUpPlayer();
 			} else if (atariDown != 0x00) {
@@ -138,25 +137,19 @@ int main() {
 			} else {
 				drawPlayer();
 			}
+			//score screen
 			if ((SWInput & 0x80) != 0) {
 				if(scoresShown == 0){
-					for(i = 0; i < NUMSCORES; i++) {
-						scoreInitials[0] = gameScores.highScoreBoardInits[i][0];
-						scoreInitials[1] = gameScores.highScoreBoardInits[i][1];
-						scoreInitials[2] = gameScores.highScoreBoardInits[i][2];
-
-						//for(j = 0; j < )
-
-						alt_up_char_buffer_string(char_buffer,scoreInitials , 40, 30 + i);
-					}
+					drawScore(&gameScores);
 				}
 				scoresShown = 1;
 			} else {
 				if(scoresShown == 1){
-					alt_up_char_buffer_clear(char_buffer);
+					clearScore();
 				}
 				scoresShown = 0;
 			}
+			//random sounds for testing
 			if((keyInput & 0x02) != 0x00){
 				playPlayerDeath();
 			}

@@ -10,6 +10,7 @@
 
 #define NUMSCORES 10
 #define NUMINITIALS 3
+#define MAXSCOREDIGITS 10
 
 
 
@@ -47,6 +48,8 @@ void updateHighScoreBoard(struct scores * gameScores);
 void updateCurrentPlayerScore(int deltaScore, struct scores * gameScores);
 int getCurrentPlayerScore(struct scores * gameScores);
 
+void drawScore(struct scores * gameScores);
+void clearScore(void);
 
 #endif /* SCORE_H_ */
 
