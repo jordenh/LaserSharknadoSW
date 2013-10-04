@@ -32,6 +32,7 @@
 #define switches (volatile char *) 0x1001060
 #define leds (char *) 0x1001070
 #define keys (volatile char *) 0x1001080
+#define atariInput (volatile char *) 0x10010b0
 
 int init() {
 	if (openSdCard() == -1) {
@@ -78,13 +79,17 @@ int main() {
 	short int debounce = 0;
 	char keyInput;
 	char key2;
-	//timer_test();
+
+	char atariButtons;
+	char atariUp;
+	char atariDown;
+	char atariFire;
+
 	setHardwareTimerPeriod(CLOCK_FREQ / 30);
 	startHardwareTimer();
 
 	// main game loop;
-	//printf("Entering main loop\n");
-	while (1) {
+	while(1) {
 		if (hasHardwareTimerExpired() == 1) {
 			startHardwareTimer();
 			count++;
@@ -95,10 +100,17 @@ int main() {
 			keyInput = IORD_8DIRECT(keys, 0);
 			key2 = keyInput / 4;
 			key2 = keyInput & 0x0001;
+			atariButtons = (IORD_8DIRECT(atariInput, 0) & 0x0F);
+			atariFire = atariButtons & 0x08;
+			atariUp = atariButtons & 0x02;
+			atariDown = atariButtons & 0x04;
+			IOWR_16DIRECT(leds, 0, atariButtons);
 
-			if ((key2 == 0x01) && debounce == 0) {
+			//if ((key2 == 0x01) && debounce == 0) {
+			if ((atariFire == 0x00) && debounce == 0) {
 				debounce = 1;
-			} else if ((key2 == 0x00) && debounce == 1) {
+			//} else if ((key2 == 0x00) && debounce == 1){
+			} else if ((atariFire != 0x00) && debounce == 1){
 				debounce = 0;
 
 				int index = 0;
@@ -126,13 +138,13 @@ int main() {
 				}
 			}
 
-			if (keyInput == 0x02) {
-				printf("Key 0");
-				moveUp(&player);
+			if (atariUp != 0x00) {
+				//printf("Key 0");
+				moveUp(player);
 			}
-			if (keyInput == 0x04) {
-				printf("Key 1");
-				moveDown(&player);
+			if (atariDown != 0x00) {
+				//printf("Key 1");
+				moveDown(player);
 			}
 		}
 	}

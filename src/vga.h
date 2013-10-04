@@ -17,5 +17,6 @@ void clearScreen();
 void drawLine(int x0, int y0, int x1, int y1, int color);
 void printLine();
 void drawBox(int x0, int y0, int x1, int y1, int color);
+int convert24BitRgbTo16(unsigned int rgb24bit);
 
 #endif
