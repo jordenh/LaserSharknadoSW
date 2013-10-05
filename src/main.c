@@ -39,7 +39,7 @@ int init(struct scores * gameScores) {
 	setupAudio();
 	setupDisplacement();
 	initScoreBoard(gameScores);
-	updateHighScoreBoard(gameScores);
+	updateHighScoreBoard(gameScores); // only here for testing - this should actually be called each time the player gets hit.
 
 	parseBmps();
 	initBullets();

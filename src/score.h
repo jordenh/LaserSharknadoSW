@@ -11,6 +11,7 @@
 #define NUMSCORES 10
 #define NUMINITIALS 3
 #define MAXSCOREDIGITS 10
+#define INITIALLIVES 3
 
 
 
@@ -35,18 +36,21 @@
 
 struct scores {
 	int currentPlayerScore;
+	unsigned int currentPlayerLives;
 	int highScoreBoard[10];
-	//unsigned char * highScoreBoardInits[10];
 	unsigned char highScoreBoardInits[10][3];
 };
 
 void initScoreBoard(struct scores * gameScores);
+void defaultHighScoreBoard(struct scores * gameScores);
 
-void getHighScoreBoard(struct scores * gameScores);
+int getHighScoreBoard(struct scores * gameScores);
 void updateHighScoreBoard(struct scores * gameScores);
 
 void updateCurrentPlayerScore(int deltaScore, struct scores * gameScores);
 int getCurrentPlayerScore(struct scores * gameScores);
+void setCurrentPlayerLives(struct scores * gameScores, int newNumLives);
+int getCurrentPlayerLives(struct scores * gameScores);
 
 void drawScore(struct scores * gameScores);
 void clearScore(void);

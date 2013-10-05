@@ -6,22 +6,39 @@ char * scoreFileName = "scores.txt";
 
 void initScoreBoard(struct scores * gameScores) {
 	gameScores->currentPlayerScore = 0;
+	gameScores->currentPlayerLives = INITIALLIVES;
 	int i;
-	for (i = 0; i < NUMSCORES; i++){
+	/*for (i = 0; i < NUMSCORES; i++){
 		//gameScores.highScoreBoardInits[i] = malloc(sizeof(char) * 3);
 		//printf("size of gameScore: %x, at %x",(sizeof(char) * 3), (unsigned int)gameScores.highScoreBoardInits[i]);
 		if(gameScores->highScoreBoardInits[i] == NULL) {
 			printf("Error in mallocing scoreboard Initials space. \n");
 		}
+	}*/
+	if(getHighScoreBoard(gameScores) != -1) {
+		return;
+	} else {
+		defaultHighScoreBoard(gameScores);
+		return;
 	}
-	getHighScoreBoard(gameScores);
+
 }
 
-void getHighScoreBoard(struct scores * gameScores) {
+void defaultHighScoreBoard(struct scores * gameScores) {
+	int i;
+	for(i = 0; i < NUMSCORES; i++){
+		gameScores->highScoreBoard[i] = 1;
+		gameScores->highScoreBoardInits[i] = "XXX";
+	}
+	return;
+}
+
+//returns -1 on error in reading scoreboard, returns 0 on pass.
+int getHighScoreBoard(struct scores * gameScores) {
 	short int fileHandle = openFile(scoreFileName);
 	if (fileHandle == -1) {
 		printf("Error opening %s\n", scoreFileName);
-		return;
+		return -1;
 	}
 
 	char readValue;
@@ -35,24 +52,32 @@ void getHighScoreBoard(struct scores * gameScores) {
 			gameScores->highScoreBoardInits[i][j] = readValue;
 		}
 		readValue = readByte(fileHandle);
-		/*
-		 * if(readValue != 0x20) {
-		 * 		return ERROR;
-		 * }
-		 */
+
+		if(readValue != 0x20) {
+			closeFile(fileHandle);
+			printf("Error within %s - file not initialized to proper format. Scoreboard defaulted.", scoreFileName);
+			return -1;
+		}
 		//printf("test: %c%c%c\n", gameScores.highScoreBoardInits[i][0],gameScores.highScoreBoardInits[i][1],gameScores.highScoreBoardInits[i][2]);
 
+		//clear score buffer
 		for(k = 0; k < MAXSCOREDIGITS; k++){
 			scoreBuffer[k] = -1;
 		}
-		k = 0;
+
 		numDigits = 0;
-		while((readValue = readByte(fileHandle)) != 0x20) { //loop until space found
-			scoreBuffer[k] = readValue;
+		while((readValue = readByte(fileHandle)) != 0x20 && numDigits < MAXSCOREDIGITS) { //loop until space found
+			scoreBuffer[numDigits] = readValue;
 			numDigits++;
-			k++;
 		}
+		if(readValue != 0x20) {
+			closeFile(fileHandle);
+			printf("Error within %s - file not initialized to proper format. Scoreboard defaulted.", scoreFileName);
+			return -1;
+		}
+
 		currentScore = 0;
+		//use scoreBuffer values (stored in char values) into a meaningful integer, currentScore.
 		for(k = 0; k < numDigits; k++) {
 			currentScore += (scoreBuffer[k] - '0') * pow(10,(numDigits - 1 - k));
 		}
@@ -65,7 +90,7 @@ void getHighScoreBoard(struct scores * gameScores) {
 		printf("score: %d\n", gameScores->highScoreBoard[i]);
 	}
 	closeFile(fileHandle);
-	return;
+	return 0;
 }
 
 void updateHighScoreBoard(struct scores * gameScores) {
@@ -119,11 +144,20 @@ void updateHighScoreBoard(struct scores * gameScores) {
 }
 
 void updateCurrentPlayerScore(int deltaScore, struct scores * gameScores) {
-
+	gameScores->currentPlayerScore += deltaScore;
+	return;
 }
 
 int getCurrentPlayerScore(struct scores * gameScores) {
-	return -1;
+	return gameScores->currentPlayerScore;
+}
+
+void setCurrentPlayerLives(struct scores * gameScores, int newNumLives){
+	gameScores->currentPlayer = newNumLives;
+}
+
+int getCurrentPlayerLives(struct scores * gameScores) {
+	return gameScores->currentPlayer;
 }
 
 void drawScore(struct scores * gameScores){
