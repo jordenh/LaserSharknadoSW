@@ -9,19 +9,9 @@ void initScoreBoard(struct scores * gameScores) {
 	gameScores->currentPlayerScore = 0; // TBD - set to 0 - testing code by setting to other values.
 	gameScores->currentPlayerLives = INITIALLIVES;
 	readHighScoreBoardFromSD(gameScores);
-
-	/*int i;
-	for (i = 0; i < NUMSCORES; i++){
-		//gameScores.highScoreBoardInits[i] = malloc(sizeof(char) * 3);
-		//printf("size of gameScore: %x, at %x",(sizeof(char) * 3), (unsigned int)gameScores.highScoreBoardInits[i]);
-		if(gameScores->highScoreBoardInits[i] == NULL) {
-			printf("Error in mallocing scoreboard Initials space. \n");
-		}
-	}*/
-
 }
 
-//
+//set high score values to defaults - used if reading the SD card fails.s
 void defaultHighScoreBoard(struct scores * gameScores) {
 	int i,j;
 	for(i = 0; i < NUMSCORES; i++) {
@@ -34,6 +24,7 @@ void defaultHighScoreBoard(struct scores * gameScores) {
 }
 
 //returns -1 on error in reading scoreboard (and also defaults all current values), returns 0 on success.
+//function updates all gameScores' variables so that reading them have the most up to date values
 int readHighScoreBoardFromSD(struct scores * gameScores) {
 	gameScores->currentScoreBoardCorrupt = 0;
 
@@ -64,9 +55,8 @@ int readHighScoreBoardFromSD(struct scores * gameScores) {
 			gameScores->currentScoreBoardCorrupt = 1;
 			return -1;
 		}
-		//printf("test: %c%c%c\n", gameScores.highScoreBoardInits[i][0],gameScores.highScoreBoardInits[i][1],gameScores.highScoreBoardInits[i][2]);
 
-		//clear score buffer
+		//clear score buffer - which is used in order to convert unknown number of chars into an int.
 		for(k = 0; k < MAXSCOREDIGITS; k++){
 			scoreBuffer[k] = -1;
 		}
@@ -90,17 +80,15 @@ int readHighScoreBoardFromSD(struct scores * gameScores) {
 			currentScore += (scoreBuffer[k] - '0') * pow(10,(numDigits - 1 - k));
 		}
 		gameScores->highScoreBoard[i] = currentScore;
+	}
 
-		//printf("score: %d\n", currentScore);
-	}
-	for(i = 0; i < NUMSCORES; i++){
-		printf("test: %c%c%c\n", gameScores->highScoreBoardInits[i][0],gameScores->highScoreBoardInits[i][1],gameScores->highScoreBoardInits[i][2]);
-		printf("score: %d\n", gameScores->highScoreBoard[i]);
-	}
 	closeFile(fileHandle);
 	return 0;
 }
 
+//function writes to the SD card, and places current players score into the high scores if
+//it exceeds any of the current high scores.
+//function returns if the highScore file doesnt open in memory, or if the currentScoreBoard is corrupt.
 void updateHighScoreBoard(struct scores * gameScores) {
 	int playerScore = getCurrentPlayerScore(gameScores);
 	unsigned short i,j;
@@ -169,28 +157,34 @@ void updateHighScoreBoard(struct scores * gameScores) {
 
 	closeFile(fileHandle);
 
-	readHighScoreBoardFromSD(gameScores); //reload new written data back into game memory.
+	//reload new written data back into game memory.
+	readHighScoreBoardFromSD(gameScores);
 
 	return;
 }
 
+//increment player score by deltaScore
 void updateCurrentPlayerScore(struct scores * gameScores, int deltaScore) {
 	gameScores->currentPlayerScore += deltaScore;
 	return;
 }
 
+//accessor: get score
 int getCurrentPlayerScore(struct scores * gameScores) {
 	return gameScores->currentPlayerScore;
 }
 
+//mutator: set lives to newNumLives
 void setCurrentPlayerLives(struct scores * gameScores, int newNumLives){
 	gameScores->currentPlayerLives = newNumLives;
 }
 
+//accessor: get lives
 int getCurrentPlayerLives(struct scores * gameScores) {
 	return gameScores->currentPlayerLives;
 }
 
+//purpose: overlay current scoreboard values onto the screen.
 void drawScore(struct scores * gameScores){
 	char scoreValues[15];// = malloc(sizeof(char) * NUMINITIALS); // scores wont exceed 10, and names are 3
 	int i,j;
