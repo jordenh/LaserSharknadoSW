@@ -24,7 +24,6 @@ void createBullet(bulletstatus status) {
 
 			activeBullet->next = &bulletArray[index];
 			// TODO REMOVE - separation of concerns
-			drawBullet(&bulletArray[index]);
 			newBullet = &bulletArray[index];
 			while (index < NUM_BULLETS) {
 				index++;
