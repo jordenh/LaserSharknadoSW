@@ -21,5 +21,6 @@ void drawPlayer();
 void erasePlayer();
 void moveUpPlayer();
 void moveDownPlayer();
+void keepPlayerStationary();
 
 #endif

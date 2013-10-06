@@ -55,22 +55,6 @@ int main() {
 	if (init(&gameScores) == -1)
 		return -1;
 
-	// Initialize the player
-	Player player;
-	player.x = 10;
-	player.y = 90;
-	drawPlayer(&player);
-
-	// initialize array of bullets
-	Bullet bulletArray[NUM_BULLETS];
-	//bulletArray = malloc(NUM_BULLETS * sizeof(Bullet));
-	//printf("size of bulletArray %x, at %x", (NUM_BULLETS * sizeof(Bullet)), (unsigned int)bulletArray);
-
-	int i = 0;
-	for (i = 0; i < NUM_BULLETS; i++) {
-		bulletArray[i].status = NOTACTIVE;
-	}
-
 	for(i = 0; i < NUMSCORES; i++){
 				printf("test: %c%c%c\n", gameScores.highScoreBoardInits[i][0],gameScores.highScoreBoardInits[i][1],gameScores.highScoreBoardInits[i][2]);
 				printf("score: %d\n", gameScores.highScoreBoard[i]);
@@ -112,9 +96,6 @@ int main() {
 			atariDown = atariButtons & 0x04;
 			IOWR_16DIRECT(leds, 0, atariButtons);
 
-			if (count%30 == 0)
-				printf("%i: Timer has expired\n", count/30);
-
 			moveAllSharks();
 			drawAllSharks();
 
@@ -125,9 +106,7 @@ int main() {
 				createBullet(PLAYERBULLET);
 			}
 
-			if (count%2 == 0) {
-				moveAllBullets();
-			}
+			moveAllBullets();
 
 			//movements
 			if (atariUp != 0x00) {
@@ -137,6 +116,7 @@ int main() {
 			} else {
 				drawPlayer();
 			}
+
 			//score screen
 			if ((SWInput & 0x80) != 0) {
 				if(scoresShown == 0){
