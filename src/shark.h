@@ -24,6 +24,7 @@ typedef struct Displacement Displacement;
 typedef struct Shark Shark;
 
 extern Shark *sharkList;
+extern unsigned int sharkCount;
 
 void drawShark(Shark *shark);
 void eraseShark(Shark *shark);

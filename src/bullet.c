@@ -70,7 +70,6 @@ void moveAllBullets() {
 
 void drawAllBullets() {
 	int i;
-
 	for (i = 0; i < NUM_BULLETS; i++) {
 		if (bulletArray[i].status != NOTACTIVE) {
 			drawBullet(&bulletArray[i]);
@@ -110,6 +109,7 @@ void moveBulletRight(Bullet *bullet) {
 	bullet->x = bullet->x + 2;
 	if (bullet->x >= SCREEN_WIDTH) {
 		bullet->status = NOTACTIVE;
+		bullet->next = NULL;
 		return;
 	}
 }
@@ -121,6 +121,7 @@ void moveBulletLeft(Bullet *bullet) {
 	bullet->x = bullet->x - 2;
 	if (bullet->x >= SCREEN_WIDTH) {
 		bullet->status = NOTACTIVE;
+		bullet->next = NULL;
 		return;
 	}
 }
