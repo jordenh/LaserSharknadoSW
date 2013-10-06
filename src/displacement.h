@@ -10,14 +10,6 @@
 
 #define DISPLACEMENT_LENGTH 128
 
-struct Displacement {
-	short int dx;
-	short int dy;
-	struct Displacement *next;
-};
-
-typedef struct Displacement Displacement;
-
 // Forward declaration
 struct Shark;
 

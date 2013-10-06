@@ -55,8 +55,6 @@ int main() {
 	if (init(&gameScores) == -1)
 		return -1;
 
-
-
 	// Initialize the player
 	Player player;
 	player.x = 10;
@@ -83,6 +81,7 @@ int main() {
 	short int debounce = 0;
 	char SWInput;
 	short int scoresShown = 0;
+
 	char keyInput;
 	int position = 0;
 
@@ -94,9 +93,9 @@ int main() {
 
 	setHardwareTimerPeriod(CLOCK_FREQ / 30);
 
-	Shark *shark1 = malloc(sizeof(Shark));
+	createShark(100, 0, &circularDisplacementFunction);
 
-	drawShark(shark1, 100, 0);
+	drawAllSharks();
 	startHardwareTimer();
 
 	// main game loop;
@@ -116,11 +115,12 @@ int main() {
 			if (count%30 == 0)
 				printf("%i: Timer has expired\n", count/30);
 
-			moveShark(shark1, 100, position++);
+			moveAllSharks();
+			drawAllSharks();
 
-			if ((atariFire == 0x00) && (edgeDetect == 0)) {
+			if ((atariFire == 0x00 || keyInput & 0x01) && (edgeDetect == 0)) {
 				edgeDetect = 1;
-			} else if ((atariFire != 0x00) && (edgeDetect == 1)) {
+			} else if ((atariFire != 0x00 || keyInput & 0x01) && (edgeDetect == 1)) {
 				edgeDetect = 0;
 				createBullet(PLAYERBULLET);
 			}
@@ -165,13 +165,14 @@ int main() {
 				playSharkDeath();
 			}
 
+			doSharkBulletCollision();
 
 			drawAllBullets();
 
 			alt_up_pixel_buffer_dma_swap_buffers(pixel_buffer);
 			while(alt_up_pixel_buffer_dma_check_swap_buffers_status(pixel_buffer));
 
-			eraseShark(shark1);
+			eraseAllSharks();
 			eraseAllBullets();
 			erasePlayer();
 		}
