@@ -93,7 +93,7 @@ int main() {
 
 	setHardwareTimerPeriod(CLOCK_FREQ / 30);
 
-	createShark(100, 0, &circularDisplacementFunction);
+	createShark(100, 0, &doNotMove);
 
 	drawAllSharks();
 	startHardwareTimer();

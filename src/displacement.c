@@ -4,10 +4,12 @@ Displacement verticalDisplacementFunctionUp[DISPLACEMENT_LENGTH];
 Displacement verticalDisplacementFunctionDown[DISPLACEMENT_LENGTH];
 Displacement circularDisplacementFunction[DISPLACEMENT_LENGTH];
 Displacement arcDisplacementFunction[DISPLACEMENT_LENGTH];
+Displacement doNotMove[DISPLACEMENT_LENGTH];
 
 void setupHorizontalDisplacementFunction(void);
 void setupCircularDisplacementFunction(void);
 void setupArcDisplacementFunction(void);
+void setupNoDisplcaementFunction(void);
 
 static Displacement right;
 static Displacement left;
@@ -95,6 +97,15 @@ void setupArcDisplacementFunction(void) {
 	}
 	ptr = &arcDisplacementFunction[DISPLACEMENT_LENGTH];
 	ptr->next = arcDisplacementFunction;
+}
+
+void setupNoDisplcaementFunction(void) {
+	int i;
+	for (i = 0; i < DISPLACEMENT_LENGTH; i++) {
+		doNotMove[i].dx = 0;
+		doNotMove[i].dy = 0;
+		doNotMove[i].next = doNotMove;
+	}
 }
 
 void makeRight(Displacement *disp) {
