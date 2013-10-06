@@ -11,7 +11,7 @@ void initScoreBoard(void) {
 	gameScores = malloc(sizeof(struct scores));
 	printf("gameScoresTemp is at: %x\n", (unsigned int)gameScores);
 
-	gameScores->currentPlayerScore = 0; // TBD - set to 0 - testing code by setting to other values.
+	gameScores->currentPlayerScore = 123; // TBD - set to 0 - testing code by setting to other values.
 	gameScores->currentPlayerLives = INITIALLIVES;
 	readHighScoreBoardFromSD();
 }
@@ -121,10 +121,17 @@ void updateHighScoreBoard(void) {
 		for(i = 0; i < loopCount; i++) {
 			if(i == scoreReplaceIndex){
 				printf("replacing score code at index %d\n", i);
-				char newName[3] = {'Y', 'O', 'U'};
+
+				char * newInitials = malloc(3*sizeof(char));
+				*newInitials = '-';
+				*(newInitials + 1) = '-';
+				*(newInitials + 2) = '-';
+				obtainUserInitials(newInitials);
 				for(j = 0; j < NUMINITIALS; j++){
-					alt_up_sd_card_write(fileHandle, newName[j]);
+					alt_up_sd_card_write(fileHandle, newInitials[j]);
 				}
+				free(newInitials);
+
 				alt_up_sd_card_write(fileHandle, ' ');
 				firstDigitFound = 0;
 				for(j = 0; j < MAXSCOREDIGITS; j++){
@@ -167,6 +174,75 @@ void updateHighScoreBoard(void) {
 
 	return;
 }
+
+//get user input for initials if they are on the high score board
+void obtainUserInitials(char * initials){
+
+	int numInitials = 3;
+	unsigned int charChoice = 0;
+	int i;
+	char keyInput;
+	short int edgeDetect0 = 0;
+	short int edgeDetect1 = 0;
+	short int edgeDetect2 = 0;
+	keyInput = IORD_8DIRECT(KEYS_BASE, 0);
+	char key0 = keyInput & 0x01;
+	char key1 = keyInput & 0x02;
+	char key2 = keyInput & 0x04;
+	int xPos = 20;
+	int yPos = 20;
+
+	//0x41 + x(0-25) is alphabet in ascii.
+	alt_up_char_buffer_string(char_buffer, "NEW HIGH SCORE!!!", xPos, yPos-3);
+	alt_up_char_buffer_string(char_buffer, "use key1 to go up, key2 to go down,", xPos, yPos-2);
+	alt_up_char_buffer_string(char_buffer, "and key0 to lock in choice:", xPos, yPos-1);
+	for(i = 0; i < numInitials; i++) {
+		charChoice = 0;
+		while(1) {
+			keyInput = IORD_8DIRECT(KEYS_BASE, 0);
+			key0 = keyInput & 0x01;
+			key1 = keyInput & 0x02;
+			key2 = keyInput & 0x04;
+
+			alt_up_char_buffer_string(char_buffer, initials, xPos, yPos);
+			if (!key0 && (edgeDetect0 == 0)) {
+				edgeDetect0 = 1;
+			} else if (key0 && (edgeDetect0 == 1)) {
+				edgeDetect0 = 0;
+				break;
+			}
+			if (!key1 && (edgeDetect1 == 0)) {
+				edgeDetect1 = 1;
+			} else if (key1 && (edgeDetect1 == 1)) {
+				edgeDetect1 = 0;
+				if(charChoice < 25){
+					charChoice++;
+				} else {
+					charChoice = 0;
+				}
+			}
+			if (!key2 && (edgeDetect2 == 0)) {
+				edgeDetect2 = 1;
+			} else if (key2 && (edgeDetect2 == 1)) {
+				edgeDetect2 = 0;
+				if(charChoice > 0) {
+					charChoice--;
+				} else {
+					charChoice = 25;
+				}
+
+			}
+			initials[i] = 0x41 + charChoice;
+		}
+	}
+
+	alt_up_char_buffer_clear(char_buffer); // clear screen
+
+	printf("initials read as: %c%c%c", initials[0], initials[1], initials[2]);
+
+	return;
+}
+
 
 //increment player score by deltaScore
 void updateCurrentPlayerScore(int deltaScore) {

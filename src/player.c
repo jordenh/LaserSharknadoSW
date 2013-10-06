@@ -41,8 +41,18 @@ void keepPlayerStationary() {
 	drawBmp(playerBmp, player.x, player.y);
 }
 
+void hitPlayer() {
+	int playerLives = getCurrentPlayerLives();
+	if (playerLives > 1) {
+		setCurrentPlayerLives(playerLives - 1);
+	} else {
+		killPlayer();
+	}
+}
+
 void killPlayer() {
 	playPlayerDeath();
 	updateHighScoreBoard();
 	// Some game over stuff
 }
+

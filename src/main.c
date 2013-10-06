@@ -40,7 +40,7 @@ int init(void) {
 	setupAudio();
 	setupDisplacement();
 	initScoreBoard();
-	updateHighScoreBoard(); // only here for testing - this should actually be called each time the player gets hit.
+	//updateHighScoreBoard(); // only here for testing - this should actually be called each time the player gets hit.
 
 	parseBmps();
 	initBullets();
@@ -74,7 +74,7 @@ int main() {
 			drawAllSharks();
 			drawInGameInfo(); // TBD: in actual game loop, only call this function when an event happens (like score inc/dec, or lives inc/dec)
 
-	//		handleKeyInput();
+			handleKeyInput(); // CURRENTLY ONLY FOR KEY3 - need to uncomment in order to have all. laggy.
 			handleSwitchInput();
 			handleAtariInput();
 

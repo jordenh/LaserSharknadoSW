@@ -20,12 +20,12 @@ void handleKeyInput(void){
 	char key3 = keyInput & 0x08;
 
 	//functionality for keys being held
-	if(key1) {
+/*	if(key1) {
 		moveDownPlayer();
 	} else if (key2) {
 		moveUpPlayer();
 	} else {
-		drawPlayer();
+		keepPlayerStationary();
 	}
 
 	//functionality for keys being pressed.
@@ -40,13 +40,7 @@ void handleKeyInput(void){
 		edgeDetect1 = 1;
 	} else if (key1 && (edgeDetect1 == 1)) {
 		edgeDetect1 = 0;
-		/*if(getCurrentPlayerLives() != 0){
-			setCurrentPlayerLives(getCurrentPlayerLives() - 1);
-		} else {
-			//ONLY FOR TESTING btw.
-			setCurrentPlayerLives(getCurrentPlayerLives() + 1);
-		}
-		playPlayerDeath();*/
+		//playPlayerDeath();
 	}
 
 	if (!key2 && (edgeDetect2 == 0)) {
@@ -55,12 +49,13 @@ void handleKeyInput(void){
 		edgeDetect2 = 0;
 		//updateHighScoreBoard();
 		//playTheme();
-	}
+	} */
 
 	if (!key3 && (edgeDetect3 == 0)) {
 		edgeDetect3 = 1;
 	} else if (key3 && (edgeDetect3 == 1)) {
 		edgeDetect3 = 0;
+		hitPlayer(); // TEST only
 		//updateCurrentPlayerScore(250);
 		//playSharkDeath();
 	}

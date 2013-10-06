@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include "vga.h"
 #include "bmp.h"
+#include "score.h"
 
 #define PLAYER_WIDTH 30
 #define PLAYER_HEIGHT 30
@@ -22,6 +23,7 @@ void erasePlayer();
 void moveUpPlayer();
 void moveDownPlayer();
 void keepPlayerStationary();
+void hitPlayer();
 void killPlayer();
 
 #endif
