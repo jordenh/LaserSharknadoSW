@@ -99,11 +99,14 @@ void killShark(Shark *shark) {
 
 void cleanupDeadSharks() {
 	Shark *cursor = deadSharkList;
+	Shark *next;
 	while (cursor != NULL) {
 		cursor->prevX = cursor->x;
 		cursor->prevY = cursor->y;
 		eraseShark(cursor);
+		next = cursor->next;
 		free(cursor);
+		cursor = next;
 	}
 	deadSharkList = NULL;
 }
