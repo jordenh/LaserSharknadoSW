@@ -12,6 +12,8 @@ void eraseShark(Shark *shark){
 }
 
 void moveShark(Shark *shark) {
+	shark->prevX = shark->x;
+	shark->prevY = shark->y;
 	Displacement *disp = shark->displacement;
 	shark->x += disp->dx;
 	shark->y += disp->dy;
@@ -61,7 +63,7 @@ void createShark(int x, int y, struct Displacement *displacement) {
 void killShark(Shark *shark) {
 	Shark *previousShark = shark->prev;
 	Shark *nextShark = shark->next;
-	// Need to earase now because we free the shark
+	// Need to erase now because we free the shark
 	eraseShark(shark);
 
 	if (previousShark != NULL) {
