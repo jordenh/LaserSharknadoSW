@@ -19,6 +19,16 @@ void handleKeyInput(void){
 	char key2 = keyInput & 0x04;
 	char key3 = keyInput & 0x08;
 
+	//functionality for keys being held
+	if(key1) {
+		moveDownPlayer();
+	} else if (key2) {
+		moveUpPlayer();
+	} else {
+		drawPlayer();
+	}
+
+	//functionality for keys being pressed.
 	if (!key0 && (edgeDetect0 == 0)) {
 		edgeDetect0 = 1;
 	} else if (key0 && (edgeDetect0 == 1)) {
@@ -30,29 +40,29 @@ void handleKeyInput(void){
 		edgeDetect1 = 1;
 	} else if (key1 && (edgeDetect1 == 1)) {
 		edgeDetect1 = 0;
-		if(getCurrentPlayerLives() != 0){
+		/*if(getCurrentPlayerLives() != 0){
 			setCurrentPlayerLives(getCurrentPlayerLives() - 1);
 		} else {
 			//ONLY FOR TESTING btw.
 			setCurrentPlayerLives(getCurrentPlayerLives() + 1);
 		}
-		playPlayerDeath();
+		playPlayerDeath();*/
 	}
 
 	if (!key2 && (edgeDetect2 == 0)) {
 		edgeDetect2 = 1;
 	} else if (key2 && (edgeDetect2 == 1)) {
 		edgeDetect2 = 0;
-		updateHighScoreBoard();
-		playTheme();
+		//updateHighScoreBoard();
+		//playTheme();
 	}
 
 	if (!key3 && (edgeDetect3 == 0)) {
 		edgeDetect3 = 1;
 	} else if (key3 && (edgeDetect3 == 1)) {
 		edgeDetect3 = 0;
-		updateCurrentPlayerScore(250);
-		playSharkDeath();
+		//updateCurrentPlayerScore(250);
+		//playSharkDeath();
 	}
 }
 
