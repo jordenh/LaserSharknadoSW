@@ -19,6 +19,7 @@ struct Bullet {
 	int y, prevY;
 	bullettype type;
 	struct Bullet *next;
+	struct Bullet *prev;
 };
 
 typedef struct Bullet Bullet;

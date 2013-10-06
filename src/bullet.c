@@ -21,19 +21,20 @@ void createBullet(bullettype type, int x, int y) {
 			bulletArray[index].y = y;
 			bulletArray[index].type = type;
 			drawBullet(&bulletArray[index]);
-
+			// PREV LINDS DFASDF
 			activeBullet->next = &bulletArray[index];
+			bulletArray[index].prev = activeBullet;
 			// TODO REMOVE - separation of concerns
 			newBullet = &bulletArray[index];
+			newBullet->next = NULL;
 			while (index < NUM_BULLETS) {
 				index++;
 				if (bulletArray[index].type == type) {
 					newBullet->next = &bulletArray[index];
+					bulletArray[index].prev = newBullet;
 					break;
 				}
 			}
-			// Last active bullet in the array if you get here
-			newBullet->next = NULL;
 		} else if (bulletArray[index].type == type){
 			activeBullet = &bulletArray[index];
 		}
@@ -57,7 +58,6 @@ void createBullet(bullettype type, int x, int y) {
 
 void moveAllBullets() {
 	int i;
-
 	for (i = 0; i < NUM_BULLETS; i++) {
 		if (bulletArray[i].type == PLAYERBULLET) {
 			moveBulletRight(&bulletArray[i]);
@@ -109,7 +109,12 @@ void moveBulletRight(Bullet *bullet) {
 
 	if ((bullet->x >= SCREEN_WIDTH) || (bullet->x <= -BULLET_LENGTH - 1)) {
 		bullet->type = NOTACTIVE;
+		Bullet *nextBullet = bullet->next;
+		Bullet *prevBullet = bullet->prev;
 		bullet->next = NULL;
+		bullet->prev = NULL;
+		nextBullet->prev = prevBullet;
+		prevBullet->next = nextBullet;
 		return;
 	}
 }
@@ -122,8 +127,12 @@ void moveBulletLeft(Bullet *bullet) {
 
 	if ((bullet->x >= SCREEN_WIDTH) || (bullet->x <= -BULLET_LENGTH - 1)) {
 		bullet->type = NOTACTIVE;
+		Bullet *nextBullet = bullet->next;
+		Bullet *prevBullet = bullet->prev;
 		bullet->next = NULL;
-		// TODO: restructure list ie make doubly linked
+		bullet->prev = NULL;
+		nextBullet->prev = prevBullet;
+		prevBullet->next = nextBullet;
 		return;
 	}
 }
