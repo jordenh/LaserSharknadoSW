@@ -10,6 +10,7 @@ Shark *findSharkIfHit(Bullet *bullet) {
 		if (isBulletCollidingWithShark(cursor, bullet) == TRUE) {
 			return cursor;
 		}
+		cursor = cursor->next;
 		i++;
 	}
 	return NULL;
@@ -24,12 +25,12 @@ int isBulletCollidingWithShark(Shark *shark, Bullet *bullet) {
 	if (bullet->x >= shark->x &&
 		bullet->x <= shark->x + SHARK_LENGTH) {
 		// Have x region correct
-		printf("x-hit\n");
+		//printf("x-hit\n");
 		
 		if (bullet->y >= shark->y &&
 			bullet->y <= shark->y + SHARK_HEIGHT) {
 			// Have y region correct
-			printf("y-hit\n");
+			//printf("y-hit\n");
 			return TRUE;
 		}
 	}

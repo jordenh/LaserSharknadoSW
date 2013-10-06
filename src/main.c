@@ -75,6 +75,7 @@ int main() {
 	setHardwareTimerPeriod(CLOCK_FREQ / 30);
 
 	createShark(100, 0, (Displacement *)&doNotMove);
+	createShark(200, 200, (Displacement *)&doNotMove);
 
 	drawAllSharks();
 	startHardwareTimer();
