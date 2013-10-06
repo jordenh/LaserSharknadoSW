@@ -3,16 +3,20 @@
 #include "score.h"
 
 char * scoreFileName = "scores.txt";
+struct scores * gameScores;
 
 //set all gameScores values to initial values - read all high score board info from SD card.
-void initScoreBoard(struct scores * gameScores) {
+void initScoreBoard(void) {
+	gameScores = malloc(sizeof(struct scores));
+	printf("gameScoresTemp is at: %x\n", gameScores);
+
 	gameScores->currentPlayerScore = 0; // TBD - set to 0 - testing code by setting to other values.
 	gameScores->currentPlayerLives = INITIALLIVES;
-	readHighScoreBoardFromSD(gameScores);
+	readHighScoreBoardFromSD();
 }
 
 //set high score values to defaults - used if reading the SD card fails.s
-void defaultHighScoreBoard(struct scores * gameScores) {
+void defaultHighScoreBoard(void) {
 	int i,j;
 	for(i = 0; i < NUMSCORES; i++) {
 		gameScores->highScoreBoard[i] = 1;
@@ -25,13 +29,13 @@ void defaultHighScoreBoard(struct scores * gameScores) {
 
 //returns -1 on error in reading scoreboard (and also defaults all current values), returns 0 on success.
 //function updates all gameScores' variables so that reading them have the most up to date values
-int readHighScoreBoardFromSD(struct scores * gameScores) {
+int readHighScoreBoardFromSD(void) {
 	gameScores->currentScoreBoardCorrupt = 0;
 
 	short int fileHandle = openFile(scoreFileName);
 	if (fileHandle == -1) {
 		printf("Error opening %s\n", scoreFileName);
-		defaultHighScoreBoard(gameScores);
+		defaultHighScoreBoard();
 		gameScores->currentScoreBoardCorrupt = 1;
 		return -1;
 	}
@@ -51,7 +55,7 @@ int readHighScoreBoardFromSD(struct scores * gameScores) {
 		if(readValue != 0x20) {
 			closeFile(fileHandle);
 			printf("Error within %s - file not initialized to proper format. Scoreboard defaulted.", scoreFileName);
-			defaultHighScoreBoard(gameScores);
+			defaultHighScoreBoard();
 			gameScores->currentScoreBoardCorrupt = 1;
 			return -1;
 		}
@@ -69,7 +73,7 @@ int readHighScoreBoardFromSD(struct scores * gameScores) {
 		if(readValue != 0x20) {
 			closeFile(fileHandle);
 			printf("Error within %s - file not initialized to proper format. Scoreboard defaulted.", scoreFileName);
-			defaultHighScoreBoard(gameScores);
+			defaultHighScoreBoard();
 			gameScores->currentScoreBoardCorrupt = 1;
 			return -1;
 		}
@@ -89,8 +93,8 @@ int readHighScoreBoardFromSD(struct scores * gameScores) {
 //function writes to the SD card, and places current players score into the high scores if
 //it exceeds any of the current high scores.
 //function returns if the highScore file doesnt open in memory, or if the currentScoreBoard is corrupt.
-void updateHighScoreBoard(struct scores * gameScores) {
-	int playerScore = getCurrentPlayerScore(gameScores);
+void updateHighScoreBoard(void) {
+	int playerScore = getCurrentPlayerScore();
 	unsigned short i,j;
 	short scoreReplaceIndex = -1;
 	unsigned short firstDigitFound = 0;
@@ -158,34 +162,34 @@ void updateHighScoreBoard(struct scores * gameScores) {
 	closeFile(fileHandle);
 
 	//reload new written data back into game memory.
-	readHighScoreBoardFromSD(gameScores);
+	readHighScoreBoardFromSD();
 
 	return;
 }
 
 //increment player score by deltaScore
-void updateCurrentPlayerScore(struct scores * gameScores, int deltaScore) {
+void updateCurrentPlayerScore(int deltaScore) {
 	gameScores->currentPlayerScore += deltaScore;
 	return;
 }
 
 //accessor: get score
-int getCurrentPlayerScore(struct scores * gameScores) {
+int getCurrentPlayerScore() {
 	return gameScores->currentPlayerScore;
 }
 
 //mutator: set lives to newNumLives
-void setCurrentPlayerLives(struct scores * gameScores, int newNumLives){
+void setCurrentPlayerLives(int newNumLives){
 	gameScores->currentPlayerLives = newNumLives;
 }
 
 //accessor: get lives
-int getCurrentPlayerLives(struct scores * gameScores) {
+int getCurrentPlayerLives(void) {
 	return gameScores->currentPlayerLives;
 }
 
 //purpose: overlay current scoreboard values onto the screen.
-void drawScore(struct scores * gameScores){
+void drawScore(void){
 	char scoreValues[15];// = malloc(sizeof(char) * NUMINITIALS); // scores wont exceed 10, and names are 3
 	int i,j;
 	int digit;
@@ -224,15 +228,15 @@ void clearScore(void) {
 }
 
 //draws current lives and playerScore
-void drawInGameInfo(struct scores * gameScores) {
+void drawInGameInfo(void) {
 	char livesLeft[2] = {' ', '\0'};
-	livesLeft[0] = (getCurrentPlayerLives(gameScores) + '0');
+	livesLeft[0] = (getCurrentPlayerLives() + '0');
 	int xPos = 1;
 	int yPos = 1;
 	int i;
 	int digit = 0;
 	int firstDigitFound = 0;
-	int currentScore = getCurrentPlayerScore(gameScores);
+	int currentScore = getCurrentPlayerScore();
 	char currentCharScore[MAXSCOREDIGITS + 1];
 	currentCharScore[MAXSCOREDIGITS] = '\0'; //end of string
 
