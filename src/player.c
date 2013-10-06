@@ -48,6 +48,7 @@ void hitPlayer() {
 	} else {
 		killPlayer();
 	}
+	drawInGameInfo();
 }
 
 void killPlayer() {

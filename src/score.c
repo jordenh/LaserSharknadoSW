@@ -11,7 +11,7 @@ void initScoreBoard(void) {
 	gameScores = malloc(sizeof(struct scores));
 	printf("gameScoresTemp is at: %x\n", (unsigned int)gameScores);
 
-	gameScores->currentPlayerScore = 123; // TBD - set to 0 - testing code by setting to other values.
+	gameScores->currentPlayerScore = 333; // TBD - set to 0 - testing code by setting to other values.
 	gameScores->currentPlayerLives = INITIALLIVES;
 	readHighScoreBoardFromSD();
 }

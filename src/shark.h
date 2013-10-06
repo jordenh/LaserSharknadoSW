@@ -2,6 +2,7 @@
 #define __SHARK_H__
 
 #include "bmp.h"
+//#include "score.h" // TBD - FIX AND INCLUDE!!
 
 #define SHARK_LENGTH 37
 #define SHARK_HEIGHT 20
