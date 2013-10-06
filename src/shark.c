@@ -1,6 +1,7 @@
 #include "shark.h"
 
 Shark *sharkList = NULL;
+unsigned int sharkCount = 0;
 
 void drawShark(Shark *shark) {
 	drawBmp(sharkBmp, shark->x, shark->y);
@@ -54,6 +55,7 @@ void createShark(int x, int y, struct Displacement *displacement) {
 		newShark->next = sharkList;
 		sharkList = newShark;
 	}
+	sharkCount++;
 }
 
 void killShark(Shark *shark) {
@@ -76,6 +78,6 @@ void killShark(Shark *shark) {
 	} else {
 		// Killing last shark
 	}
-
+	sharkCount--;
 	free(shark);
 }

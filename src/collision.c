@@ -4,10 +4,13 @@
 
 Shark *findSharkIfHit(Bullet *bullet) {
 	Shark *cursor = sharkList;
-	while (cursor != NULL) {
+	int i;
+	while (cursor != NULL
+			&& i < sharkCount) {
 		if (isBulletCollidingWithShark(cursor, bullet) == TRUE) {
 			return cursor;
 		}
+		i++;
 	}
 	return NULL;
 }
@@ -56,11 +59,15 @@ int isBulletCollidingWithPlayer(Player *player, Bullet *bullet) {
 void doSharkBulletCollision(void) {
 	Bullet *bulletCursor = playerBulletList;
 	Shark *toKill = NULL;
-	while (bulletCursor != NULL && bulletCursor->status == PLAYERBULLET) {
+	int i = 0;
+	while (bulletCursor != NULL
+			&& bulletCursor->status == PLAYERBULLET
+			&& i < NUM_BULLETS) {
 		toKill = findSharkIfHit(bulletCursor);
 		if (toKill != NULL) {
 			killShark(toKill);
 		}
 		bulletCursor = bulletCursor->next;
+		i++;
 	}
 }
