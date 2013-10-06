@@ -37,6 +37,11 @@ static unsigned int *audioBuffer;
 unsigned int audioFileWordLength;
 unsigned int playedWords;
 
+static unsigned int *laserBuffer = NULL;
+static unsigned int *playerDeathBuffer = NULL;
+static unsigned int *sharkDeathBuffer = NULL;
+static unsigned int *themeBuffer = NULL;
+
 volatile int somethingForIrq;
 
 unsigned int **getActiveBuffer(void);
@@ -77,10 +82,9 @@ void setupAudio()
 	}
 
     loadLaser();
-
-	//themeFileWordLength = 0x00063E00 / 2;
-	//unsigned int **ptrToThemeBuffer = &themeBuffer;
-	//readWavFile("theme.wav", themeFileWordLength, ptrToThemeBuffer);
+    loadPlayerDeath();
+    loadSharkDeath();
+    loadTheme();
 
 	status = NONE;
 
@@ -106,36 +110,43 @@ int setupAudioInterrupt(alt_up_audio_dev *audio, volatile int somethingForIrq)
 }
 
 void loadLaser() {
-	if (loaded != LASER) {
-		audioFileWordLength = 38384;
-		printf("File Length is: %x\n", audioFileWordLength);
+	audioFileWordLength = 38384;
+	if (laserBuffer == NULL) {
 		readWavFile("laserii.wav", audioFileWordLength);
-		loaded = LASER;
+		laserBuffer = audioBuffer;
 	}
+	audioBuffer = laserBuffer;
+	loaded = LASER;
 }
 
 void loadPlayerDeath() {
-	if (loaded != PLAYER_DEATH) {
-		audioFileWordLength = 0x0000DAFF / 2;
+	audioFileWordLength = 0x0000DAFF / 2;
+	if (playerDeathBuffer == NULL) {
 		readWavFile("pdie.wav", audioFileWordLength);
-		loaded = PLAYER_DEATH;
+		playerDeathBuffer = audioBuffer;
 	}
+	audioBuffer = playerDeathBuffer;
+	loaded = PLAYER_DEATH;
 }
 
 void loadSharkDeath() {
-	if (loaded != SHARK_DEATH) {
-		audioFileWordLength = 0x0000DAFF / 2;
+	audioFileWordLength = 0x0000DAFF / 2;
+	if (sharkDeathBuffer == NULL) {
 		readWavFile("sdie.wav", audioFileWordLength);
-		loaded = SHARK_DEATH;
+		sharkDeathBuffer = audioBuffer;
 	}
+	audioBuffer = sharkDeathBuffer;
+	loaded = SHARK_DEATH;
 }
 
 void loadTheme() {
-	if (loaded != THEME) {
-		audioFileWordLength = 0x00063E00 / 2;
+	audioFileWordLength = 0x00063E00 / 2;
+	if (themeBuffer == NULL) {
 		readWavFile("theme.wav", audioFileWordLength);
-		loaded = THEME;
+		themeBuffer = audioBuffer;
 	}
+	audioBuffer = themeBuffer;
+	loaded = THEME;
 }
 
 void playAudioMono(int length) {
@@ -195,7 +206,7 @@ void audioTest()
 
 void readWavFile(char *wavFileName, unsigned int fileWordLength) {
 	if (audioBuffer != NULL) {
-		free(audioBuffer);
+		//free(audioBuffer);
 	}
 	audioBuffer = malloc(sizeof(unsigned int) * fileWordLength);
 	if (audioBuffer == NULL) {

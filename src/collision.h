@@ -8,5 +8,8 @@
 
 int isBulletCollidingWithShark(Shark *shark, Bullet *bullet);
 int isBulletCollidingWithPlayer(Player *player, Bullet *bullet);
+Shark *findSharkIfHit(Bullet *bullet);
+void doSharkBulletCollision(void);
+void doPlayerBulletCollision(void);
 
 #endif

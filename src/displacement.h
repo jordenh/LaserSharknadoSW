@@ -10,14 +10,6 @@
 
 #define DISPLACEMENT_LENGTH 128
 
-struct Displacement {
-	short int dx;
-	short int dy;
-	struct Displacement *next;
-};
-
-typedef struct Displacement Displacement;
-
 // Forward declaration
 struct Shark;
 
@@ -28,5 +20,6 @@ extern Displacement verticalDisplacementFunctionUp[DISPLACEMENT_LENGTH];
 extern Displacement verticalDisplacementFunctionDown[DISPLACEMENT_LENGTH];
 extern Displacement circularDisplacementFunction[DISPLACEMENT_LENGTH];
 extern Displacement arcDisplacementFunction[DISPLACEMENT_LENGTH];
+extern Displacement doNotMove[DISPLACEMENT_LENGTH];
 
 #endif

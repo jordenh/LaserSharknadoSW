@@ -27,7 +27,6 @@ void parseBmp (char *fileName, BMP *bmp) {
 
 	pixels = bmp->infoheader.width * bmp->infoheader.height;
 	bmp->rgb = malloc(BYTES_PER_PIXEL * pixels);
-	printf("size of bmp->rgb %x", bmp->rgb);
 
 	for(i = 0; i < bmp->infoheader.height; i++) {
 		rowOffset = i*bmp->infoheader.width;
@@ -82,6 +81,10 @@ void drawBmp (BMP *bmp, int x, int y) {
 	for(i = 0; i < bmp->infoheader.height; i++) {
 		for(j = 0; j < bmp->infoheader.width; j++){
 			color = ((bmp->rgb + i*bmp->infoheader.width +j)->r << 11) | ((bmp->rgb + i*bmp->infoheader.width +j)->g << 5) | (bmp->rgb + i*bmp->infoheader.width +j)->b;
+
+			if(color == 0)
+				continue;
+
 			drawPixel(x + j, y + i, color);
 		}
 	}

@@ -4,16 +4,16 @@ void initBullets() {
 	int i = 0;
 
 	for (i = 0; i < NUM_BULLETS; i++)
-		bulletArray[i].status = NOTACTIVE;
+		bulletArray[i].type = NOTACTIVE;
 }
 
-void createBullet(bulletstatus status) {
+void createBullet(bullettype status, int x, int y) {
 	int index = 0;
 	while (index < NUM_BULLETS) {
-		if (bulletArray[index].status == NOTACTIVE)	{
-			bulletArray[index].x = player.x + PLAYER_WIDTH + 1;
-			bulletArray[index].y = player.y + 0.5*PLAYER_HEIGHT;
-			bulletArray[index].status = PLAYERBULLET;
+		if (bulletArray[index].type == NOTACTIVE)	{
+			bulletArray[index].x = x;
+			bulletArray[index].y = y;
+			bulletArray[index].type = status;
 			drawBullet(&bulletArray[index]);
 			break;
 		}
@@ -27,9 +27,9 @@ void moveAllBullets() {
 	int i;
 
 	for (i = 0; i < NUM_BULLETS; i++) {
-		if (bulletArray[i].status == PLAYERBULLET) {
+		if (bulletArray[i].type == PLAYERBULLET) {
 			moveBulletRight(&bulletArray[i]);
-		} else if (bulletArray[i].status == SHARKBULLET) {
+		} else if (bulletArray[i].type == SHARKBULLET) {
 			moveBulletLeft(&bulletArray[i]);
 		}
 	}
@@ -39,7 +39,7 @@ void drawAllBullets() {
 	int i;
 
 	for (i = 0; i < NUM_BULLETS; i++) {
-		if (bulletArray[i].status != NOTACTIVE) {
+		if (bulletArray[i].type != NOTACTIVE) {
 			drawBullet(&bulletArray[i]);
 		}
 	}
@@ -49,7 +49,7 @@ void eraseAllBullets() {
 	int i;
 
 	for (i = 0; i < NUM_BULLETS; i++) {
-		if (bulletArray[i].status != NOTACTIVE) {
+		if (bulletArray[i].type != NOTACTIVE) {
 			eraseBullet(&bulletArray[i]);
 		}
 	}
@@ -75,8 +75,8 @@ void moveBulletRight(Bullet *bullet) {
 	bullet->prevY = bullet->y;
 
 	bullet->x = bullet->x + 2;
-	if (bullet->x >= SCREEN_WIDTH) {
-		bullet->status = NOTACTIVE;
+	if ((bullet->x >= SCREEN_WIDTH) || (bullet->x <= -BULLET_LENGTH - 1)) {
+		bullet->type = NOTACTIVE;
 		return;
 	}
 }
@@ -86,8 +86,8 @@ void moveBulletLeft(Bullet *bullet) {
 	bullet->prevY = bullet->y;
 
 	bullet->x = bullet->x - 2;
-	if (bullet->x >= SCREEN_WIDTH) {
-		bullet->status = NOTACTIVE;
+	if ((bullet->x >= SCREEN_WIDTH) || (bullet->x <= -BULLET_LENGTH - 1)) {
+		bullet->type = NOTACTIVE;
 		return;
 	}
 }

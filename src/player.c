@@ -1,11 +1,11 @@
 #include "player.h"
+#include "audio.h"
 
 void initPlayer() {
 	player.x = 10;
 	player.y = 90;
-	player.prevX = 0;
-	player.prevY = 0;
-	drawBmp(playerBmp, player.x, player.y);
+	player.prevX = 10;
+	player.prevY = 90;
 }
 
 void drawPlayer() {
@@ -18,21 +18,31 @@ void erasePlayer() {
 
 void moveUpPlayer() {
 	if (player.y > 0) {
-		player.prevX = player.x;
 		player.prevY = player.y;
 
-		player.y = player.y - 1;
-		drawBmp(playerBmp, player.x, player.y);
+		player.y = player.y - 2;
 	}
+
+	drawBmp(playerBmp, player.x, player.y);
 }
 void moveDownPlayer()
 {
 	if (player.y < SCREEN_HEIGHT - PLAYER_HEIGHT) {
-		player.prevX = player.x;
 		player.prevY = player.y;
 
-		player.y = player.y + 1;
-		drawBmp(playerBmp, player.x, player.y);
+		player.y = player.y + 2;
 	}
+
+	drawBmp(playerBmp, player.x, player.y);
 }
 
+void keepPlayerStationary() {
+	player.prevY = player.y;
+	drawBmp(playerBmp, player.x, player.y);
+}
+
+void killPlayer() {
+	playPlayerDeath();
+	updateHighScoreBoard();
+	// Some game over stuff
+}
