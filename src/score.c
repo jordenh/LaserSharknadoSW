@@ -7,6 +7,7 @@ struct scores * gameScores;
 
 //set all gameScores values to initial values - read all high score board info from SD card.
 void initScoreBoard(void) {
+	alt_up_char_buffer_clear(char_buffer); // clear screen
 	gameScores = malloc(sizeof(struct scores));
 	printf("gameScoresTemp is at: %x\n", (unsigned int)gameScores);
 
@@ -256,6 +257,8 @@ void drawInGameInfo(void) {
 	if(livesLeft[0] == '1') {
 		alt_up_char_buffer_string(char_buffer, "Lives: YOLO" , xPos, yPos);
 
+	} else if(livesLeft[0] == '0') {
+		alt_up_char_buffer_string(char_buffer, "Lives: DEAD" , xPos, yPos);
 	} else {
 		alt_up_char_buffer_string(char_buffer, "Lives: " , xPos, yPos);
 		alt_up_char_buffer_string(char_buffer, livesLeft , xPos + 7, yPos);
