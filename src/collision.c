@@ -4,7 +4,7 @@
 
 Shark *findSharkIfHit(Bullet *bullet) {
 	Shark *cursor = sharkList;
-	int i;
+	int i = 0;
 	while (cursor != NULL
 			&& i < sharkCount) {
 		if (isBulletCollidingWithShark(cursor, bullet) == TRUE) {
