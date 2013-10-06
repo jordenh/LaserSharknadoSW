@@ -111,7 +111,7 @@ int main() {
 			} else if (atariDown != 0x00) {
 				moveDownPlayer();
 			} else {
-				drawPlayer();
+				keepPlayerStationary();
 			}
 
 			//score screen
