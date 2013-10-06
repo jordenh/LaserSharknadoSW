@@ -10,31 +10,38 @@
 #define NUM_SHARKS 4
 #define SHARK_LASER_LOCATION 13
 
-//struct Displacement;
+struct Displacement {
+	short int dx;
+	short int dy;
+	struct Displacement *next;
+};
 
-typedef enum {
-	TRAVERSEBT,
-	TRAVERSETB,
-	RECENTLYDEAD,
-	DEAD
-} sharktype;
-
-typedef struct {
+struct Shark {
 	int x, prevX;
 	int y, prevY;
 	int freq, count;
-	//struct Displacement *displacement;
-	sharktype type;
-} Shark;
+	struct Shark *next;
+	struct Shark *prev;
+	struct Displacement *displacement;
+};
 
-Shark sharkArray[NUM_SHARKS];
+struct Shark sharkArray[NUM_SHARKS];
 
-void initShark();
-void createShark(int sudoRandomSeed);
-void moveAllSharks();
-void eraseAllSharks();
+typedef struct Displacement Displacement;
+typedef struct Shark Shark;
+
+extern Shark *sharkList;
+extern unsigned int sharkCount;
+extern Shark *deadSharkList;
+
 void drawShark(Shark *shark);
 void eraseShark(Shark *shark);
 void moveShark(Shark *shark);
+void createShark(int sudoRandomSeed, int x, int y, struct Displacement *displacement);
+void killShark(Shark *shark);
+void moveAllSharks(void);
+void drawAllSharks(void);
+void eraseAllSharks(void);
+void cleanupDeadSharks(void);
 
 #endif

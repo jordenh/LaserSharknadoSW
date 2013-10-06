@@ -1,59 +1,9 @@
 #include "shark.h"
+#include "audio.h"
 
-void initShark() {
-	int i;
-
-	for (i = 0; i < NUM_SHARKS; i++) {
-		sharkArray[i].type = DEAD;
-	}
-}
-
-void createShark(int sudoRandomSeed)
-{
-	int index = 0;
-	while (index < NUM_SHARKS) {
-		if (sharkArray[index].type == DEAD)	{
-			sharkArray[index].freq = (sudoRandomSeed%10) + PLAYER_HEIGHT + 1;
-			sharkArray[index].count = 0;
-			sharkArray[index].x = SCREEN_WIDTH - SHARK_WIDTH;
-			if (index%2 == 0) {
-				sharkArray[index].type = TRAVERSETB;
-				sharkArray[index].y = 0;
-			} else {
-				sharkArray[index].type = TRAVERSEBT;
-				sharkArray[index].y = SCREEN_HEIGHT - SHARK_HEIGHT;
-			}
-			//sharkArray[index].displacement = circularDisplacementFunction;
-			break;
-		}
-		index++;
-	}
-}
-
-
-void moveAllSharks() {
-	int i;
-
-	for (i = 0; i < NUM_SHARKS; i++) {
-		if ((sharkArray[i].type != DEAD) || (sharkArray[i].type != RECENTLYDEAD)) {
-			moveShark(&sharkArray[i]);
-			drawShark(&sharkArray[i]);
-		}
-	}
-}
-
-void eraseAllSharks(){
-	int i;
-
-	for (i = 0; i < NUM_SHARKS; i++) {
-		if (sharkArray[i].type != DEAD) {
-			eraseShark(&sharkArray[i]);
-			if (sharkArray[i].type == RECENTLYDEAD) {
-				sharkArray[i].type == DEAD;
-			}
-		}
-	}
-}
+Shark *sharkList = NULL;
+Shark *deadSharkList = NULL;
+unsigned int sharkCount = 0;
 
 void drawShark(Shark *shark) {
 	drawBmp(sharkBmp, shark->x, shark->y);
@@ -74,23 +24,110 @@ void moveShark(Shark *shark) {
 		createBullet(SHARKBULLET, shark->x + BULLET_LENGTH, shark->y + SHARK_LASER_LOCATION);
 	}
 
-	if (shark->type == TRAVERSEBT) {
-		shark->x--;
-		shark->y--;
-	} else if (shark->type == TRAVERSETB) {
-		shark->x--;
-		shark->y++;
+	// TODO: get rid of sharks that leave the screen
+//	if ((shark->x >= SCREEN_WIDTH) || (shark->x <= -SHARK_WIDTH)) {
+//		shark->type = RECENTLYDEAD;
+//	} else if ((shark->y >= SCREEN_HEIGHT) || (shark->y <= -SHARK_HEIGHT)) {
+//		shark->type = RECENTLYDEAD;
+//	}
+
+	Displacement *disp = shark->displacement;
+	shark->x += disp->dx;
+	shark->y += disp->dy;
+}
+
+void moveAllSharks(void) {
+	Shark *cursor = sharkList;
+	while (cursor != NULL) {
+		moveShark(cursor);
+		cursor = cursor->next;
+	}
+}
+
+void drawAllSharks(void) {
+	Shark *cursor = sharkList;
+	while (cursor != NULL) {
+		drawShark(cursor);
+		cursor = cursor->next;
+	}
+}
+
+void eraseAllSharks(void) {
+	Shark *cursor = sharkList;
+	// TODO: erase recently dead list
+	while (cursor != NULL) {
+		eraseShark(cursor);
+		cursor = cursor->next;
+	}
+}
+
+void createShark(int sudoRandomSeed, int x, int y, struct Displacement *displacement) {
+	Shark *newShark = malloc(sizeof(Shark));
+	newShark->x = x;
+	newShark->y = y;
+	newShark->displacement = displacement;
+	newShark->prev = NULL;
+	if (sharkList == NULL) {
+		sharkList = newShark;
+		newShark->next = NULL;
+	} else {
+		sharkList->prev = newShark;
+		newShark->next = sharkList;
+		sharkList = newShark;
+	}
+	newShark->freq = (sudoRandomSeed % 10) + PLAYER_HEIGHT + 1;
+	newShark->count = 0;
+	sharkCount++;
+}
+
+void killShark(Shark *shark) {
+	Shark *previousShark = shark->prev;
+	Shark *nextShark = shark->next;
+
+	if (deadSharkList == NULL) {
+		deadSharkList = shark;
+		shark->next == NULL;
+	}
+	else {
+		deadSharkList->prev = shark;
+		shark->next = deadSharkList;
+		deadSharkList = shark;
 	}
 
-	if ((shark->x >= SCREEN_WIDTH) || (shark->x <= -SHARK_WIDTH)) {
-		shark->type = RECENTLYDEAD;
-	} else if ((shark->y >= SCREEN_HEIGHT) || (shark->y <= -SHARK_HEIGHT)) {
-		shark->type = RECENTLYDEAD;
-	}
-	/*
-	shark->x += shark->displacement->dx;
-	shark->y += shark->displacement->dy;
+	playSharkDeath();
+	// Need to erase now because we free the shark
+	eraseShark(shark);
+	// TODO: increase player score
 
-	shark->displacement = shark->displacement->next;
-	*/
+	if (previousShark != NULL) {
+		// Not killing first shark
+		previousShark->next = nextShark;
+	} else {
+		// Killing first shark
+		sharkList = nextShark;
+	}
+
+	if (nextShark != NULL) {
+		// Not killing last shark
+		nextShark->prev = previousShark;
+	} else {
+		// Killing last shark
+	}
+	sharkCount--;
+	updateCurrentPlayerScore(250);
+}
+
+void cleanupDeadSharks() {
+	Shark *cursor = deadSharkList;
+	Shark *next;
+	while (cursor != NULL) {
+		// eraseShark uses previous values
+		cursor->prevX = cursor->x;
+		cursor->prevY = cursor->y;
+		eraseShark(cursor);
+		next = cursor->next;
+		free(cursor);
+		cursor = next;
+	}
+	deadSharkList = NULL;
 }
