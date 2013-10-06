@@ -20,5 +20,6 @@ extern Displacement verticalDisplacementFunctionUp[DISPLACEMENT_LENGTH];
 extern Displacement verticalDisplacementFunctionDown[DISPLACEMENT_LENGTH];
 extern Displacement circularDisplacementFunction[DISPLACEMENT_LENGTH];
 extern Displacement arcDisplacementFunction[DISPLACEMENT_LENGTH];
+extern Displacement doNotMove[DISPLACEMENT_LENGTH];
 
 #endif
