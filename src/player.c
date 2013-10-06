@@ -1,4 +1,5 @@
 #include "player.h"
+#include "audio.h"
 
 void initPlayer() {
 	player.x = 10;
@@ -38,4 +39,9 @@ void moveDownPlayer()
 void keepPlayerStationary() {
 	player.prevY = player.y;
 	drawBmp(playerBmp, player.x, player.y);
+}
+
+void killPlayer() {
+	playPlayerDeath();
+	// Some game over stuff
 }

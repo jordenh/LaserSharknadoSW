@@ -39,21 +39,22 @@ struct scores {
 	unsigned int currentPlayerLives;
 	int highScoreBoard[10];
 	unsigned char highScoreBoardInits[10][3];
+	unsigned char currentScoreBoardCorrupt;
 };
 
-void initScoreBoard(struct scores * gameScores);
-void defaultHighScoreBoard(struct scores * gameScores);
+void initScoreBoard(void);
+void defaultHighScoreBoard(void);
 
-int getHighScoreBoard(struct scores * gameScores);
-void updateHighScoreBoard(struct scores * gameScores);
+int readHighScoreBoardFromSD(void);
+void updateHighScoreBoard(void);
 
-void updateCurrentPlayerScore(struct scores * gameScores, int deltaScore);
-int getCurrentPlayerScore(struct scores * gameScores);
-void setCurrentPlayerLives(struct scores * gameScores, int newNumLives);
-int getCurrentPlayerLives(struct scores * gameScores);
+void updateCurrentPlayerScore(int deltaScore);
+int getCurrentPlayerScore(void);
+void setCurrentPlayerLives(int newNumLives);
+int getCurrentPlayerLives(void);
 
-void drawInGameInfo(struct scores * gameScores);
-void drawScore(struct scores * gameScores);
+void drawInGameInfo(void);
+void drawScore(void);
 void clearScore(void);
 
 #endif /* SCORE_H_ */

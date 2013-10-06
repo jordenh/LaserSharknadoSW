@@ -1,4 +1,5 @@
 #include "shark.h"
+#include "audio.h"
 
 Shark *sharkList = NULL;
 Shark *deadSharkList = NULL;
@@ -78,6 +79,7 @@ void killShark(Shark *shark) {
 	playSharkDeath();
 	// Need to erase now because we free the shark
 	eraseShark(shark);
+	// TODO: increase player score
 
 	if (previousShark != NULL) {
 		// Not killing first shark
@@ -94,13 +96,13 @@ void killShark(Shark *shark) {
 		// Killing last shark
 	}
 	sharkCount--;
-	//free(shark);
 }
 
 void cleanupDeadSharks() {
 	Shark *cursor = deadSharkList;
 	Shark *next;
 	while (cursor != NULL) {
+		// eraseShark uses previous values
 		cursor->prevX = cursor->x;
 		cursor->prevY = cursor->y;
 		eraseShark(cursor);

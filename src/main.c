@@ -20,7 +20,7 @@
 #define keys (volatile char *) 0x1001080
 #define atariInput (volatile char *) 0x10010b0
 
-int init(struct scores * gameScores) {
+int init(void) {
 	if (openSdCard() == -1) {
 		printf("Error: Failed to open sd card\n");
 		return -1;
@@ -38,8 +38,8 @@ int init(struct scores * gameScores) {
 	initVga();
 	setupAudio();
 	setupDisplacement();
-	initScoreBoard(gameScores);
-	updateHighScoreBoard(gameScores); // only here for testing - this should actually be called each time the player gets hit.
+	initScoreBoard();
+	updateHighScoreBoard(); // only here for testing - this should actually be called each time the player gets hit.
 
 	parseBmps();
 	initBullets();
@@ -50,34 +50,31 @@ int init(struct scores * gameScores) {
 }
 
 int main() {
-	struct scores gameScores;
+	//struct scores gameScores;
 
-	if (init(&gameScores) == -1)
+	if (init() == -1)
 		return -1;
 
-	for(i = 0; i < NUMSCORES; i++){
-				printf("test: %c%c%c\n", gameScores.highScoreBoardInits[i][0],gameScores.highScoreBoardInits[i][1],gameScores.highScoreBoardInits[i][2]);
-				printf("score: %d\n", gameScores.highScoreBoard[i]);
-			}
+	/*for(i = 0; i < NUMSCORES; i++){
+				printf("test: %c%c%c\n", gameScores->highScoreBoardInits[i][0],gameScores->highScoreBoardInits[i][1],gameScores->highScoreBoardInits[i][2]);
+				printf("score: %d\n", gameScores->highScoreBoard[i]);
+			}*/
 
 	int count = 0;
 	short int edgeDetect = 0;
-	short int debounce = 0;
 	char SWInput;
 	short int scoresShown = 0;
 
 	char keyInput;
-	int position = 0;
 
 	char atariButtons;
 	char atariUp;
 	char atariDown;
 	char atariFire;
-	int j,k;
 
 	setHardwareTimerPeriod(CLOCK_FREQ / 30);
 
-	createShark(100, 0, &doNotMove);
+	createShark(100, 0, (Displacement *)&doNotMove);
 
 	drawAllSharks();
 	startHardwareTimer();
@@ -120,8 +117,8 @@ int main() {
 			//score screen
 			if ((SWInput & 0x80) != 0) {
 				if(scoresShown == 0){
-					getHighScoreBoard(&gameScores);
-					drawScore(&gameScores);
+					readHighScoreBoardFromSD();
+					drawScore();
 				}
 				scoresShown = 1;
 			} else {
@@ -130,23 +127,29 @@ int main() {
 				}
 				scoresShown = 0;
 			}
-			drawInGameInfo(&gameScores); // TBD: in actual game loop, only call this function when an event happens (like score inc/dec, or lives inc/dec)
+			drawInGameInfo(); // TBD: in actual game loop, only call this function when an event happens (like score inc/dec, or lives inc/dec)
 			//random sounds for testing
 			if((keyInput & 0x02) != 0x00){
-				setCurrentPlayerLives(&gameScores, getCurrentPlayerLives(&gameScores) - 1);
+				if(getCurrentPlayerLives() != 0){
+					setCurrentPlayerLives(getCurrentPlayerLives() - 1);
+				} else {
+					//ONLY FOR TESTING btw.
+					setCurrentPlayerLives(getCurrentPlayerLives() + 1);
+				}
 				playPlayerDeath();
 			}
 			if((keyInput & 0x04) != 0x00){
-				updateHighScoreBoard(&gameScores);
+				updateHighScoreBoard();
 				playTheme();
 			}
 			if((keyInput & 0x08) != 0x00){
-				updateCurrentPlayerScore(&gameScores, 250);
+				updateCurrentPlayerScore(250);
 				playSharkDeath();
 			}
 
 			cleanupDeadSharks();
 			if (count % 2 == 0) doSharkBulletCollision();
+			if (count % 2 == 1) doPlayerBulletCollision();
 
 			drawAllBullets();
 

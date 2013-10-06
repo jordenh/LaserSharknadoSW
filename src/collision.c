@@ -24,11 +24,12 @@ int isBulletCollidingWithShark(Shark *shark, Bullet *bullet) {
 	if (bullet->x >= shark->x &&
 		bullet->x <= shark->x + SHARK_LENGTH) {
 		// Have x region correct
+		printf("x-hit\n");
 		
 		if (bullet->y >= shark->y &&
 			bullet->y <= shark->y + SHARK_HEIGHT) {
 			// Have y region correct
-			
+			printf("y-hit\n");
 			return TRUE;
 		}
 	}
@@ -68,5 +69,18 @@ void doSharkBulletCollision(void) {
 		}
 		bulletCursor = bulletCursor->next;
 		i++;
+	}
+}
+
+void doPlayerBulletCollision(void) {
+	Bullet *bulletCursor = sharkBulletList;
+	int i = 0;
+	while (bulletCursor != NULL
+			&& bulletCursor->status == SHARKBULLET
+			&& i < NUM_BULLETS) {
+		if (isBulletCollidingWithPlayer(&player, bulletCursor) == TRUE) {
+			killPlayer();
+			break;
+		}
 	}
 }

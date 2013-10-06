@@ -3,23 +3,20 @@
 #include "score.h"
 
 char * scoreFileName = "scores.txt";
+struct scores * gameScores;
 
-void initScoreBoard(struct scores * gameScores) {
-	gameScores->currentPlayerScore = 125; // TBD - set to 0 - testing code by setting to other values.
+//set all gameScores values to initial values - read all high score board info from SD card.
+void initScoreBoard(void) {
+	gameScores = malloc(sizeof(struct scores));
+	printf("gameScoresTemp is at: %x\n", (unsigned int)gameScores);
+
+	gameScores->currentPlayerScore = 0; // TBD - set to 0 - testing code by setting to other values.
 	gameScores->currentPlayerLives = INITIALLIVES;
-	getHighScoreBoard(gameScores);
-	/*int i;
-	for (i = 0; i < NUMSCORES; i++){
-		//gameScores.highScoreBoardInits[i] = malloc(sizeof(char) * 3);
-		//printf("size of gameScore: %x, at %x",(sizeof(char) * 3), (unsigned int)gameScores.highScoreBoardInits[i]);
-		if(gameScores->highScoreBoardInits[i] == NULL) {
-			printf("Error in mallocing scoreboard Initials space. \n");
-		}
-	}*/
-
+	readHighScoreBoardFromSD();
 }
 
-void defaultHighScoreBoard(struct scores * gameScores) {
+//set high score values to defaults - used if reading the SD card fails.s
+void defaultHighScoreBoard(void) {
 	int i,j;
 	for(i = 0; i < NUMSCORES; i++) {
 		gameScores->highScoreBoard[i] = 1;
@@ -31,11 +28,15 @@ void defaultHighScoreBoard(struct scores * gameScores) {
 }
 
 //returns -1 on error in reading scoreboard (and also defaults all current values), returns 0 on success.
-int getHighScoreBoard(struct scores * gameScores) {
+//function updates all gameScores' variables so that reading them have the most up to date values
+int readHighScoreBoardFromSD(void) {
+	gameScores->currentScoreBoardCorrupt = 0;
+
 	short int fileHandle = openFile(scoreFileName);
 	if (fileHandle == -1) {
 		printf("Error opening %s\n", scoreFileName);
-		defaultHighScoreBoard(gameScores);
+		defaultHighScoreBoard();
+		gameScores->currentScoreBoardCorrupt = 1;
 		return -1;
 	}
 
@@ -54,12 +55,12 @@ int getHighScoreBoard(struct scores * gameScores) {
 		if(readValue != 0x20) {
 			closeFile(fileHandle);
 			printf("Error within %s - file not initialized to proper format. Scoreboard defaulted.", scoreFileName);
-			defaultHighScoreBoard(gameScores);
+			defaultHighScoreBoard();
+			gameScores->currentScoreBoardCorrupt = 1;
 			return -1;
 		}
-		//printf("test: %c%c%c\n", gameScores.highScoreBoardInits[i][0],gameScores.highScoreBoardInits[i][1],gameScores.highScoreBoardInits[i][2]);
 
-		//clear score buffer
+		//clear score buffer - which is used in order to convert unknown number of chars into an int.
 		for(k = 0; k < MAXSCOREDIGITS; k++){
 			scoreBuffer[k] = -1;
 		}
@@ -72,7 +73,8 @@ int getHighScoreBoard(struct scores * gameScores) {
 		if(readValue != 0x20) {
 			closeFile(fileHandle);
 			printf("Error within %s - file not initialized to proper format. Scoreboard defaulted.", scoreFileName);
-			defaultHighScoreBoard(gameScores);
+			defaultHighScoreBoard();
+			gameScores->currentScoreBoardCorrupt = 1;
 			return -1;
 		}
 
@@ -82,25 +84,23 @@ int getHighScoreBoard(struct scores * gameScores) {
 			currentScore += (scoreBuffer[k] - '0') * pow(10,(numDigits - 1 - k));
 		}
 		gameScores->highScoreBoard[i] = currentScore;
+	}
 
-		//printf("score: %d\n", currentScore);
-	}
-	for(i = 0; i < NUMSCORES; i++){
-		printf("test: %c%c%c\n", gameScores->highScoreBoardInits[i][0],gameScores->highScoreBoardInits[i][1],gameScores->highScoreBoardInits[i][2]);
-		printf("score: %d\n", gameScores->highScoreBoard[i]);
-	}
 	closeFile(fileHandle);
 	return 0;
 }
 
-void updateHighScoreBoard(struct scores * gameScores) {
-	int playerScore = getCurrentPlayerScore(gameScores);
+//function writes to the SD card, and places current players score into the high scores if
+//it exceeds any of the current high scores.
+//function returns if the highScore file doesnt open in memory, or if the currentScoreBoard is corrupt.
+void updateHighScoreBoard(void) {
+	int playerScore = getCurrentPlayerScore();
 	unsigned short i,j;
 	short scoreReplaceIndex = -1;
 	unsigned short firstDigitFound = 0;
 	unsigned short digit;
 	short int fileHandle = openFile(scoreFileName);
-	if (fileHandle == -1) {
+	if (fileHandle == -1 || gameScores->currentScoreBoardCorrupt == 1) {
 		printf("Error opening %s\n", scoreFileName);
 		return;
 	}
@@ -161,29 +161,35 @@ void updateHighScoreBoard(struct scores * gameScores) {
 
 	closeFile(fileHandle);
 
-	getHighScoreBoard(gameScores); //reload new written data back into game memory.
+	//reload new written data back into game memory.
+	readHighScoreBoardFromSD();
 
 	return;
 }
 
-void updateCurrentPlayerScore(struct scores * gameScores, int deltaScore) {
+//increment player score by deltaScore
+void updateCurrentPlayerScore(int deltaScore) {
 	gameScores->currentPlayerScore += deltaScore;
 	return;
 }
 
-int getCurrentPlayerScore(struct scores * gameScores) {
+//accessor: get score
+int getCurrentPlayerScore() {
 	return gameScores->currentPlayerScore;
 }
 
-void setCurrentPlayerLives(struct scores * gameScores, int newNumLives){
+//mutator: set lives to newNumLives
+void setCurrentPlayerLives(int newNumLives){
 	gameScores->currentPlayerLives = newNumLives;
 }
 
-int getCurrentPlayerLives(struct scores * gameScores) {
+//accessor: get lives
+int getCurrentPlayerLives(void) {
 	return gameScores->currentPlayerLives;
 }
 
-void drawScore(struct scores * gameScores){
+//purpose: overlay current scoreboard values onto the screen.
+void drawScore(void){
 	char scoreValues[15];// = malloc(sizeof(char) * NUMINITIALS); // scores wont exceed 10, and names are 3
 	int i,j;
 	int digit;
@@ -222,15 +228,15 @@ void clearScore(void) {
 }
 
 //draws current lives and playerScore
-void drawInGameInfo(struct scores * gameScores) {
+void drawInGameInfo(void) {
 	char livesLeft[2] = {' ', '\0'};
-	livesLeft[0] = (getCurrentPlayerLives(gameScores) + '0');
+	livesLeft[0] = (getCurrentPlayerLives() + '0');
 	int xPos = 1;
 	int yPos = 1;
 	int i;
 	int digit = 0;
 	int firstDigitFound = 0;
-	int currentScore = getCurrentPlayerScore(gameScores);
+	int currentScore = getCurrentPlayerScore();
 	char currentCharScore[MAXSCOREDIGITS + 1];
 	currentCharScore[MAXSCOREDIGITS] = '\0'; //end of string
 
