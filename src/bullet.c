@@ -42,11 +42,13 @@ void createBullet(bulletstatus status) {
 	}
 
 	if (status == PLAYERBULLET) {
-		if ((unsigned int)playerBulletList > (unsigned int)newBullet) {
+		if ((unsigned int)playerBulletList > (unsigned int)newBullet
+				|| playerBulletList == NULL) {
 			playerBulletList = newBullet;
 		}
 	} else {
-		if ((unsigned int)sharkBulletList > (unsigned int)newBullet) {
+		if ((unsigned int)sharkBulletList > (unsigned int)newBullet
+				|| playerBulletList == NULL) {
 			sharkBulletList = newBullet;
 		}
 	}
