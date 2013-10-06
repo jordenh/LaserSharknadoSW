@@ -173,6 +173,7 @@ int main() {
 				playSharkDeath();
 			}
 
+			cleanupDeadSharks();
 			if (count % 2 == 0) doSharkBulletCollision();
 
 			drawAllBullets();

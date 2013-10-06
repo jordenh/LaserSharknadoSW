@@ -1,6 +1,7 @@
 #include "shark.h"
 
 Shark *sharkList = NULL;
+Shark *deadSharkList = NULL;
 unsigned int sharkCount = 0;
 
 void drawShark(Shark *shark) {
@@ -63,6 +64,18 @@ void createShark(int x, int y, struct Displacement *displacement) {
 void killShark(Shark *shark) {
 	Shark *previousShark = shark->prev;
 	Shark *nextShark = shark->next;
+
+	if (deadSharkList == NULL) {
+		deadSharkList = shark;
+		shark->next == NULL;
+	}
+	else {
+		deadSharkList->prev = shark;
+		shark->next = deadSharkList;
+		deadSharkList = shark;
+	}
+
+	playSharkDeath();
 	// Need to erase now because we free the shark
 	eraseShark(shark);
 
@@ -81,5 +94,16 @@ void killShark(Shark *shark) {
 		// Killing last shark
 	}
 	sharkCount--;
-	free(shark);
+	//free(shark);
+}
+
+void cleanupDeadSharks() {
+	Shark *cursor = deadSharkList;
+	while (cursor != NULL) {
+		cursor->prevX = cursor->x;
+		cursor->prevY = cursor->y;
+		eraseShark(cursor);
+		free(cursor);
+	}
+	deadSharkList = NULL;
 }
