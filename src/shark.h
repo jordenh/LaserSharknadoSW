@@ -25,6 +25,7 @@ typedef struct Shark Shark;
 
 extern Shark *sharkList;
 extern unsigned int sharkCount;
+extern Shark *deadSharkList;
 
 void drawShark(Shark *shark);
 void eraseShark(Shark *shark);
@@ -34,5 +35,6 @@ void killShark(Shark *shark);
 void moveAllSharks(void);
 void drawAllSharks(void);
 void eraseAllSharks(void);
+void cleanupDeadSharks(void);
 
 #endif
