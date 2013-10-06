@@ -4,8 +4,8 @@
 void initPlayer() {
 	player.x = 10;
 	player.y = 90;
-	player.prevX = 0;
-	player.prevY = 0;
+	player.prevX = 10;
+	player.prevY = 90;
 }
 
 void drawPlayer() {
