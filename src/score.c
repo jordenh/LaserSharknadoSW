@@ -4,10 +4,12 @@
 
 char * scoreFileName = "scores.txt";
 
+//set all gameScores values to initial values - read all high score board info from SD card.
 void initScoreBoard(struct scores * gameScores) {
-	gameScores->currentPlayerScore = 125; // TBD - set to 0 - testing code by setting to other values.
+	gameScores->currentPlayerScore = 0; // TBD - set to 0 - testing code by setting to other values.
 	gameScores->currentPlayerLives = INITIALLIVES;
-	getHighScoreBoard(gameScores);
+	readHighScoreBoardFromSD(gameScores);
+
 	/*int i;
 	for (i = 0; i < NUMSCORES; i++){
 		//gameScores.highScoreBoardInits[i] = malloc(sizeof(char) * 3);
@@ -19,6 +21,7 @@ void initScoreBoard(struct scores * gameScores) {
 
 }
 
+//
 void defaultHighScoreBoard(struct scores * gameScores) {
 	int i,j;
 	for(i = 0; i < NUMSCORES; i++) {
@@ -31,11 +34,14 @@ void defaultHighScoreBoard(struct scores * gameScores) {
 }
 
 //returns -1 on error in reading scoreboard (and also defaults all current values), returns 0 on success.
-int getHighScoreBoard(struct scores * gameScores) {
+int readHighScoreBoardFromSD(struct scores * gameScores) {
+	gameScores->currentScoreBoardCorrupt = 0;
+
 	short int fileHandle = openFile(scoreFileName);
 	if (fileHandle == -1) {
 		printf("Error opening %s\n", scoreFileName);
 		defaultHighScoreBoard(gameScores);
+		gameScores->currentScoreBoardCorrupt = 1;
 		return -1;
 	}
 
@@ -55,6 +61,7 @@ int getHighScoreBoard(struct scores * gameScores) {
 			closeFile(fileHandle);
 			printf("Error within %s - file not initialized to proper format. Scoreboard defaulted.", scoreFileName);
 			defaultHighScoreBoard(gameScores);
+			gameScores->currentScoreBoardCorrupt = 1;
 			return -1;
 		}
 		//printf("test: %c%c%c\n", gameScores.highScoreBoardInits[i][0],gameScores.highScoreBoardInits[i][1],gameScores.highScoreBoardInits[i][2]);
@@ -73,6 +80,7 @@ int getHighScoreBoard(struct scores * gameScores) {
 			closeFile(fileHandle);
 			printf("Error within %s - file not initialized to proper format. Scoreboard defaulted.", scoreFileName);
 			defaultHighScoreBoard(gameScores);
+			gameScores->currentScoreBoardCorrupt = 1;
 			return -1;
 		}
 
@@ -100,7 +108,7 @@ void updateHighScoreBoard(struct scores * gameScores) {
 	unsigned short firstDigitFound = 0;
 	unsigned short digit;
 	short int fileHandle = openFile(scoreFileName);
-	if (fileHandle == -1) {
+	if (fileHandle == -1 || gameScores->currentScoreBoardCorrupt == 1) {
 		printf("Error opening %s\n", scoreFileName);
 		return;
 	}
@@ -161,7 +169,7 @@ void updateHighScoreBoard(struct scores * gameScores) {
 
 	closeFile(fileHandle);
 
-	getHighScoreBoard(gameScores); //reload new written data back into game memory.
+	readHighScoreBoardFromSD(gameScores); //reload new written data back into game memory.
 
 	return;
 }

@@ -140,7 +140,7 @@ int main() {
 			//score screen
 			if ((SWInput & 0x80) != 0) {
 				if(scoresShown == 0){
-					getHighScoreBoard(&gameScores);
+					readHighScoreBoardFromSD(&gameScores);
 					drawScore(&gameScores);
 				}
 				scoresShown = 1;

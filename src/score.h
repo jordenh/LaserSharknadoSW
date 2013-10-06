@@ -39,12 +39,13 @@ struct scores {
 	unsigned int currentPlayerLives;
 	int highScoreBoard[10];
 	unsigned char highScoreBoardInits[10][3];
+	unsigned char currentScoreBoardCorrupt;
 };
 
 void initScoreBoard(struct scores * gameScores);
 void defaultHighScoreBoard(struct scores * gameScores);
 
-int getHighScoreBoard(struct scores * gameScores);
+int readHighScoreBoardFromSD(struct scores * gameScores);
 void updateHighScoreBoard(struct scores * gameScores);
 
 void updateCurrentPlayerScore(struct scores * gameScores, int deltaScore);
