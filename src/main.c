@@ -153,7 +153,12 @@ int main() {
 			drawInGameInfo(&gameScores); // TBD: in actual game loop, only call this function when an event happens (like score inc/dec, or lives inc/dec)
 			//random sounds for testing
 			if((keyInput & 0x02) != 0x00){
-				setCurrentPlayerLives(&gameScores, getCurrentPlayerLives(&gameScores) - 1);
+				if(getCurrentPlayerLives(&gameScores) != 0){
+					setCurrentPlayerLives(&gameScores, getCurrentPlayerLives(&gameScores) - 1);
+				} else {
+					//ONLY FOR TESTING btw.
+					setCurrentPlayerLives(&gameScores, getCurrentPlayerLives(&gameScores) + 1);
+				}
 				playPlayerDeath();
 			}
 			if((keyInput & 0x04) != 0x00){
