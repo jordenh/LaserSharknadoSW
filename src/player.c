@@ -1,4 +1,5 @@
 #include "player.h"
+#include "audio.h"
 
 void initPlayer() {
 	player.x = 10;
@@ -36,3 +37,7 @@ void moveDownPlayer()
 	}
 }
 
+void killPlayer() {
+	playPlayerDeath();
+	// Some game over stuff
+}

@@ -71,3 +71,16 @@ void doSharkBulletCollision(void) {
 		i++;
 	}
 }
+
+void doPlayerBulletCollision(void) {
+	Bullet *bulletCursor = sharkBulletList;
+	int i = 0;
+	while (bulletCursor != NULL
+			&& bulletCursor->status == SHARKBULLET
+			&& i < NUM_BULLETS) {
+		if (isBulletCollidingWithPlayer(&player, bulletCursor) == TRUE) {
+			killPlayer();
+			break;
+		}
+	}
+}

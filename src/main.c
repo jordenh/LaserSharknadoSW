@@ -78,22 +78,19 @@ int main() {
 
 	int count = 0;
 	short int edgeDetect = 0;
-	short int debounce = 0;
 	char SWInput;
 	short int scoresShown = 0;
 
 	char keyInput;
-	int position = 0;
 
 	char atariButtons;
 	char atariUp;
 	char atariDown;
 	char atariFire;
-	int j,k;
 
 	setHardwareTimerPeriod(CLOCK_FREQ / 30);
 
-	createShark(100, 0, &doNotMove);
+	createShark(100, 0, (Displacement *)&doNotMove);
 
 	drawAllSharks();
 	startHardwareTimer();
@@ -172,6 +169,7 @@ int main() {
 
 			cleanupDeadSharks();
 			if (count % 2 == 0) doSharkBulletCollision();
+			if (count % 2 == 1) doPlayerBulletCollision();
 
 			drawAllBullets();
 

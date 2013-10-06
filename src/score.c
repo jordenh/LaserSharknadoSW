@@ -8,7 +8,7 @@ struct scores * gameScores;
 //set all gameScores values to initial values - read all high score board info from SD card.
 void initScoreBoard(void) {
 	gameScores = malloc(sizeof(struct scores));
-	printf("gameScoresTemp is at: %x\n", gameScores);
+	printf("gameScoresTemp is at: %x\n", (unsigned int)gameScores);
 
 	gameScores->currentPlayerScore = 0; // TBD - set to 0 - testing code by setting to other values.
 	gameScores->currentPlayerLives = INITIALLIVES;
