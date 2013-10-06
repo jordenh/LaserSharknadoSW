@@ -86,7 +86,6 @@ int main() {
 			if (count % 2 == 1) doPlayerBulletCollision();
 
 			drawAllBullets();
-			drawInGameInfo(); // TBD: in actual game loop, only call this function when an event happens (like score inc/dec, or lives inc/dec)
 
 			alt_up_pixel_buffer_dma_swap_buffers(pixel_buffer);
 			while(alt_up_pixel_buffer_dma_check_swap_buffers_status(pixel_buffer));

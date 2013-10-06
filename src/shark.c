@@ -96,6 +96,7 @@ void killShark(Shark *shark) {
 		// Killing last shark
 	}
 	sharkCount--;
+	updateCurrentPlayerScore(250);
 }
 
 void cleanupDeadSharks() {

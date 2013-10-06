@@ -43,5 +43,6 @@ void keepPlayerStationary() {
 
 void killPlayer() {
 	playPlayerDeath();
+	updateHighScoreBoard();
 	// Some game over stuff
 }
