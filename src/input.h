@@ -33,6 +33,6 @@ void handleSwitchInput(void);
 
 void handleAtariInput(void);
 
-
+int startGame();
 
 #endif /* INPUT_H_ */

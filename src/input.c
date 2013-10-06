@@ -68,7 +68,6 @@ void handleKeyInput(void){
 
 void handleSwitchInput(void){
 	static char SWInput;
-	static short int edgeDetect = 0;
 	static short int scoresShown = 0;
 	SWInput = IORD_8DIRECT(switches, 0);
 
@@ -117,9 +116,16 @@ void handleAtariInput(void){
 	}
 }
 
+int startGame() {
+	char atariButtons;
+	char atariFire;
 
-
-
-
-
-
+	atariButtons = (IORD_8DIRECT(atariInput, 0) & 0x0F);
+	atariFire = atariButtons & 0x08;
+	
+	if (atariFire == 1) {
+		return 1;
+	} else {
+		return 0;
+	}
+}
