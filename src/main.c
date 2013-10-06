@@ -140,6 +140,7 @@ int main() {
 			//score screen
 			if ((SWInput & 0x80) != 0) {
 				if(scoresShown == 0){
+					getHighScoreBoard(&gameScores);
 					drawScore(&gameScores);
 				}
 				scoresShown = 1;
@@ -149,14 +150,18 @@ int main() {
 				}
 				scoresShown = 0;
 			}
+			drawInGameInfo(&gameScores); // TBD: in actual game loop, only call this function when an event happens (like score inc/dec, or lives inc/dec)
 			//random sounds for testing
 			if((keyInput & 0x02) != 0x00){
+				setCurrentPlayerLives(&gameScores, getCurrentPlayerLives(&gameScores) - 1);
 				playPlayerDeath();
 			}
 			if((keyInput & 0x04) != 0x00){
+				updateHighScoreBoard(&gameScores);
 				playTheme();
 			}
 			if((keyInput & 0x08) != 0x00){
+				updateCurrentPlayerScore(&gameScores, 250);
 				playSharkDeath();
 			}
 

@@ -47,11 +47,12 @@ void defaultHighScoreBoard(struct scores * gameScores);
 int getHighScoreBoard(struct scores * gameScores);
 void updateHighScoreBoard(struct scores * gameScores);
 
-void updateCurrentPlayerScore(int deltaScore, struct scores * gameScores);
+void updateCurrentPlayerScore(struct scores * gameScores, int deltaScore);
 int getCurrentPlayerScore(struct scores * gameScores);
 void setCurrentPlayerLives(struct scores * gameScores, int newNumLives);
 int getCurrentPlayerLives(struct scores * gameScores);
 
+void drawInGameInfo(struct scores * gameScores);
 void drawScore(struct scores * gameScores);
 void clearScore(void);
 
