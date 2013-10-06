@@ -2,6 +2,16 @@
 
 #include "collision.h"
 
+Shark *findSharkIfHit(Bullet *bullet) {
+	Shark *cursor = sharkList;
+	while (cursor != NULL) {
+		if (isBulletCollidingWithShark(cursor, bullet) == TRUE) {
+			return cursor;
+		}
+	}
+	return NULL;
+}
+
 int isBulletCollidingWithShark(Shark *shark, Bullet *bullet) {
 	if (bullet->status == SHARKBULLET) {
 		// No friendly fire
@@ -40,4 +50,16 @@ int isBulletCollidingWithPlayer(Player *player, Bullet *bullet) {
 		}
 	}
 	return FALSE;
+}
+
+void doSharkBulletCollision(void) {
+	Bullet *bulletCursor = playerBulletList;
+	Shark *toKill = NULL;
+	while (bulletCursor != NULL && bulletCursor->status == PLAYERBULLET) {
+		toKill = findSharkIfHit(bulletCursor);
+		if (toKill != NULL) {
+			killShark(toKill);
+		}
+		bulletCursor = bulletCursor->next;
+	}
 }

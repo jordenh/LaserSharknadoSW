@@ -14,13 +14,18 @@ typedef enum {
 	NOTACTIVE
 } bulletstatus;
 
-typedef struct {
+struct Bullet {
 	int x, prevX;
 	int y, prevY;
 	bulletstatus status;
-} Bullet;
+	struct Bullet *next;
+};
+
+typedef struct Bullet Bullet;
 
 Bullet bulletArray[NUM_BULLETS];
+extern Bullet *playerBulletList;
+extern Bullet *sharkBulletList;
 
 void initBullets();
 void createBullet(bulletstatus status);
@@ -30,5 +35,7 @@ void eraseAllBullets();
 void drawBullet(Bullet *bullet);
 void eraseBullet(Bullet *bullet);
 void moveRight(Bullet *bullet);
+void moveBulletRight(Bullet *bullet);
+void moveBulletLeft(Bullet *bullet);
 
 #endif
