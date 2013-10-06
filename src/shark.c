@@ -101,6 +101,7 @@ void cleanupDeadSharks() {
 	Shark *cursor = deadSharkList;
 	Shark *next;
 	while (cursor != NULL) {
+		eraseShark(cursor);
 		cursor->prevX = cursor->x;
 		cursor->prevY = cursor->y;
 		eraseShark(cursor);

@@ -14,6 +14,7 @@
 #include "altera_nios2_qsys_irq.h"
 #include "sys/alt_irq.h"
 #include "score.h"
+#include "input.h"
 
 #define switches (volatile char *) 0x1001060
 #define leds (char *) 0x1001070
@@ -50,8 +51,6 @@ int init(void) {
 }
 
 int main() {
-	//struct scores gameScores;
-
 	if (init() == -1)
 		return -1;
 
@@ -70,11 +69,6 @@ int main() {
 	for (i = 0; i < NUM_BULLETS; i++) {
 		bulletArray[i].status = NOTACTIVE;
 	}
-
-	/*for(i = 0; i < NUMSCORES; i++){
-				printf("test: %c%c%c\n", gameScores->highScoreBoardInits[i][0],gameScores->highScoreBoardInits[i][1],gameScores->highScoreBoardInits[i][2]);
-				printf("score: %d\n", gameScores->highScoreBoard[i]);
-			}*/
 
 	int count = 0;
 	short int edgeDetect = 0;
@@ -118,18 +112,22 @@ int main() {
 			moveAllSharks();
 			drawAllSharks();
 
-			if ((atariFire == 0x00 || keyInput & 0x01) && (edgeDetect == 0)) {
+			handleKeyInput();
+			handleSwitchInput();
+			handleAtariInput();
+
+			/*if ((atariFire == 0x00 || keyInput & 0x01) && (edgeDetect == 0)) {
 				edgeDetect = 1;
 			} else if ((atariFire != 0x00 || keyInput & 0x01) && (edgeDetect == 1)) {
 				edgeDetect = 0;
 				createBullet(PLAYERBULLET);
-			}
+			}*/
 
 			if (count%2 == 0) {
 				moveAllBullets();
 			}
 
-			//movements
+			/*//movements
 			if (atariUp != 0x00) {
 				moveUpPlayer();
 			} else if (atariDown != 0x00) {
@@ -149,9 +147,9 @@ int main() {
 					clearScore();
 				}
 				scoresShown = 0;
-			}
+			}*/
 			drawInGameInfo(); // TBD: in actual game loop, only call this function when an event happens (like score inc/dec, or lives inc/dec)
-			//random sounds for testing
+			/*//random sounds for testing
 			if((keyInput & 0x02) != 0x00){
 				if(getCurrentPlayerLives() != 0){
 					setCurrentPlayerLives(getCurrentPlayerLives() - 1);
@@ -168,16 +166,16 @@ int main() {
 			if((keyInput & 0x08) != 0x00){
 				updateCurrentPlayerScore(250);
 				playSharkDeath();
-			}
+			}*/
 
-			cleanupDeadSharks();
+
 			if (count % 2 == 0) doSharkBulletCollision();
 
 			drawAllBullets();
 
 			alt_up_pixel_buffer_dma_swap_buffers(pixel_buffer);
 			while(alt_up_pixel_buffer_dma_check_swap_buffers_status(pixel_buffer));
-
+			cleanupDeadSharks();
 			eraseAllSharks();
 			eraseAllBullets();
 			erasePlayer();
