@@ -1,5 +1,5 @@
 #include "shark.h"
-#include "audio.h"
+
 
 Shark *sharkList = NULL;
 Shark *deadSharkList = NULL;
@@ -45,7 +45,7 @@ void eraseAllSharks(void) {
 	}
 }
 
-void createShark(int x, int y, struct Displacement *displacement) {
+void createShark(int x, int y, Displacement *displacement) {
 	Shark *newShark = malloc(sizeof(Shark));
 	newShark->x = x;
 	newShark->y = y;

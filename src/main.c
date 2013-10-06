@@ -41,7 +41,6 @@ int init(void) {
 	setupDisplacement();
 	initScoreBoard();
 	drawInGameInfo();
-	//updateHighScoreBoard(); // only here for testing - this should actually be called each time the player gets hit.
 
 	parseBmps();
 	initBullets();

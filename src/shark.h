@@ -2,6 +2,7 @@
 #define __SHARK_H__
 
 #include "bmp.h"
+#include "audio.h"
 //#include "score.h" // TBD - FIX AND INCLUDE!!
 
 #define SHARK_LENGTH 37
@@ -31,7 +32,7 @@ extern Shark *deadSharkList;
 void drawShark(Shark *shark);
 void eraseShark(Shark *shark);
 void moveShark(Shark *shark);
-void createShark(int x, int y, struct Displacement *displacement);
+void createShark(int x, int y, Displacement *displacement);
 void killShark(Shark *shark);
 void moveAllSharks(void);
 void drawAllSharks(void);

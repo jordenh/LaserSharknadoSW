@@ -12,8 +12,6 @@
 #include <math.h>
 #include "system.h"
 #include "lcd.h"
-#include "audio.h"
-#include "timer.h"
 #include "sd_card.h"
 #include "vga.h"
 #include "displacement.h"

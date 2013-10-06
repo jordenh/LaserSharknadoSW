@@ -10,8 +10,6 @@
 
 #define DISPLACEMENT_LENGTH 128
 
-// Forward declaration
-struct Shark;
 
 void setupDisplacement(void);
 void setToRandomDisplacement(Shark *shark);

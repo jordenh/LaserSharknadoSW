@@ -76,6 +76,7 @@ void handleSwitchInput(void){
 	} else {
 		if(scoresShown == 1){
 			clearScore();
+			drawInGameInfo();
 		}
 		scoresShown = 0;
 	}
