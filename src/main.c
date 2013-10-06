@@ -52,6 +52,9 @@ int init(struct scores * gameScores) {
 int main() {
 	struct scores gameScores;
 
+	struct scores * gameScoresTemp = malloc(sizeof(struct scores));
+	printf("gameScoresTemp is at: %x\n", gameScoresTemp);
+
 	if (init(&gameScores) == -1)
 		return -1;
 

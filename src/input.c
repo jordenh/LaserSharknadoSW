@@ -1,7 +1,15 @@
 
 #include "input.h"
+#include "bullet.h"
+#include "io.h"
+#include "system.h"
+#include "altera_nios2_qsys_irq.h"
+#include "sys/alt_irq.h"
 
-
+#define switches (volatile char *) 0x1001060
+#define leds (char *) 0x1001070
+#define keys (volatile char *) 0x1001080
+#define atariInput (volatile char *) 0x10010b0
 
 void handleKeyInput(void){
 	char keyInput;
