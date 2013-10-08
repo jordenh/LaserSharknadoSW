@@ -40,10 +40,6 @@ int init(void) {
 	initVga();
 	parseBmps();
 	drawSplashScreen();
-	alt_up_pixel_buffer_dma_swap_buffers(pixel_buffer);
-	while(alt_up_pixel_buffer_dma_check_swap_buffers_status(pixel_buffer));
-	freeSplash();
-
 	setupAudio();
 	setupDisplacement();
 	initScoreBoard();
@@ -76,8 +72,10 @@ int main() {
 			startHardwareTimer();
 
 			if (displaySplashScreen) {
-				if(startGame()) 
+				if(startGame()) {
+					clearSplashScreen();
 					displaySplashScreen = 0;	
+				}
 			} else {
 				count++;
 
@@ -85,9 +83,9 @@ int main() {
 				drawAllSharks();
 				drawInGameInfo(); // TBD: in actual game loop, only call this function when an event happens (like score inc/dec, or lives inc/dec)
 
-		//		handleKeyInput();
+				handleKeyInput();
 				handleSwitchInput();
-				handleAtariInput();
+				//handleAtariInput();
 
 				moveAllBullets();
 

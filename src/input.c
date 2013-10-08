@@ -3,8 +3,6 @@
 
 #define switches (volatile char *) 0x1001060
 #define leds (char *) 0x1001070
-#define keys (volatile char *) 0x1001080
-#define atariInput (volatile char *) 0x10010b0
 
 void handleKeyInput(void){
 	static char keyInput;
@@ -93,7 +91,7 @@ void handleAtariInput(void){
 	static char atariFire;
 	static short int edgeDetect = 0;
 
-	atariButtons = (IORD_8DIRECT(atariInput, 0) & 0x0F);
+	atariButtons = (IORD_8DIRECT(PROCESSORGPIN_BASE, 0) & 0x0F);
 	atariFire = atariButtons & 0x08;
 	atariUp = atariButtons & 0x02;
 	atariDown = atariButtons & 0x04;
@@ -120,10 +118,10 @@ int startGame() {
 	char atariButtons;
 	char atariFire;
 
-	atariButtons = (IORD_8DIRECT(atariInput, 0) & 0x0F);
-	atariFire = atariButtons & 0x08;
+	atariButtons = (IORD_8DIRECT(KEYS_BASE, 0) & 0x0F);
+	atariFire = atariButtons & 0x8;
 	
-	if (atariFire == 1) {
+	if (atariFire) {
 		return 1;
 	} else {
 		return 0;
