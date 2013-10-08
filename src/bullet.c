@@ -8,6 +8,7 @@ void initBullets() {
 	for (i = 0; i < NUM_BULLETS; i++) {
 		bulletArray[i].type = NOTACTIVE;
 		bulletArray[i].next = NULL;
+		bulletArray[i].prev = NULL;
 	}
 }
 
@@ -17,24 +18,26 @@ void createBullet(bullettype type, int x, int y) {
 	Bullet *newBullet;
 	while (index < NUM_BULLETS) {
 		if (bulletArray[index].type == NOTACTIVE)	{
-			bulletArray[index].x = x;
-			bulletArray[index].y = y;
-			bulletArray[index].type = type;
-			drawBullet(&bulletArray[index]);
-			// PREV LINK
-			activeBullet->next = &bulletArray[index];
-			bulletArray[index].prev = activeBullet;
-			// TODO REMOVE - separation of concerns
-			newBullet = &bulletArray[index];
+			newBullet = &(bulletArray[index]);
+			newBullet->x = x;
+			newBullet->y = y;
+			newBullet->prevX = x;
+			newBullet->prevY = y;
+			newBullet->type = type;
 			newBullet->next = NULL;
-			while (index < NUM_BULLETS) {
-				index++;
-				if (bulletArray[index].type == type) {
-					newBullet->next = &bulletArray[index];
-					bulletArray[index].prev = newBullet;
-					break;
+			newBullet->prev = NULL;
+
+			drawBullet(newBullet);
+
+			if (activeBullet != NULL) {
+				if (activeBullet->next != NULL) {
+					(activeBullet->next)->prev = newBullet;
 				}
+				newBullet->next = activeBullet->next;
+				activeBullet->next = newBullet;
+				newBullet->prev = activeBullet;
 			}
+
 			break;
 		} else if (bulletArray[index].type == type){
 			activeBullet = &bulletArray[index];
@@ -112,8 +115,13 @@ void moveBulletRight(Bullet *bullet) {
 		Bullet *prevBullet = bullet->prev;
 		bullet->next = NULL;
 		bullet->prev = NULL;
-		nextBullet->prev = prevBullet;
-		prevBullet->next = nextBullet;
+
+		if (nextBullet != NULL) {
+			nextBullet->prev = prevBullet;
+		}
+		if (prevBullet != NULL) {
+			prevBullet->next = nextBullet;
+		}
 	}
 }
 
@@ -129,7 +137,12 @@ void moveBulletLeft(Bullet *bullet) {
 		Bullet *prevBullet = bullet->prev;
 		bullet->next = NULL;
 		bullet->prev = NULL;
-		nextBullet->prev = prevBullet;
-		prevBullet->next = nextBullet;
+
+		if (nextBullet != NULL) {
+			nextBullet->prev = prevBullet;
+		}
+		if (prevBullet != NULL) {
+			prevBullet->next = nextBullet;
+		}
 	}
 }
