@@ -1,10 +1,3 @@
-/*
- * score.h
- *
- *  Created on: Oct 3, 2013
- *      Author: jorde_000
- */
-
 #ifndef SCORE_H_
 #define SCORE_H_
 
@@ -12,8 +5,6 @@
 #define NUMINITIALS 3
 #define MAXSCOREDIGITS 10
 #define INITIALLIVES 3
-
-
 
 #include "lcd.h"
 #include "audio.h"
@@ -57,11 +48,4 @@ void drawInGameInfo(void);
 void drawScore(void);
 void clearScore(void);
 
-#endif /* SCORE_H_ */
-
-/*
- * high score board file will be in format -
- * 3Initials score1 3Initials score2 3Initials score3 .... 3Initials score10
- *
- */
-
+#endif

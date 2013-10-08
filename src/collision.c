@@ -86,5 +86,6 @@ void doPlayerBulletCollision(void) {
 			killPlayer();
 			break;
 		}
+		bulletCursor = bulletCursor->next;
 	}
 }

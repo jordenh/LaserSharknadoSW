@@ -56,8 +56,8 @@ int main() {
 
 	setHardwareTimerPeriod(CLOCK_FREQ / 30);
 
-	createShark(100, 0, (Displacement *)&doNotMove, 22);
-	createShark(200, 200, (Displacement *)&doNotMove, 45);
+	createShark(22, 100, 0, (Displacement *)&doNotMove);
+	createShark(45, 200, 200, (Displacement *)&doNotMove);
 
 	drawAllSharks();
 	startHardwareTimer();
@@ -74,9 +74,9 @@ int main() {
 			drawAllSharks();
 			drawInGameInfo(); // TBD: in actual game loop, only call this function when an event happens (like score inc/dec, or lives inc/dec)
 
-			handleKeyInput();
+			//handleKeyInput();
 			handleSwitchInput();
-			//handleAtariInput();
+			handleAtariInput();
 
 			moveAllBullets();
 

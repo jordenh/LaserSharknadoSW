@@ -1,5 +1,6 @@
 #include "player.h"
 #include "audio.h"
+#include "score.h"
 
 void initPlayer() {
 	player.x = 10;

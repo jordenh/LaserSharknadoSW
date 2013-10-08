@@ -21,7 +21,7 @@ void createBullet(bullettype type, int x, int y) {
 			bulletArray[index].y = y;
 			bulletArray[index].type = type;
 			drawBullet(&bulletArray[index]);
-			// PREV LINDS DFASDF
+			// PREV LINK
 			activeBullet->next = &bulletArray[index];
 			bulletArray[index].prev = activeBullet;
 			// TODO REMOVE - separation of concerns
@@ -35,6 +35,7 @@ void createBullet(bullettype type, int x, int y) {
 					break;
 				}
 			}
+			break;
 		} else if (bulletArray[index].type == type){
 			activeBullet = &bulletArray[index];
 		}
@@ -78,7 +79,6 @@ void drawAllBullets() {
 
 void eraseAllBullets() {
 	int i;
-
 	for (i = 0; i < NUM_BULLETS; i++) {
 		if (bulletArray[i].type != NOTACTIVE) {
 			eraseBullet(&bulletArray[i]);
@@ -88,7 +88,6 @@ void eraseAllBullets() {
 
 void drawBullet(Bullet *bullet) {
 	int i;
-
 	for (i = 0; i < BULLET_LENGTH; i++) {
 		drawPixel(bullet->x + i, bullet->y, convert24BitRgbTo16(0xFF000C));
 	}
@@ -115,7 +114,6 @@ void moveBulletRight(Bullet *bullet) {
 		bullet->prev = NULL;
 		nextBullet->prev = prevBullet;
 		prevBullet->next = nextBullet;
-		return;
 	}
 }
 
@@ -133,6 +131,5 @@ void moveBulletLeft(Bullet *bullet) {
 		bullet->prev = NULL;
 		nextBullet->prev = prevBullet;
 		prevBullet->next = nextBullet;
-		return;
 	}
 }

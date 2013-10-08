@@ -2,7 +2,6 @@
 #define SHARK_H
 
 #include "bmp.h"
-#include "displacement.h"
 #include "bullet.h"
 
 #define SHARK_WIDTH 37
@@ -37,7 +36,7 @@ extern Shark *deadSharkList;
 void drawShark(Shark *shark);
 void eraseShark(Shark *shark);
 void moveShark(Shark *shark);
-void createShark(int sudoRandomSeed, int x, int y, struct Displacement *displacement);
+void createShark(int sudoRandomSeed, int x, int y, Displacement *displacement);
 void killShark(Shark *shark);
 void moveAllSharks(void);
 void drawAllSharks(void);
