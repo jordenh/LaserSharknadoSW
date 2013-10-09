@@ -1,5 +1,6 @@
 #include "player.h"
 #include "audio.h"
+#include "score.h"
 
 void initPlayer() {
 	player.x = 10;
@@ -17,21 +18,19 @@ void erasePlayer() {
 }
 
 void moveUpPlayer() {
-	if (player.y > 0) {
-		player.prevY = player.y;
+	player.prevY = player.y;
 
+	if (player.y > 0)
 		player.y = player.y - 2;
-	}
 
 	drawBmp(playerBmp, player.x, player.y);
 }
 void moveDownPlayer()
 {
-	if (player.y < SCREEN_HEIGHT - PLAYER_HEIGHT) {
-		player.prevY = player.y;
+	player.prevY = player.y;
 
+	if (player.y < SCREEN_HEIGHT - PLAYER_HEIGHT)
 		player.y = player.y + 2;
-	}
 
 	drawBmp(playerBmp, player.x, player.y);
 }
@@ -41,8 +40,19 @@ void keepPlayerStationary() {
 	drawBmp(playerBmp, player.x, player.y);
 }
 
+void hitPlayer() {
+	int playerLives = getCurrentPlayerLives();
+	if (playerLives > 1) {
+		setCurrentPlayerLives(playerLives - 1);
+	} else {
+		killPlayer();
+	}
+	drawInGameInfo();
+}
+
 void killPlayer() {
 	playPlayerDeath();
-	updateHighScoreBoard();
+	//updateHighScoreBoard();
 	// Some game over stuff
 }
+

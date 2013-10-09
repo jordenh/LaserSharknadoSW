@@ -165,5 +165,5 @@ void setToRandomDisplacement(Shark *shark) {
 		ptr = arcDisplacementFunction;
 		break;
 	}
-	//shark->displacement = ptr;
+	shark->displacement = ptr;
 }

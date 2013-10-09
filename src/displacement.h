@@ -5,13 +5,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "system.h"
-#include "stubs.h"
 #include "shark.h"
 
 #define DISPLACEMENT_LENGTH 128
-
-// Forward declaration
-struct Shark;
 
 void setupDisplacement(void);
 void setToRandomDisplacement(Shark *shark);

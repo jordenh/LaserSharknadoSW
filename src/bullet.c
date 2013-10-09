@@ -5,42 +5,56 @@ Bullet *sharkBulletList = NULL;
 
 void initBullets() {
 	int i = 0;
-
 	for (i = 0; i < NUM_BULLETS; i++) {
-		bulletArray[i].status = NOTACTIVE;
+		bulletArray[i].type = NOTACTIVE;
 		bulletArray[i].next = NULL;
+		bulletArray[i].prev = NULL;
 	}
 }
 
-void createBullet(bulletstatus status) {
+void createBullet(bullettype type, int x, int y) {
 	int index = 0;
-	Bullet *activeBullet;
-	Bullet *newBullet;
+	Bullet *activeBullet = NULL;
+	Bullet *newBullet = NULL;
 	while (index < NUM_BULLETS) {
-		if (bulletArray[index].status == NOTACTIVE)	{
-			bulletArray[index].x = player.x + PLAYER_WIDTH + 1;
-			bulletArray[index].y = player.y + 0.5 * PLAYER_HEIGHT;
-			bulletArray[index].status = status;
+		if (bulletArray[index].type == NOTACTIVE)	{
+			newBullet = &(bulletArray[index]);
+			newBullet->x = x;
+			newBullet->y = y;
+			newBullet->prevX = x;
+			newBullet->prevY = y;
+			newBullet->type = type;
+			newBullet->next = NULL;
+			newBullet->prev = NULL;
 
-			activeBullet->next = &bulletArray[index];
-			// TODO REMOVE - separation of concerns
-			newBullet = &bulletArray[index];
-			while (index < NUM_BULLETS) {
-				index++;
-				if (bulletArray[index].status == status) {
-					newBullet->next = &bulletArray[index];
-					break;
+			if (activeBullet != NULL) {
+				if (activeBullet->next != NULL) {
+					(activeBullet->next)->prev = newBullet;
+				}
+				newBullet->next = activeBullet->next;
+				activeBullet->next = newBullet;
+				newBullet->prev = activeBullet;
+			} else {
+				// First bullet of its type in the array
+				// Need to see if there is another later in the array
+				while (index < NUM_BULLETS) {
+					if (bulletArray[index].type == type) {
+						Bullet *cursor = &(bulletArray[index]);
+						newBullet->next = cursor;
+						cursor->prev = newBullet;
+						break;
+					}
 				}
 			}
-			// Last active bullet in the array if you get here
-			newBullet->next = NULL;
-		} else if (bulletArray[index].status == status){
-			activeBullet = &bulletArray[index];
+
+			break;
+		} else if (bulletArray[index].type == type){
+			activeBullet = &(bulletArray[index]);
 		}
 		index++;
 	}
 
-	if (status == PLAYERBULLET) {
+	if (type == PLAYERBULLET) {
 		if ((unsigned int)playerBulletList > (unsigned int)newBullet
 				|| playerBulletList == NULL) {
 			playerBulletList = newBullet;
@@ -57,11 +71,10 @@ void createBullet(bulletstatus status) {
 
 void moveAllBullets() {
 	int i;
-
 	for (i = 0; i < NUM_BULLETS; i++) {
-		if (bulletArray[i].status == PLAYERBULLET) {
+		if (bulletArray[i].type == PLAYERBULLET) {
 			moveBulletRight(&bulletArray[i]);
-		} else if (bulletArray[i].status == SHARKBULLET) {
+		} else if (bulletArray[i].type == SHARKBULLET) {
 			moveBulletLeft(&bulletArray[i]);
 		}
 	}
@@ -70,7 +83,7 @@ void moveAllBullets() {
 void drawAllBullets() {
 	int i;
 	for (i = 0; i < NUM_BULLETS; i++) {
-		if (bulletArray[i].status != NOTACTIVE) {
+		if (bulletArray[i].type != NOTACTIVE) {
 			drawBullet(&bulletArray[i]);
 		}
 	}
@@ -78,9 +91,8 @@ void drawAllBullets() {
 
 void eraseAllBullets() {
 	int i;
-
 	for (i = 0; i < NUM_BULLETS; i++) {
-		if (bulletArray[i].status != NOTACTIVE) {
+		if (bulletArray[i].type != NOTACTIVE) {
 			eraseBullet(&bulletArray[i]);
 		}
 	}
@@ -88,39 +100,76 @@ void eraseAllBullets() {
 
 void drawBullet(Bullet *bullet) {
 	int i;
-
 	for (i = 0; i < BULLET_LENGTH; i++) {
-		drawPixel(bullet->x + i, bullet->y, convert24BitRgbTo16(0xFF000C));
+		if (bullet != NULL) {
+			drawPixel(bullet->x + i, bullet->y, convert24BitRgbTo16(0xFF000C));
+		} else {
+			printf("Attempt to draw null bullet.\n");
+		}
 	}
 }
 
 void eraseBullet(Bullet *bullet) {
 	int i;
 	for (i = 0; i < BULLET_LENGTH; i++) {
-		drawPixel(bullet->prevX + i, bullet->prevY, 0x0000);
+		if (bullet != NULL) {
+			drawPixel(bullet->prevX + i, bullet->prevY, 0x0000);
+		} else {
+			printf("Attempt to draw null bullet.\n");
+		}
 	}
 }
 
 void moveBulletRight(Bullet *bullet) {
+	if (bullet == NULL) {
+		printf("Attempt to move null bullet right.\n");
+		return;
+	}
+
 	bullet->prevX = bullet->x;
 	bullet->prevY = bullet->y;
 
 	bullet->x = bullet->x + 2;
-	if (bullet->x >= SCREEN_WIDTH) {
-		bullet->status = NOTACTIVE;
+
+	if ((bullet->x >= SCREEN_WIDTH) || (bullet->x <= -BULLET_LENGTH - 1)) {
+		bullet->type = NOTACTIVE;
+		Bullet *nextBullet = bullet->next;
+		Bullet *prevBullet = bullet->prev;
 		bullet->next = NULL;
-		return;
+		bullet->prev = NULL;
+
+		if (nextBullet != NULL) {
+			nextBullet->prev = prevBullet;
+		}
+		if (prevBullet != NULL) {
+			prevBullet->next = nextBullet;
+		}
 	}
 }
 
 void moveBulletLeft(Bullet *bullet) {
+	if (bullet == NULL) {
+		printf("Attempt to move null bullet left.\n");
+		return;
+	}
+
 	bullet->prevX = bullet->x;
 	bullet->prevY = bullet->y;
 
 	bullet->x = bullet->x - 2;
-	if (bullet->x >= SCREEN_WIDTH) {
-		bullet->status = NOTACTIVE;
+
+	if ((bullet->x >= SCREEN_WIDTH) || (bullet->x <= -BULLET_LENGTH - 1)) {
+		bullet->type = NOTACTIVE;
+		Bullet *nextBullet = bullet->next;
+		Bullet *prevBullet = bullet->prev;
 		bullet->next = NULL;
-		return;
+		bullet->prev = NULL;
+
+		if (nextBullet != NULL) {
+			nextBullet->prev = prevBullet;
+		}
+		if (prevBullet != NULL) {
+			prevBullet->next = nextBullet;
+		}
 	}
 }

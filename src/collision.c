@@ -2,6 +2,9 @@
 
 #include "collision.h"
 
+#define TRUE 1
+#define FALSE 0
+
 Shark *findSharkIfHit(Bullet *bullet) {
 	Shark *cursor = sharkList;
 	int i = 0;
@@ -17,13 +20,18 @@ Shark *findSharkIfHit(Bullet *bullet) {
 }
 
 int isBulletCollidingWithShark(Shark *shark, Bullet *bullet) {
-	if (bullet->status == SHARKBULLET) {
+	if (bullet == NULL || shark == NULL) {
+		printf("Attempt to do player/bullet collision with null member.\n");
+		return FALSE;
+	}
+
+	if (bullet->type == SHARKBULLET) {
 		// No friendly fire
 		return FALSE;
 	}
 	
 	if (bullet->x >= shark->x &&
-		bullet->x <= shark->x + SHARK_LENGTH) {
+		bullet->x <= shark->x + SHARK_WIDTH) {
 		// Have x region correct
 		//printf("x-hit\n");
 		
@@ -38,7 +46,12 @@ int isBulletCollidingWithShark(Shark *shark, Bullet *bullet) {
 }
 
 int isBulletCollidingWithPlayer(Player *player, Bullet *bullet) {
-	if (bullet->status == PLAYERBULLET) {
+	if (player == NULL || bullet == NULL) {
+		printf("Attempt to do player/bullet collision with null member.\n");
+		return FALSE;
+	}
+
+	if (bullet->type == PLAYERBULLET) {
 		// No friendly fire
 		return FALSE;
 	}
@@ -62,7 +75,7 @@ void doSharkBulletCollision(void) {
 	Shark *toKill = NULL;
 	int i = 0;
 	while (bulletCursor != NULL
-			&& bulletCursor->status == PLAYERBULLET
+			&& bulletCursor->type == PLAYERBULLET
 			&& i < NUM_BULLETS) {
 		toKill = findSharkIfHit(bulletCursor);
 		if (toKill != NULL) {
@@ -77,11 +90,13 @@ void doPlayerBulletCollision(void) {
 	Bullet *bulletCursor = sharkBulletList;
 	int i = 0;
 	while (bulletCursor != NULL
-			&& bulletCursor->status == SHARKBULLET
+			&& bulletCursor->type == SHARKBULLET
 			&& i < NUM_BULLETS) {
 		if (isBulletCollidingWithPlayer(&player, bulletCursor) == TRUE) {
-			killPlayer();
+			hitPlayer();
 			break;
 		}
+		i++;
+		bulletCursor = bulletCursor->next;
 	}
 }
