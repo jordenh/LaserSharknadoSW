@@ -14,8 +14,8 @@ void initBullets() {
 
 void createBullet(bullettype type, int x, int y) {
 	int index = 0;
-	Bullet *activeBullet == NULL;
-	Bullet *newBullet == NULL;
+	Bullet *activeBullet = NULL;
+	Bullet *newBullet = NULL;
 	while (index < NUM_BULLETS) {
 		if (bulletArray[index].type == NOTACTIVE)	{
 			newBullet = &(bulletArray[index]);

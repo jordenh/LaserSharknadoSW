@@ -6,8 +6,12 @@
 
 #define SHARK_WIDTH 37
 #define SHARK_HEIGHT 20
-#define NUM_SHARKS 4
+#define NUM_SHARKS 32
 #define SHARK_LASER_LOCATION 13
+
+#define LIVE 1
+#define RECENTLY_DEAD 2
+#define DEAD 3
 
 struct Displacement {
 	short int dx;
@@ -22,9 +26,10 @@ struct Shark {
 	struct Shark *next;
 	struct Shark *prev;
 	struct Displacement *displacement;
+	short int state;
 };
 
-struct Shark sharkArray[NUM_SHARKS];
+//struct Shark sharkArray[NUM_SHARKS];
 
 typedef struct Displacement Displacement;
 typedef struct Shark Shark;
@@ -33,6 +38,7 @@ extern Shark *sharkList;
 extern unsigned int sharkCount;
 extern Shark *deadSharkList;
 
+void initSharks(void);
 void drawShark(Shark *shark);
 void eraseShark(Shark *shark);
 void moveShark(Shark *shark);

@@ -5,6 +5,27 @@
 Shark *sharkList = NULL;
 Shark *deadSharkList = NULL;
 unsigned int sharkCount = 0;
+Shark sharkArray[NUM_SHARKS];
+int sharkArrayCursor = 0;;
+
+void initSharks(void) {
+	int i;
+	Shark *cursor;
+	for (i = 0; i < NUM_SHARKS; i++) {
+		cursor = &(sharkArray[i]);
+		cursor->state = DEAD;
+	}
+}
+
+Shark *getFreeShark(void) {
+	int i;
+	for (i = 0; i < NUM_SHARKS; i++) {
+		if (sharkArray[i].state == DEAD) {
+			return &(sharkArray[i]);
+		}
+	}
+	return NULL;
+}
 
 void drawShark(Shark *shark) {
 	if (shark != NULL) {
@@ -81,7 +102,10 @@ void createShark(int sudoRandomSeed, int x, int y, Displacement *displacement) {
 		return;
 	}
 
-	Shark *newShark = malloc(sizeof(Shark));
+	//Shark *newShark = malloc(sizeof(Shark));
+	Shark *newShark = getFreeShark();
+	newShark->state = LIVE;
+
 	newShark->x = x;
 	newShark->y = y;
 	newShark->displacement = displacement;
@@ -104,6 +128,8 @@ void killShark(Shark *shark) {
 		printf("Attempt to kill null shark.\n");
 		return;
 	}
+
+	shark->state = RECENTLY_DEAD;
 
 	Shark *previousShark = shark->prev;
 	Shark *nextShark = shark->next;
@@ -142,18 +168,29 @@ void killShark(Shark *shark) {
 }
 
 void cleanupDeadSharks() {
-	Shark *cursor = deadSharkList;
-	Shark *next;
-	int i = 0;
-	while (cursor != NULL && i < sharkCount) {
-		// eraseShark uses previous values
-		cursor->prevX = cursor->x;
-		cursor->prevY = cursor->y;
-		eraseShark(cursor);
-		next = cursor->next;
-		free(cursor);
-		cursor = next;
-		i++;
+	int i;
+	for (i = 0; i < NUM_SHARKS; i++) {
+		if (sharkArray[i].state == RECENTLY_DEAD) {
+			sharkArray[i].state = DEAD;
+			sharkArray[i].prevX = sharkArray[i].x;
+			sharkArray[i].prevY = sharkArray[i].y;
+			eraseShark(&(sharkArray[i]));
+		}
 	}
-	deadSharkList = NULL;
+	return;
+
+//	Shark *cursor = deadSharkList;
+//	Shark *next;
+//	int i = 0;
+//	while (cursor != NULL && i < sharkCount) {
+//		// eraseShark uses previous values
+//		cursor->prevX = cursor->x;
+//		cursor->prevY = cursor->y;
+//		eraseShark(cursor);
+//		next = cursor->next;
+//		//free(cursor);
+//		cursor = next;
+//		i++;
+//	}
+//	deadSharkList = NULL;
 }

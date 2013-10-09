@@ -45,6 +45,7 @@ int init(void) {
 	parseBmps();
 	initBullets();
 	initPlayer();
+	initSharks();
 
 	setHardwareTimerPeriod(CLOCK_FREQ/30);
 	return 0;
@@ -74,9 +75,9 @@ int main() {
 			drawAllSharks();
 			//drawInGameInfo(); // TBD: in actual game loop, only call this function when an event happens (like score inc/dec, or lives inc/dec)
 
-			//handleKeyInput();
+			handleKeyInput();
 			handleSwitchInput();
-			handleAtariInput();
+			//handleAtariInput();
 
 			moveAllBullets();
 
