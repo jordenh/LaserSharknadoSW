@@ -14,6 +14,7 @@ void handleKeyInput(void){
 	char key2 = keyInput & 0x04;
 	char key3 = keyInput & 0x08;
 
+	/*
 	//functionality for keys being held
 	if(key1) {
 		moveDownPlayer();
@@ -44,7 +45,7 @@ void handleKeyInput(void){
 		edgeDetect2 = 0;
 		//updateHighScoreBoard();
 		//playTheme();
-	}
+	} */
 
 	if (!key3 && (edgeDetect3 == 0)) {
 		edgeDetect3 = 1;
@@ -89,7 +90,7 @@ void handleAtariInput(void){
 	static char atariUp;
 	static char atariDown;
 	static char atariFire;
-	static short int edgeDetect = 0; /*
+	static short int edgeDetect = 0;
 
 	atariButtons = (IORD_8DIRECT(PROCESSORGPIN_BASE, 0) & 0x0F);
 	atariFire = atariButtons & 0x08;
@@ -111,7 +112,7 @@ void handleAtariInput(void){
 		moveDownPlayer();
 	} else {
 		keepPlayerStationary();
-	} */
+	}
 }
 
 int startGame() {
