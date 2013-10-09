@@ -1,7 +1,6 @@
 #ifndef COLLISION_H
 #define COLLISION_H
 
-#include "stubs.h"
 #include "player.h"
 #include "bullet.h"
 #include "shark.h"

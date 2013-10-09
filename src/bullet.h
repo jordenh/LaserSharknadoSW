@@ -12,13 +12,14 @@ typedef enum {
 	PLAYERBULLET,
 	SHARKBULLET,
 	NOTACTIVE
-} bulletstatus;
+} bullettype;
 
 struct Bullet {
 	int x, prevX;
 	int y, prevY;
-	bulletstatus status;
+	bullettype type;
 	struct Bullet *next;
+	struct Bullet *prev;
 };
 
 typedef struct Bullet Bullet;
@@ -28,7 +29,7 @@ extern Bullet *playerBulletList;
 extern Bullet *sharkBulletList;
 
 void initBullets();
-void createBullet(bulletstatus status);
+void createBullet(bullettype status, int x, int y);
 void moveAllBullets();
 void drawAllBullets();
 void eraseAllBullets();

@@ -59,20 +59,24 @@ void parseBmps() {
 	sharkBmp = malloc(sizeof(BMP));
 	playerBmp = malloc(sizeof(BMP));
 
-	//parseBmp("splash.bmp", splashBmp);
+	parseBmp("splash.bmp", splashBmp);
 	parseBmp("shark.bmp", sharkBmp);
 	parseBmp("player.bmp", playerBmp);
 }
 
 void freeBmps(){
-	free(splashBmp->rgb);
 	free(playerBmp->rgb);
 	free(sharkBmp->rgb);
 
-	free(splashBmp);
 	free(sharkBmp);
 	free(playerBmp);
 }
+
+void freeSplash() {
+	free(splashBmp->rgb);
+	free(splashBmp);
+}
+
 
 void drawBmp (BMP *bmp, int x, int y) {
 	int i,j;

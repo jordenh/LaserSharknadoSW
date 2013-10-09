@@ -1,6 +1,18 @@
 #ifndef AUDIO_H
 #define AUDIO_H
 
+#include <stdio.h>
+#include <stdlib.h>
+//#include <math.h>
+//#include "system.h"
+//#include "timer.h"
+
+#include "sd_card.h"
+#include "altera_up_avalon_audio_and_video_config.h"
+#include "altera_up_avalon_audio.h"
+//#include "alt_types.h"
+#include "sys/alt_irq.h"
+
 #define PI 3.14159265359
 #define NONE 0
 #define LASER 1
