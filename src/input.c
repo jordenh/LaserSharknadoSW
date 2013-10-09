@@ -20,7 +20,7 @@ void handleKeyInput(void){
 	char key3 = keyInput & 0x08;
 
 	//functionality for keys being held
-/*	if(key1) {
+	if(key1) {
 		moveDownPlayer();
 	} else if (key2) {
 		moveUpPlayer();
@@ -49,7 +49,7 @@ void handleKeyInput(void){
 		edgeDetect2 = 0;
 		//updateHighScoreBoard();
 		//playTheme();
-	} */
+	}
 
 	if (!key3 && (edgeDetect3 == 0)) {
 		edgeDetect3 = 1;
@@ -64,18 +64,15 @@ void handleKeyInput(void){
 void handleSwitchInput(void){
 	static char SWInput;
 	static short int edgeDetect = 0;
-	static char prevVolumeSWInput = 0x03;
+	static char prevSwInput = 0x03;
 	static short int scoresShown = 0;
 	SWInput = IORD_8DIRECT(switches, 0);
 
-	//SW change
-	/*if((SWInput & 0x0F) != prevVolumeSWInput){
-		printf("I am changing my volume now!\n");
+	if((SWInput & 0x0F) != (prevSwInput & 0x0F)) {
 		updateAudioWithVolume(SWInput);
 	}
-	prevVolumeSWInput = SWInput & 0x0F; */
+	prevSwInput = SWInput;
 
-	//handle score info
 	if ((SWInput & 0x80) != 0) {
 		if(scoresShown == 0){
 			readHighScoreBoardFromSD();
@@ -89,6 +86,7 @@ void handleSwitchInput(void){
 		}
 		scoresShown = 0;
 	}
+
 }
 
 void handleAtariInput(void){
@@ -96,7 +94,7 @@ void handleAtariInput(void){
 	static char atariUp;
 	static char atariDown;
 	static char atariFire;
-	static short int edgeDetect = 0;
+	static short int edgeDetect = 0; /*
 
 	atariButtons = (IORD_8DIRECT(atariInput, 0) & 0x0F);
 	atariFire = atariButtons & 0x08;
@@ -118,7 +116,7 @@ void handleAtariInput(void){
 		moveDownPlayer();
 	} else {
 		keepPlayerStationary();
-	}
+	} */
 }
 
 

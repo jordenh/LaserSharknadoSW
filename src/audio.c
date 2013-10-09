@@ -1,14 +1,6 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include "system.h"
-#include "timer.h"
+
 #include "audio.h"
-#include "sd_card.h"
-#include "altera_up_avalon_audio_and_video_config.h"
-#include "altera_up_avalon_audio.h"
-#include "alt_types.h"
-#include "sys/alt_irq.h"
+
 
 #ifdef ALT_ENHANCED_INTERRUPT_API_PRESENT
 static void playSoundISR(void* isr_context);
@@ -38,34 +30,12 @@ static unsigned int *audioVolumeBuffer;
 unsigned int audioFileWordLength;
 unsigned int playedWords;
 
-/*
-static unsigned int *laserBuffer = NULL;
-static unsigned int *playerDeathBuffer = NULL;
-static unsigned int *sharkDeathBuffer = NULL;
-static unsigned int *themeBuffer = NULL;
-static unsigned int *laserBufferVolume = NULL;
-static unsigned int *playerDeathBufferVolume = NULL;
-static unsigned int *sharkDeathBufferVolume = NULL;
-static unsigned int *themeBufferVolume = NULL;
-*/
 struct audioInfo laser;
 struct audioInfo playerDeath;
 struct audioInfo sharkDeath;
 struct audioInfo theme;
 
 volatile int somethingForIrq;
-
-unsigned int **getActiveBuffer(void);
-int getActiveBufferLength(void);
-int getActiveFileWordLength(void);
-int setupAudioInterrupt(alt_up_audio_dev *audio, volatile int somethingForIrq);
-void playAudio(unsigned int *leftBuffer, int leftLength, unsigned int *rightBuffer, int rightLength);
-void loadLaser(void);
-void loadPlayerDeath(void);
-void loadSharkDeath(void);
-void loadTheme(void);
-void updateAudioWithVolume(char switchValues);
-void changeBufferVolume(struct audioInfo, char switchValues);
 
 void setupAudio()
 {
@@ -247,6 +217,7 @@ void audioTest()
 }
 
 void readWavFile(char *wavFileName, unsigned int fileWordLength) {
+	printf("Im reading a wave file, called %s\n", wavFileName);
 	audioBuffer = malloc(sizeof(unsigned int) * fileWordLength);
 	audioVolumeBuffer = malloc(sizeof(unsigned int) * fileWordLength);
 	if (audioBuffer == NULL || audioVolumeBuffer == NULL) {
@@ -322,7 +293,7 @@ static void playSoundISR(void* isr_context, alt_u32 id) {
 	}
 	int len;
 	unsigned int free = alt_up_audio_write_fifo_space(audio, ALT_UP_AUDIO_LEFT);
-	unsigned end = (unsigned)(audioBuffer) + (2 * audioFileWordLength);
+	unsigned end = (unsigned)(audioVolumeBuffer) + (2 * audioFileWordLength);
 	if (free >= 1) {
 		if (((int)playCursor + free >= end) ||
 			 (playedWords + free) >= audioFileWordLength) {
