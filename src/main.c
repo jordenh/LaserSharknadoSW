@@ -85,9 +85,9 @@ int main() {
 				drawAllSharks();
 				drawInGameInfo(); // TBD: in actual game loop, only call this function when an event happens (like score inc/dec, or lives inc/dec)
 
-				handleKeyInput();
+				//handleKeyInput();
 				handleSwitchInput();
-				//handleAtariInput();
+				handleAtariInput();
 
 				moveAllBullets();
 

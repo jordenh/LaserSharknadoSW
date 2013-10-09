@@ -27,8 +27,6 @@ void createBullet(bullettype type, int x, int y) {
 			newBullet->next = NULL;
 			newBullet->prev = NULL;
 
-			drawBullet(newBullet);
-
 			if (activeBullet != NULL) {
 				if (activeBullet->next != NULL) {
 					(activeBullet->next)->prev = newBullet;
