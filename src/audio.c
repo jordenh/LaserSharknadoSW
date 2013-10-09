@@ -34,13 +34,24 @@ volatile short int loaded;
 
 volatile unsigned int *playCursor;
 static unsigned int *audioBuffer;
+static unsigned int *audioVolumeBuffer;
 unsigned int audioFileWordLength;
 unsigned int playedWords;
 
+/*
 static unsigned int *laserBuffer = NULL;
 static unsigned int *playerDeathBuffer = NULL;
 static unsigned int *sharkDeathBuffer = NULL;
 static unsigned int *themeBuffer = NULL;
+static unsigned int *laserBufferVolume = NULL;
+static unsigned int *playerDeathBufferVolume = NULL;
+static unsigned int *sharkDeathBufferVolume = NULL;
+static unsigned int *themeBufferVolume = NULL;
+*/
+struct audioInfo laser;
+struct audioInfo playerDeath;
+struct audioInfo sharkDeath;
+struct audioInfo theme;
 
 volatile int somethingForIrq;
 
@@ -53,6 +64,8 @@ void loadLaser(void);
 void loadPlayerDeath(void);
 void loadSharkDeath(void);
 void loadTheme(void);
+void updateAudioWithVolume(char switchValues);
+void changeBufferVolume(struct audioInfo, char switchValues);
 
 void setupAudio()
 {
@@ -81,10 +94,19 @@ void setupAudio()
 		printf("Successfully setup audio interrupts.\n");
 	}
 
+    laser.mainBuffer = NULL;
+    laser.volumeBuffer = NULL;
     loadLaser();
+    playerDeath.mainBuffer = NULL;
+    playerDeath.volumeBuffer = NULL;
     loadPlayerDeath();
+    sharkDeath.mainBuffer = NULL;
+    sharkDeath.volumeBuffer = NULL;
     loadSharkDeath();
+    theme.mainBuffer = NULL;
+    theme.volumeBuffer = NULL;
     loadTheme();
+    printf("finised loading sound buffers.\n");
 
 	status = NONE;
 
@@ -110,42 +132,62 @@ int setupAudioInterrupt(alt_up_audio_dev *audio, volatile int somethingForIrq)
 }
 
 void loadLaser() {
-	audioFileWordLength = 38384;
-	if (laserBuffer == NULL) {
-		readWavFile("laserii.wav", audioFileWordLength);
-		laserBuffer = audioBuffer;
+    laser.bufferLength = 38384;
+	audioFileWordLength = laser.bufferLength;
+	if (laser.mainBuffer == NULL || laser.volumeBuffer == NULL) {
+		readWavFile("laserii.wav", laser.bufferLength);
+		//laserBuffer = audioBuffer;
+		laser.mainBuffer = audioBuffer;
+		laser.volumeBuffer = audioVolumeBuffer;
 	}
-	audioBuffer = laserBuffer;
+	//audioBuffer = laserBuffer;
+	audioBuffer = laser.mainBuffer;
+	audioVolumeBuffer = laser.volumeBuffer;
 	loaded = LASER;
 }
 
 void loadPlayerDeath() {
-	audioFileWordLength = 0x0000DAFF / 2;
-	if (playerDeathBuffer == NULL) {
-		readWavFile("pdie.wav", audioFileWordLength);
-		playerDeathBuffer = audioBuffer;
+	playerDeath.bufferLength = 0x0000DAFF / 2;
+	audioFileWordLength = playerDeath.bufferLength;
+	if (playerDeath.mainBuffer == NULL || playerDeath.volumeBuffer == NULL) {
+		readWavFile("pdie.wav", playerDeath.bufferLength);
+		//playerDeathBuffer = audioBuffer;
+		playerDeath.mainBuffer = audioBuffer;
+		playerDeath.volumeBuffer = audioVolumeBuffer;
 	}
-	audioBuffer = playerDeathBuffer;
+	//audioBuffer = playerDeathBuffer;
+	audioBuffer = playerDeath.mainBuffer;
+	audioVolumeBuffer = playerDeath.volumeBuffer;
 	loaded = PLAYER_DEATH;
 }
 
 void loadSharkDeath() {
-	audioFileWordLength = 0x0000DAFF / 2;
-	if (sharkDeathBuffer == NULL) {
-		readWavFile("sdie.wav", audioFileWordLength);
-		sharkDeathBuffer = audioBuffer;
+	sharkDeath.bufferLength = 0x0000DAFF / 2;
+	audioFileWordLength = sharkDeath.bufferLength;
+	if (sharkDeath.mainBuffer == NULL || sharkDeath.volumeBuffer == NULL) {
+		readWavFile("sdie.wav", sharkDeath.bufferLength);
+		//sharkDeathBuffer = audioBuffer;
+		sharkDeath.mainBuffer = audioBuffer;
+		sharkDeath.volumeBuffer = audioVolumeBuffer;
 	}
-	audioBuffer = sharkDeathBuffer;
+	//audioBuffer = sharkDeathBuffer;
+	audioBuffer = sharkDeath.mainBuffer;
+	audioVolumeBuffer = sharkDeath.volumeBuffer;
 	loaded = SHARK_DEATH;
 }
 
 void loadTheme() {
-	audioFileWordLength = 0x00063E00 / 2;
-	if (themeBuffer == NULL) {
-		readWavFile("theme.wav", audioFileWordLength);
-		themeBuffer = audioBuffer;
+	theme.bufferLength = 0x00063E00 / 2;
+	audioFileWordLength = theme.bufferLength;
+	if (theme.mainBuffer == NULL || theme.volumeBuffer == NULL) {
+		readWavFile("theme.wav", theme.bufferLength);
+		//themeBuffer = audioBuffer;
+		theme.mainBuffer = audioBuffer;
+		theme.volumeBuffer = audioVolumeBuffer;
 	}
-	audioBuffer = themeBuffer;
+	//audioBuffer = themeBuffer;
+	audioBuffer = theme.mainBuffer;
+	audioVolumeBuffer = theme.volumeBuffer;
 	loaded = THEME;
 }
 
@@ -205,11 +247,9 @@ void audioTest()
 }
 
 void readWavFile(char *wavFileName, unsigned int fileWordLength) {
-	if (audioBuffer != NULL) {
-		//free(audioBuffer);
-	}
 	audioBuffer = malloc(sizeof(unsigned int) * fileWordLength);
-	if (audioBuffer == NULL) {
+	audioVolumeBuffer = malloc(sizeof(unsigned int) * fileWordLength);
+	if (audioBuffer == NULL || audioVolumeBuffer == NULL) {
 		printf("Error: insufficient memory to load audio file into memory.\n");
 	}
 
@@ -222,11 +262,11 @@ void readWavFile(char *wavFileName, unsigned int fileWordLength) {
 	readPastWavHeader(fileHandle);
 
 	unsigned int i;
-	unsigned int word = readWord(fileHandle);
-	//printf("first word is %x\n", word);
+	unsigned int word;
 	for (i = 0; i < fileWordLength; i++) {
-		audioBuffer[i] = word;
 		word = readWord(fileHandle);
+		audioBuffer[i] = word;
+		audioVolumeBuffer[i] = word;
 		//printf("0x%x ", (int)word > 0 ? word : -1 * word);
 	}
 	//printf("reached EOF\n");
@@ -235,16 +275,14 @@ void readWavFile(char *wavFileName, unsigned int fileWordLength) {
 	return;
 }
 
-int i;
 // Plays laser once, using interrupts
 void playLaser(void) {
 	if (DEBUG == 1) {
 		printf("Playing laser via interrupt.\n");
 	}
-	i = 0;
 	loadLaser();
 	status = LASER;
-	playCursor = audioBuffer;
+	playCursor = audioVolumeBuffer;
 	playedWords = 0;
 	alt_up_audio_enable_write_interrupt(audio);
 }
@@ -252,7 +290,7 @@ void playLaser(void) {
 void playPlayerDeath(void) {
 	loadPlayerDeath();
 	status = PLAYER_DEATH;
-	playCursor = audioBuffer;
+	playCursor = audioVolumeBuffer;
 	playedWords = 0;
 	alt_up_audio_enable_write_interrupt(audio);
 }
@@ -260,7 +298,7 @@ void playPlayerDeath(void) {
 void playSharkDeath(void) {
 	loadSharkDeath();
 	status = SHARK_DEATH;
-	playCursor = audioBuffer;
+	playCursor = audioVolumeBuffer;
 	playedWords = 0;
 	alt_up_audio_enable_write_interrupt(audio);
 }
@@ -268,7 +306,7 @@ void playSharkDeath(void) {
 void playTheme(void) {
 	loadTheme();
 	status = THEME;
-	playCursor = audioBuffer;
+	playCursor = audioVolumeBuffer;
 	playedWords = 0;
 	alt_up_audio_enable_write_interrupt(audio);
 }
@@ -302,5 +340,48 @@ static void playSoundISR(void* isr_context, alt_u32 id) {
 		// Interrupt should not be triggered if there is no space
 		alt_up_audio_disable_write_interrupt(audio);
 	}
-	i++;
+}
+
+void updateAudioWithVolume(char switchValues) {
+
+	if (laser.mainBuffer != NULL && laser.volumeBuffer != NULL){
+		changeBufferVolume(laser, switchValues);
+	}
+	if (playerDeath.mainBuffer != NULL && playerDeath.volumeBuffer != NULL){
+		changeBufferVolume(playerDeath, switchValues);
+	}
+	if (sharkDeath.mainBuffer != NULL && sharkDeath.volumeBuffer != NULL) {
+		changeBufferVolume(sharkDeath, switchValues);
+	}
+	if (theme.mainBuffer != NULL && theme.volumeBuffer != NULL) {
+		changeBufferVolume(theme, switchValues);
+	}
+
+	return;
+}
+
+void changeBufferVolume(struct audioInfo currentAudioInfo, char switchValues) {
+	int i;
+	short volumeKeys = switchValues & 0x0F;
+	if(volumeKeys == 0x00 || volumeKeys == 0x01) {
+		short shiftLength = 2 - volumeKeys;
+		for(i = 0; i < currentAudioInfo.bufferLength; i++) {
+			*(currentAudioInfo.volumeBuffer + i) = *(currentAudioInfo.mainBuffer + i) >> shiftLength;
+		}
+	} else if(volumeKeys == 0x07 || volumeKeys == 0x0F) {
+		short shiftLength = (volumeKeys % 7) + 1;
+		for(i = 0; i < currentAudioInfo.bufferLength; i++) {
+			*(currentAudioInfo.volumeBuffer + i) = *(currentAudioInfo.mainBuffer + i) << shiftLength;
+		}
+	} else if(volumeKeys == 0x03) {
+		for(i = 0; i < currentAudioInfo.bufferLength; i++) {
+			*(currentAudioInfo.volumeBuffer + i) = *(currentAudioInfo.mainBuffer + i);
+		}
+	} else {
+		for(i = 0; i < currentAudioInfo.bufferLength; i++) {
+			*(currentAudioInfo.volumeBuffer + i) = 0; //mute on all other combos
+		}
+	}
+
+	return;
 }

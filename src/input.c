@@ -64,9 +64,18 @@ void handleKeyInput(void){
 void handleSwitchInput(void){
 	static char SWInput;
 	static short int edgeDetect = 0;
+	static char prevVolumeSWInput = 0x03;
 	static short int scoresShown = 0;
 	SWInput = IORD_8DIRECT(switches, 0);
 
+	//SW change
+	/*if((SWInput & 0x0F) != prevVolumeSWInput){
+		printf("I am changing my volume now!\n");
+		updateAudioWithVolume(SWInput);
+	}
+	prevVolumeSWInput = SWInput & 0x0F; */
+
+	//handle score info
 	if ((SWInput & 0x80) != 0) {
 		if(scoresShown == 0){
 			readHighScoreBoardFromSD();
@@ -80,7 +89,6 @@ void handleSwitchInput(void){
 		}
 		scoresShown = 0;
 	}
-
 }
 
 void handleAtariInput(void){

@@ -9,6 +9,12 @@
 #define THEME 4
 #define FAIL -1
 
+struct audioInfo{
+	unsigned int *mainBuffer;
+	unsigned int *volumeBuffer;
+	unsigned int bufferLength;
+};
+
 void setupAudio(void);
 void audioTest(void);
 void runAudioDiagnostics(void);
