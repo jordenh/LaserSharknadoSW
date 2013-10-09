@@ -1,10 +1,3 @@
-/*
- * score.h
- *
- *  Created on: Oct 3, 2013
- *      Author: jorde_000
- */
-
 #ifndef SCORE_H_
 #define SCORE_H_
 
@@ -14,25 +7,18 @@
 #define INITIALLIVES 3
 
 
-
-#include "lcd.h"
-#include "audio.h"
-#include "timer.h"
-#include "sd_card.h"
-#include "vga.h"
-#include "bmp.h"
-#include "io.h"
-#include "altera_nios2_qsys_irq.h"
-#include "sys/alt_irq.h"
-#include "displacement.h"
-#include "collision.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include "system.h"
-#include "timer.h"
+#include "lcd.h"
 #include "sd_card.h"
+#include "vga.h"
+#include "displacement.h"
+#include "io.h"
+#include "altera_nios2_qsys_irq.h"
+#include "sys/alt_irq.h"
+
 
 struct scores {
 	int currentPlayerScore;
@@ -47,6 +33,8 @@ void defaultHighScoreBoard(void);
 
 int readHighScoreBoardFromSD(void);
 void updateHighScoreBoard(void);
+
+void obtainUserInitials(char * initials);
 
 void updateCurrentPlayerScore(int deltaScore);
 int getCurrentPlayerScore(void);

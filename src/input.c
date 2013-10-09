@@ -23,7 +23,7 @@ void handleKeyInput(void){
 	} else if (key2) {
 		moveUpPlayer();
 	} else {
-		drawPlayer();
+		keepPlayerStationary();
 	}
 
 	//functionality for keys being pressed.
@@ -38,13 +38,7 @@ void handleKeyInput(void){
 		edgeDetect1 = 1;
 	} else if (key1 && (edgeDetect1 == 1)) {
 		edgeDetect1 = 0;
-		/*if(getCurrentPlayerLives() != 0){
-			setCurrentPlayerLives(getCurrentPlayerLives() - 1);
-		} else {
-			//ONLY FOR TESTING btw.
-			setCurrentPlayerLives(getCurrentPlayerLives() + 1);
-		}
-		playPlayerDeath();*/
+		//playPlayerDeath();
 	}
 
 	if (!key2 && (edgeDetect2 == 0)) {
@@ -59,6 +53,7 @@ void handleKeyInput(void){
 		edgeDetect3 = 1;
 	} else if (key3 && (edgeDetect3 == 1)) {
 		edgeDetect3 = 0;
+		hitPlayer(); // TEST only
 		//updateCurrentPlayerScore(250);
 		//playSharkDeath();
 	}
@@ -78,6 +73,7 @@ void handleSwitchInput(void){
 	} else {
 		if(scoresShown == 1){
 			clearScore();
+			drawInGameInfo();
 		}
 		scoresShown = 0;
 	}

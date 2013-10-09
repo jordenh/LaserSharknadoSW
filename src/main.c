@@ -43,7 +43,6 @@ int init(void) {
 	setupAudio();
 	setupDisplacement();
 	initScoreBoard();
-	updateHighScoreBoard(); // only here for testing - this should actually be called each time the player gets hit.
 
 	initBullets();
 	initPlayer();
