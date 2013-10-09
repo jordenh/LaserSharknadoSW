@@ -15,6 +15,7 @@
 #include "sys/alt_irq.h"
 #include "score.h"
 #include "input.h"
+#include "splash.h"
 
 #define switches (volatile char *) 0x1001060
 #define leds (char *) 0x1001070
@@ -37,12 +38,12 @@ int init(void) {
 	}
 
 	initVga();
+	parseBmps();
+	drawSplashScreen();
 	setupAudio();
 	setupDisplacement();
 	initScoreBoard();
-	updateHighScoreBoard(); // only here for testing - this should actually be called each time the player gets hit.
 
-	parseBmps();
 	initBullets();
 	initPlayer();
 	initSharks();
@@ -52,6 +53,9 @@ int init(void) {
 }
 
 int main() {
+	int count = 0;
+	short int displaySplashScreen = 1;
+
 	if (init() == -1)
 		return -1;
 
@@ -63,37 +67,44 @@ int main() {
 	drawAllSharks();
 	startHardwareTimer();
 
-	int count = 0;
 	printf("%d: count \n", count);
 	// main game loop;
 	while(1) {
 		if (hasHardwareTimerExpired() == 1) {
 			startHardwareTimer();
-			count++;
 
-			moveAllSharks();
-			drawAllSharks();
-			//drawInGameInfo(); // TBD: in actual game loop, only call this function when an event happens (like score inc/dec, or lives inc/dec)
+			if (displaySplashScreen) {
+				if(startGame()) {
+					clearSplashScreen();
+					displaySplashScreen = 0;	
+				}
+			} else {
+				count++;
 
-			handleKeyInput();
-			handleSwitchInput();
-			//handleAtariInput();
+				moveAllSharks();
+				drawAllSharks();
+				drawInGameInfo(); // TBD: in actual game loop, only call this function when an event happens (like score inc/dec, or lives inc/dec)
 
-			moveAllBullets();
+				handleKeyInput();
+				handleSwitchInput();
+				//handleAtariInput();
 
-			cleanupDeadSharks();
+				moveAllBullets();
 
-			doSharkBulletCollision();
-			doPlayerBulletCollision();
+				cleanupDeadSharks();
 
-			drawAllBullets();
+				doSharkBulletCollision();
+				doPlayerBulletCollision();
 
-			alt_up_pixel_buffer_dma_swap_buffers(pixel_buffer);
-			while(alt_up_pixel_buffer_dma_check_swap_buffers_status(pixel_buffer));
-			cleanupDeadSharks();
-			eraseAllSharks();
-			eraseAllBullets();
-			erasePlayer();
+				drawAllBullets();
+
+				alt_up_pixel_buffer_dma_swap_buffers(pixel_buffer);
+				while(alt_up_pixel_buffer_dma_check_swap_buffers_status(pixel_buffer));
+				cleanupDeadSharks();
+				eraseAllSharks();
+				eraseAllBullets();
+				erasePlayer();
+			}
 		}
 	}
 

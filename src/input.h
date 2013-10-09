@@ -1,4 +1,3 @@
-
 #ifndef INPUT_H_
 #define INPUT_H_
 
@@ -33,6 +32,6 @@ void handleSwitchInput(void);
 
 void handleAtariInput(void);
 
-
+int startGame();
 
 #endif /* INPUT_H_ */

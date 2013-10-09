@@ -93,7 +93,7 @@ void doPlayerBulletCollision(void) {
 			&& bulletCursor->type == SHARKBULLET
 			&& i < NUM_BULLETS) {
 		if (isBulletCollidingWithPlayer(&player, bulletCursor) == TRUE) {
-			killPlayer();
+			hitPlayer();
 			break;
 		}
 		i++;

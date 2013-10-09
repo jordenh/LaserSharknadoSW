@@ -1,8 +1,10 @@
 #ifndef SHARK_H
 #define SHARK_H
 
-#include "bmp.h"
+//#include "bmp.h"
 #include "bullet.h"
+#include "audio.h"
+//#include "score.h" // TBD - FIX AND INCLUDE!!
 
 #define SHARK_WIDTH 37
 #define SHARK_HEIGHT 20
@@ -28,8 +30,6 @@ struct Shark {
 	struct Displacement *displacement;
 	short int state;
 };
-
-//struct Shark sharkArray[NUM_SHARKS];
 
 typedef struct Displacement Displacement;
 typedef struct Shark Shark;

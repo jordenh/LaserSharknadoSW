@@ -1,10 +1,5 @@
-
 #include "input.h"
 
-#define switches (volatile char *) 0x1001060
-#define leds (char *) 0x1001070
-#define keys (volatile char *) 0x1001080
-#define atariInput (volatile char *) 0x10010b0
 
 void handleKeyInput(void){
 	static char keyInput;
@@ -25,7 +20,7 @@ void handleKeyInput(void){
 	} else if (key2) {
 		moveUpPlayer();
 	} else {
-		drawPlayer();
+		keepPlayerStationary();
 	}
 
 	//functionality for keys being pressed.
@@ -40,13 +35,7 @@ void handleKeyInput(void){
 		edgeDetect1 = 1;
 	} else if (key1 && (edgeDetect1 == 1)) {
 		edgeDetect1 = 0;
-		/*if(getCurrentPlayerLives() != 0){
-			setCurrentPlayerLives(getCurrentPlayerLives() - 1);
-		} else {
-			//ONLY FOR TESTING btw.
-			setCurrentPlayerLives(getCurrentPlayerLives() + 1);
-		}
-		playPlayerDeath();*/
+		//playPlayerDeath();
 	}
 
 	if (!key2 && (edgeDetect2 == 0)) {
@@ -61,6 +50,7 @@ void handleKeyInput(void){
 		edgeDetect3 = 1;
 	} else if (key3 && (edgeDetect3 == 1)) {
 		edgeDetect3 = 0;
+		hitPlayer(); // TEST only
 		//updateCurrentPlayerScore(250);
 		//playSharkDeath();
 	}
@@ -68,9 +58,8 @@ void handleKeyInput(void){
 
 void handleSwitchInput(void){
 	static char SWInput;
-	static short int edgeDetect = 0;
 	static short int scoresShown = 0;
-	SWInput = IORD_8DIRECT(switches, 0);
+	SWInput = IORD_8DIRECT(SWITCHES_BASE, 0);
 
 	if ((SWInput & 0x80) != 0) {
 		if(scoresShown == 0){
@@ -81,6 +70,7 @@ void handleSwitchInput(void){
 	} else {
 		if(scoresShown == 1){
 			clearScore();
+			drawInGameInfo();
 		}
 		scoresShown = 0;
 	}
@@ -94,11 +84,11 @@ void handleAtariInput(void){
 	static char atariFire;
 	static short int edgeDetect = 0;
 
-	atariButtons = (IORD_8DIRECT(atariInput, 0) & 0x0F);
+	atariButtons = (IORD_8DIRECT(PROCESSORGPIN_BASE, 0) & 0x0F);
 	atariFire = atariButtons & 0x08;
 	atariUp = atariButtons & 0x02;
 	atariDown = atariButtons & 0x04;
-	IOWR_16DIRECT(leds, 0, atariButtons);
+	IOWR_16DIRECT(LEDS_BASE, 0, atariButtons);
 
 	if ((atariFire == 0x00) && (edgeDetect == 0)) {
 		edgeDetect = 1;
@@ -117,9 +107,16 @@ void handleAtariInput(void){
 	}
 }
 
+int startGame() {
+	char atariButtons;
+	char atariFire;
 
-
-
-
-
-
+	atariButtons = (IORD_8DIRECT(KEYS_BASE, 0) & 0x0F);
+	atariFire = atariButtons & 0x8;
+	
+	if (atariFire) {
+		return 1;
+	} else {
+		return 0;
+	}
+}

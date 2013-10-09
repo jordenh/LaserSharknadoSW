@@ -1,14 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include "system.h"
-#include "timer.h"
 #include "audio.h"
-#include "sd_card.h"
-#include "altera_up_avalon_audio_and_video_config.h"
-#include "altera_up_avalon_audio.h"
-#include "alt_types.h"
-#include "sys/alt_irq.h"
 
 #ifdef ALT_ENHANCED_INTERRUPT_API_PRESENT
 static void playSoundISR(void* isr_context);
