@@ -72,7 +72,7 @@ int main() {
 
 			moveAllSharks();
 			drawAllSharks();
-			drawInGameInfo(); // TBD: in actual game loop, only call this function when an event happens (like score inc/dec, or lives inc/dec)
+			//drawInGameInfo(); // TBD: in actual game loop, only call this function when an event happens (like score inc/dec, or lives inc/dec)
 
 			//handleKeyInput();
 			handleSwitchInput();
@@ -82,8 +82,8 @@ int main() {
 
 			cleanupDeadSharks();
 
-			if (count % 2 == 0) doSharkBulletCollision();
-			if (count % 2 == 1) doPlayerBulletCollision();
+			doSharkBulletCollision();
+			doPlayerBulletCollision();
 
 			drawAllBullets();
 

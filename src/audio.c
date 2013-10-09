@@ -205,9 +205,6 @@ void audioTest()
 }
 
 void readWavFile(char *wavFileName, unsigned int fileWordLength) {
-	if (audioBuffer != NULL) {
-		//free(audioBuffer);
-	}
 	audioBuffer = malloc(sizeof(unsigned int) * fileWordLength);
 	if (audioBuffer == NULL) {
 		printf("Error: insufficient memory to load audio file into memory.\n");
@@ -235,13 +232,11 @@ void readWavFile(char *wavFileName, unsigned int fileWordLength) {
 	return;
 }
 
-int i;
 // Plays laser once, using interrupts
 void playLaser(void) {
 	if (DEBUG == 1) {
 		printf("Playing laser via interrupt.\n");
 	}
-	i = 0;
 	loadLaser();
 	status = LASER;
 	playCursor = audioBuffer;
@@ -302,5 +297,4 @@ static void playSoundISR(void* isr_context, alt_u32 id) {
 		// Interrupt should not be triggered if there is no space
 		alt_up_audio_disable_write_interrupt(audio);
 	}
-	i++;
 }

@@ -20,6 +20,11 @@ Shark *findSharkIfHit(Bullet *bullet) {
 }
 
 int isBulletCollidingWithShark(Shark *shark, Bullet *bullet) {
+	if (bullet == NULL || shark == NULL) {
+		printf("Attempt to do player/bullet collision with null member.\n");
+		return FALSE;
+	}
+
 	if (bullet->type == SHARKBULLET) {
 		// No friendly fire
 		return FALSE;
@@ -41,6 +46,11 @@ int isBulletCollidingWithShark(Shark *shark, Bullet *bullet) {
 }
 
 int isBulletCollidingWithPlayer(Player *player, Bullet *bullet) {
+	if (player == NULL || bullet == NULL) {
+		printf("Attempt to do player/bullet collision with null member.\n");
+		return FALSE;
+	}
+
 	if (bullet->type == PLAYERBULLET) {
 		// No friendly fire
 		return FALSE;

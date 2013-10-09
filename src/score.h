@@ -28,8 +28,8 @@
 struct scores {
 	int currentPlayerScore;
 	unsigned int currentPlayerLives;
-	int highScoreBoard[10];
-	unsigned char highScoreBoardInits[10][3];
+	int highScoreBoard[NUMSCORES];
+	unsigned char highScoreBoardInits[NUMSCORES][NUMINITIALS];
 	unsigned char currentScoreBoardCorrupt;
 };
 

@@ -101,7 +101,7 @@ void updateHighScoreBoard(void) {
 	unsigned short firstDigitFound = 0;
 	unsigned short digit;
 	short int fileHandle = openFile(scoreFileName);
-	if (fileHandle == -1 || gameScores->currentScoreBoardCorrupt == 1) {
+	if (fileHandle == -1 || gameScores == NULL || gameScores->currentScoreBoardCorrupt == 1) {
 		printf("Error opening %s\n", scoreFileName);
 		return;
 	}
@@ -191,7 +191,7 @@ int getCurrentPlayerLives(void) {
 
 //purpose: overlay current scoreboard values onto the screen.
 void drawScore(void){
-	char scoreValues[15];// = malloc(sizeof(char) * NUMINITIALS); // scores wont exceed 10, and names are 3
+	char scoreValues[32];// = malloc(sizeof(char) * NUMINITIALS); // scores wont exceed 10, and names are 3
 	int i,j;
 	int digit;
 	int firstNonZeroDig;

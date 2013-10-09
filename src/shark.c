@@ -7,14 +7,27 @@ Shark *deadSharkList = NULL;
 unsigned int sharkCount = 0;
 
 void drawShark(Shark *shark) {
-	drawBmp(sharkBmp, shark->x, shark->y);
+	if (shark != NULL) {
+		drawBmp(sharkBmp, shark->x, shark->y);
+	} else {
+		printf("Attempt to draw null shark.\n");
+	}
 }
 
 void eraseShark(Shark *shark){
-	eraseBmp(sharkBmp, shark->prevX, shark->prevY);
+	if (shark != NULL) {
+		eraseBmp(sharkBmp, shark->prevX, shark->prevY);
+	} else {
+		printf("Attempt to erase null shark.\n");
+	}
 }
 
 void moveShark(Shark *shark) {
+	if (shark == NULL) {
+		printf("Attempt to move null shark.\n");
+		return;
+	}
+
 	shark->prevX = shark->x;
 	shark->prevY = shark->y;
 
@@ -63,6 +76,11 @@ void eraseAllSharks(void) {
 }
 
 void createShark(int sudoRandomSeed, int x, int y, Displacement *displacement) {
+	if (displacement == NULL) {
+		printf("Attempt to create shark with null displacement.\n");
+		return;
+	}
+
 	Shark *newShark = malloc(sizeof(Shark));
 	newShark->x = x;
 	newShark->y = y;
@@ -82,12 +100,17 @@ void createShark(int sudoRandomSeed, int x, int y, Displacement *displacement) {
 }
 
 void killShark(Shark *shark) {
+	if (shark == NULL) {
+		printf("Attempt to kill null shark.\n");
+		return;
+	}
+
 	Shark *previousShark = shark->prev;
 	Shark *nextShark = shark->next;
 
 	if (deadSharkList == NULL) {
 		deadSharkList = shark;
-		shark->next == NULL;
+		deadSharkList->next == NULL;
 	}
 	else {
 		deadSharkList->prev = shark;
@@ -121,7 +144,8 @@ void killShark(Shark *shark) {
 void cleanupDeadSharks() {
 	Shark *cursor = deadSharkList;
 	Shark *next;
-	while (cursor != NULL) {
+	int i = 0;
+	while (cursor != NULL && i < sharkCount) {
 		// eraseShark uses previous values
 		cursor->prevX = cursor->x;
 		cursor->prevY = cursor->y;
@@ -129,6 +153,7 @@ void cleanupDeadSharks() {
 		next = cursor->next;
 		free(cursor);
 		cursor = next;
+		i++;
 	}
 	deadSharkList = NULL;
 }
