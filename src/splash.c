@@ -1,6 +1,7 @@
 #include "splash.h"
 
 void drawSplashScreen() {
+	clearScreen();
 	drawBmp(splashBmp, 0, 0);
 
 	alt_up_pixel_buffer_dma_swap_buffers(pixel_buffer);
@@ -11,5 +12,5 @@ void drawSplashScreen() {
 void clearSplashScreen() {
 	clearScreen();
 
-	freeSplash();
+	//freeSplash();
 }
