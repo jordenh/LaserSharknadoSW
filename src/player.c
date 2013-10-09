@@ -44,7 +44,8 @@ void hitPlayer() {
 	int playerLives = getCurrentPlayerLives();
 	if (playerLives > 1) {
 		setCurrentPlayerLives(playerLives - 1);
-	} else {
+	} else if (playerLives == 1) {
+		setCurrentPlayerLives(playerLives - 1);
 		killPlayer();
 	}
 	drawInGameInfo();
