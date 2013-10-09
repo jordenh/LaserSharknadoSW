@@ -1,8 +1,5 @@
-
 #include "input.h"
 
-#define switches (volatile char *) 0x1001060
-#define leds (char *) 0x1001070
 
 void handleKeyInput(void){
 	static char keyInput;
@@ -62,7 +59,7 @@ void handleKeyInput(void){
 void handleSwitchInput(void){
 	static char SWInput;
 	static short int scoresShown = 0;
-	SWInput = IORD_8DIRECT(switches, 0);
+	SWInput = IORD_8DIRECT(SWITCHES_BASE, 0);
 
 	if ((SWInput & 0x80) != 0) {
 		if(scoresShown == 0){
@@ -91,7 +88,7 @@ void handleAtariInput(void){
 	atariFire = atariButtons & 0x08;
 	atariUp = atariButtons & 0x02;
 	atariDown = atariButtons & 0x04;
-	IOWR_16DIRECT(leds, 0, atariButtons);
+	IOWR_16DIRECT(LEDS_BASE, 0, atariButtons);
 
 	if ((atariFire == 0x00) && (edgeDetect == 0)) {
 		edgeDetect = 1;
