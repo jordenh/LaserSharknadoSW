@@ -53,7 +53,7 @@ void printLine(void)
 
 void drawBox(int x0, int y0, int x1, int y1, int color)
 {
-	alt_up_pixel_buffer_dma_draw_box(pixel_buffer, x0, y0, x1, y1, color, 0);
+	alt_up_pixel_buffer_dma_draw_box(pixel_buffer, x0, y0, x1, y1, color, 1);
 }
 
 int convert24BitRgbTo16(unsigned int rgb24bit)

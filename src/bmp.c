@@ -95,11 +95,5 @@ void drawBmp (BMP *bmp, int x, int y) {
 }
 
 void eraseBmp (BMP *bmp, int x, int y) {
-	int i, j;
-
-	for(i = 0; i < bmp->infoheader.height; i++) {
-			for(j = 0; j < bmp->infoheader.width; j++){
-				drawPixel(x + j, y + i, 0);
-			}
-	}
+	drawBox(x, y, x  + bmp->infoheader.width, y + bmp->infoheader.height, 0);
 }
