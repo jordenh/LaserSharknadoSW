@@ -58,8 +58,15 @@ void handleKeyInput(void){
 
 void handleSwitchInput(void){
 	static char SWInput;
+	static short int edgeDetect = 0;
+	static char prevSwInput = 0x03;
 	static short int scoresShown = 0;
 	SWInput = IORD_8DIRECT(SWITCHES_BASE, 0);
+
+	if((SWInput & 0x0F) != (prevSwInput & 0x0F)) {
+		updateAudioWithVolume(SWInput);
+	}
+	prevSwInput = SWInput;
 
 	if ((SWInput & 0x80) != 0) {
 		if(scoresShown == 0){
@@ -82,7 +89,7 @@ void handleAtariInput(void){
 	static char atariUp;
 	static char atariDown;
 	static char atariFire;
-	static short int edgeDetect = 0;
+	static short int edgeDetect = 0; /*
 
 	atariButtons = (IORD_8DIRECT(PROCESSORGPIN_BASE, 0) & 0x0F);
 	atariFire = atariButtons & 0x08;
@@ -104,7 +111,7 @@ void handleAtariInput(void){
 		moveDownPlayer();
 	} else {
 		keepPlayerStationary();
-	}
+	} */
 }
 
 int startGame() {
