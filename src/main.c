@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "lcd.h"
 #include "audio.h"
 #include "timer.h"
 #include "sd_card.h"
@@ -17,24 +16,12 @@
 #include "input.h"
 #include "splash.h"
 
-#define switches (volatile char *) 0x1001060
-#define leds (char *) 0x1001070
-#define keys (volatile char *) 0x1001080
-#define atariInput (volatile char *) 0x10010b0
-
 int init(void) {
 	if (openSdCard() == -1) {
 		printf("Error: Failed to open sd card\n");
 		return -1;
 	} else {
 		printf("Opened SD card\n");
-	}
-
-	if (init_lcd() == -1) {
-		printf("Error: could not open character LCD device\n");
-		return -1;
-	} else {
-		printf("LCD Initialized\n");
 	}
 
 	initVga();
@@ -58,8 +45,6 @@ int main() {
 
 	if (init() == -1)
 		return -1;
-
-	setHardwareTimerPeriod(CLOCK_FREQ / 30);
 
 	createShark(22, 100, 0, (Displacement *)&doNotMove);
 	createShark(45, 200, 200, (Displacement *)&doNotMove);
