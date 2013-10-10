@@ -5,6 +5,45 @@
 #define TRUE 1
 #define FALSE 0
 
+int relativeSharkHit[SHARK_WIDTH][SHARK_HEIGHT];
+int relativePlayerHit[PLAYER_WIDTH][PLAYER_HEIGHT];
+
+void initCollision(void) {
+	RGB *colourArray;
+	RGB *cursor;
+	colourArray = playerBmp->rgb;
+	int x, y;
+	int yOffset;
+
+	for (y = 0; y < SHARK_HEIGHT; y++) {
+		yOffset = SHARK_WIDTH * y;
+		for (x = 0; x < SHARK_WIDTH; x++) {
+			cursor = &colourArray[yOffset + x];
+			if (cursor->r > 0 &&
+				cursor->g > 0 &&
+				cursor->b > 0) {
+				relativeSharkHit[x][y] = TRUE;
+			} else {
+				relativeSharkHit[x][y] = FALSE;
+			}
+		}
+	}
+
+	for (y = 0; y < PLAYER_HEIGHT; y++) {
+		yOffset = PLAYER_WIDTH * y;
+		for (x = 0; x < PLAYER_WIDTH; x++) {
+			cursor = &colourArray[yOffset + x];
+			if (cursor->r > 0 &&
+				cursor->g > 0 &&
+				cursor->b > 0) {
+				relativePlayerHit[x][y] = TRUE;
+			} else {
+				relativePlayerHit[x][y] = FALSE;
+			}
+		}
+	}
+}
+
 Shark *findSharkIfHit(Bullet *bullet) {
 	Shark *cursor = sharkList;
 	int i = 0;
@@ -40,7 +79,9 @@ int isBulletCollidingWithShark(Shark *shark, Bullet *bullet) {
 			bullet->y <= shark->y + SHARK_HEIGHT) {
 			// Have y region correct
 			//printf("y-hit\n");
-			return TRUE;
+			int yRelative = bullet->y - shark->y;
+			int xRelative = bullet->x - shark->x;
+			return relativeSharkHit[xRelative][yRelative];
 		}
 	}
 	//printf("Miss\n");
@@ -66,8 +107,9 @@ int isBulletCollidingWithPlayer(Player *player, Bullet *bullet) {
 		if (bullet->y >= player->y &&
 			bullet->y <= player->y + PLAYER_HEIGHT) {
 			// Have y
-			
-			return TRUE;
+			int yRelative = bullet->y - player->y;
+			int xRelative = bullet->x - player->x;
+			return relativePlayerHit[xRelative][yRelative];
 		}
 	}
 	return FALSE;

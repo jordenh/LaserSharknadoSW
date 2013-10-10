@@ -11,6 +11,8 @@ int sharkArrayCursor = 0;;
 void initSharks(void) {
 	int i;
 	Shark *cursor;
+	sharkList = NULL;
+	deadSharkList = NULL;
 	for (i = 0; i < NUM_SHARKS; i++) {
 		cursor = &(sharkArray[i]);
 		cursor->state = DEAD;

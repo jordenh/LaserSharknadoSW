@@ -47,6 +47,7 @@ int init(void) {
 	initBullets();
 	initPlayer();
 	initSharks();
+	initCollision();
 
 	setHardwareTimerPeriod(CLOCK_FREQ/30);
 	return 0;
