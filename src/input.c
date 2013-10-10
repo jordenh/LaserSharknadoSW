@@ -102,7 +102,7 @@ void handleAtariInput(void){
 		edgeDetect = 1;
 	} else if ((atariFire != 0x00) && (edgeDetect == 1)) {
 		edgeDetect = 0;
-		createBullet(PLAYERBULLET, player.x + PLAYER_WIDTH + 1, player.y + 0.5 * PLAYER_HEIGHT);
+		createBullet(PLAYERBULLET, player.x + PLAYER_WIDTH - 1, player.y + 0.5 * PLAYER_HEIGHT - GUN_OFFSET);
 	}
 
 	//movements - no edge detect

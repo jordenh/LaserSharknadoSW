@@ -30,6 +30,25 @@ void drawPixel(int x, int y, int color) {
 	alt_up_pixel_buffer_dma_draw(pixel_buffer, color, x, y);
 }
 
+/* This function draws a pixel to the background buffer, and assumes:
+ * 1. Your pixel buffer DMA is set to CONSECUTIVE
+ * 2. The resolution is 320x240
+ * 3. x and y are within the screen (0,0)->(319, 239)
+ * 4. You are using 16-bit color
+ *
+ * DO NOT USE THIS FUNCTION IF ANY OF THE ABOVE ARE NOT GUARANATEED, OR YOU
+ * MAY WRITE TO INVALID MEMORY LOCATIONS, CRASHING YOUR PROGRAM, OR
+ * CAUSING UNEXPECTED BEHAVIOR.
+ */
+void drawPixelFast(unsigned int x, unsigned int y, unsigned int color) {
+	unsigned int addr;
+
+	addr = ((x & pixel_buffer->x_coord_mask) << 1);
+	addr += (((y & pixel_buffer->y_coord_mask) * 320) << 1);
+
+	IOWR_16DIRECT(pixel_buffer->back_buffer_start_address, addr, color);
+}
+
 void drawLine(int x0, int y0, int x1, int y1, int color)
 {
 	if (y0 == y1)
