@@ -7,8 +7,8 @@
 #include "bmp.h"
 #include "score.h"
 
-#define PLAYER_WIDTH 30
-#define PLAYER_HEIGHT 30
+#define PLAYER_WIDTH 28
+#define PLAYER_HEIGHT 27
 
 typedef struct {
 	int x, prevX;

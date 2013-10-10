@@ -89,7 +89,7 @@ void drawBmp (BMP *bmp, int x, int y) {
 			if(color == 0)
 				continue;
 
-			drawPixel(x + j, y + i, color);
+			drawPixelFast(x + j, y + i, color);
 		}
 	}
 }

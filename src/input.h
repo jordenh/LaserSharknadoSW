@@ -10,7 +10,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "lcd.h"
 #include "audio.h"
 #include "timer.h"
 #include "sd_card.h"
@@ -25,6 +24,8 @@
 #include "sys/alt_irq.h"
 #include "score.h"
 #include "input.h"
+
+#define GUN_OFFSET 6
 
 void handleKeyInput(void);
 
