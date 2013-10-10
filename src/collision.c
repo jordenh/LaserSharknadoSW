@@ -27,6 +27,7 @@ int isBulletCollidingWithShark(Shark *shark, Bullet *bullet) {
 
 	if (bullet->type == SHARKBULLET) {
 		// No friendly fire
+		printf("Error: sharkbullet present in player bullet list.\n");
 		return FALSE;
 	}
 	
@@ -42,6 +43,7 @@ int isBulletCollidingWithShark(Shark *shark, Bullet *bullet) {
 			return TRUE;
 		}
 	}
+	//printf("Miss\n");
 	return FALSE;
 }
 
@@ -53,6 +55,7 @@ int isBulletCollidingWithPlayer(Player *player, Bullet *bullet) {
 
 	if (bullet->type == PLAYERBULLET) {
 		// No friendly fire
+		printf("Error: player bullet in shark bullet list.\n");
 		return FALSE;
 	}
 

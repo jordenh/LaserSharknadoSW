@@ -45,7 +45,7 @@ void handleKeyInput(void){
 		edgeDetect2 = 0;
 		//updateHighScoreBoard();
 		//playTheme();
-	} */
+	}
 
 	if (!key3 && (edgeDetect3 == 0)) {
 		edgeDetect3 = 1;
@@ -55,6 +55,7 @@ void handleKeyInput(void){
 		//updateCurrentPlayerScore(250);
 		//playSharkDeath();
 	}
+	*/
 }
 
 void handleSwitchInput(void){
@@ -97,7 +98,7 @@ void handleAtariInput(void){
 	atariUp = atariButtons & 0x02;
 	atariDown = atariButtons & 0x04;
 	IOWR_16DIRECT(LEDS_BASE, 0, atariButtons);
-
+	/*
 	if ((atariFire == 0x00) && (edgeDetect == 0)) {
 		edgeDetect = 1;
 	} else if ((atariFire != 0x00) && (edgeDetect == 1)) {
@@ -112,7 +113,7 @@ void handleAtariInput(void){
 		moveDownPlayer();
 	} else {
 		keepPlayerStationary();
-	}
+	}*/
 }
 
 int startGame() {
