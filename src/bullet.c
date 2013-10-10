@@ -13,10 +13,9 @@ void initBullets() {
 }
 
 void createBullet(bullettype type, int x, int y) {
-	int index = 0;
-	Bullet *activeBullet = NULL;
+	int index;
 	Bullet *newBullet = NULL;
-	while (index < NUM_BULLETS) {
+	for (index = 0; index < NUM_BULLETS; index++) {
 		if (bulletArray[index].type == NOTACTIVE)	{
 			newBullet = &(bulletArray[index]);
 			newBullet->x = x;
@@ -24,55 +23,23 @@ void createBullet(bullettype type, int x, int y) {
 			newBullet->prevX = x;
 			newBullet->prevY = y;
 			newBullet->type = type;
-//			newBullet->next = NULL;
-//			newBullet->prev = NULL;
-//
-//			if (activeBullet != NULL) {
-//				if (activeBullet->next != NULL) {
-//					(activeBullet->next)->prev = newBullet;
-//				}
-//				newBullet->next = activeBullet->next;
-//				activeBullet->next = newBullet;
-//				newBullet->prev = activeBullet;
-//			} else {
-//				// First bullet of its type in the array
-//				// Need to see if there is another later in the array
-//				while (index < NUM_BULLETS) {
-//					if (bulletArray[index].type == type) {
-//						Bullet *cursor = &(bulletArray[index]);
-//						newBullet->next = cursor;
-//						cursor->prev = newBullet;
-//						break;
-//					}
-//				}
-//			}
 
 			break;
-//		} else if (bulletArray[index].type == type){
-//			activeBullet = &(bulletArray[index]);
-//		}
 		}
-		index++;
 	}
 
 	if (type == PLAYERBULLET) {
-//		if ((unsigned int)playerBulletList > (unsigned int)newBullet
-//				|| playerBulletList == NULL) {
-			if (playerBulletList != NULL) {
-				playerBulletList->prev = newBullet;
-			}
-			newBullet->next = playerBulletList;
-			playerBulletList = newBullet;
-		//}
+		if (playerBulletList != NULL) {
+			playerBulletList->prev = newBullet;
+		}
+		newBullet->next = playerBulletList;
+		playerBulletList = newBullet;
 	} else {
-//		if ((unsigned int)sharkBulletList > (unsigned int)newBullet
-//				|| sharkBulletList == NULL) {
-			if (sharkBulletList != NULL) {
-				sharkBulletList->prev = newBullet;
-			}
-			newBullet->next = sharkBulletList;
-			sharkBulletList = newBullet;
-		//}
+		if (sharkBulletList != NULL) {
+			sharkBulletList->prev = newBullet;
+		}
+		newBullet->next = sharkBulletList;
+		sharkBulletList = newBullet;
 	}
 
 	playLaser();

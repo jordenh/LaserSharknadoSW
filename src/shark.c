@@ -104,6 +104,10 @@ void createShark(int sudoRandomSeed, int x, int y, Displacement *displacement) {
 
 	//Shark *newShark = malloc(sizeof(Shark));
 	Shark *newShark = getFreeShark();
+	if (newShark == NULL) {
+		return;
+	}
+
 	newShark->state = LIVE;
 
 	newShark->x = x;
@@ -133,16 +137,16 @@ void killShark(Shark *shark) {
 
 	Shark *previousShark = shark->prev;
 	Shark *nextShark = shark->next;
-
-	if (deadSharkList == NULL) {
-		deadSharkList = shark;
-		deadSharkList->next = NULL;
-	}
-	else {
-		deadSharkList->prev = shark;
-		shark->next = deadSharkList;
-		deadSharkList = shark;
-	}
+//
+//	if (deadSharkList == NULL) {
+//		deadSharkList = shark;
+//		deadSharkList->next = NULL;
+//	}
+//	else {
+//		deadSharkList->prev = shark;
+//		shark->next = deadSharkList;
+//		deadSharkList = shark;
+//	}
 
 	playSharkDeath();
 	// Need to erase now because we free the shark
