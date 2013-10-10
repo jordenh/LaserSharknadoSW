@@ -122,10 +122,11 @@ void updateHighScoreBoard(void) {
 			if(i == scoreReplaceIndex){
 				printf("replacing score code at index %d\n", i);
 
-				char * newInitials = malloc(3*sizeof(char));
+				char * newInitials = malloc(4*sizeof(char));
 				*newInitials = '-';
 				*(newInitials + 1) = '-';
 				*(newInitials + 2) = '-';
+				*(newInitials + 3) = '\0';
 				obtainUserInitials(newInitials);
 				for(j = 0; j < NUMINITIALS; j++){
 					alt_up_sd_card_write(fileHandle, newInitials[j]);
@@ -247,6 +248,12 @@ void obtainUserInitials(char * initials){
 //increment player score by deltaScore
 void updateCurrentPlayerScore(int deltaScore) {
 	gameScores->currentPlayerScore += deltaScore;
+	return;
+}
+
+//mutator: set playerScore to score
+void setCurrentPlayerScore(int score) {
+	gameScores->currentPlayerScore = score;
 	return;
 }
 

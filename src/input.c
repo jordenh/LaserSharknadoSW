@@ -115,14 +115,35 @@ void handleAtariInput(void){
 	}
 }
 
-int startGame() {
+void delayUntilUPAndButtonPressed(void) {
 	char atariButtons;
 	char atariFire;
-
-	atariButtons = (IORD_8DIRECT(KEYS_BASE, 0) & 0x0F);
-	atariFire = atariButtons & 0x8;
+	char keys;
+	char key4;
 	
-	if (atariFire) {
+	while(1) {
+		atariButtons = (IORD_8DIRECT(PROCESSORGPIN_BASE, 0) & 0x0F);
+		keys = (IORD_8DIRECT(KEYS_BASE, 0) & 0x0F);
+		atariFire = atariButtons & 0x8;
+		key4 = keys & 0x8;
+		if (atariFire || key4) {
+			break;
+		}
+	}
+}
+
+int gameStart(void){
+	char atariButtons;
+	char atariFire;
+	char keys;
+	char key4;
+
+	atariButtons = (IORD_8DIRECT(PROCESSORGPIN_BASE, 0) & 0x0F);
+	keys = (IORD_8DIRECT(KEYS_BASE, 0) & 0x0F);
+	atariFire = atariButtons & 0x8;
+	key4 = keys & 0x8;
+
+	if (atariFire || key4) {
 		return 1;
 	} else {
 		return 0;

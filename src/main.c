@@ -16,6 +16,7 @@
 #include "score.h"
 #include "input.h"
 #include "splash.h"
+#include "gameEnd.h"
 
 #define switches (volatile char *) 0x1001060
 #define leds (char *) 0x1001070
@@ -75,7 +76,7 @@ int main() {
 			startHardwareTimer();
 
 			if (displaySplashScreen) {
-				if(startGame()) {
+				if(gameStart()) {
 					clearSplashScreen();
 					displaySplashScreen = 0;	
 				}
@@ -97,10 +98,8 @@ int main() {
 				doSharkBulletCollision();
 				doPlayerBulletCollision();
 				if(getCurrentPlayerLives() == 0) {
-					updateHighScoreBoard();
-					drawSplashScreen();
-					setCurrentPlayerLives(3);
-					displaySplashScreen = 1;
+					gameEndSequence();
+					//displaySplashScreen = 1;
 					continue;
 				}
 
