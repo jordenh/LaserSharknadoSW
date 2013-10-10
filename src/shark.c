@@ -136,7 +136,7 @@ void killShark(Shark *shark) {
 
 	if (deadSharkList == NULL) {
 		deadSharkList = shark;
-		deadSharkList->next == NULL;
+		deadSharkList->next = NULL;
 	}
 	else {
 		deadSharkList->prev = shark;
