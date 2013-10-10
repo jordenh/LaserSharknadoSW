@@ -123,7 +123,7 @@ void createShark(int sudoRandomSeed, int x, int y, Displacement *displacement) {
 		newShark->next = sharkList;
 		sharkList = newShark;
 	}
-	newShark->freq = (sudoRandomSeed % 10) + PLAYER_HEIGHT + 1;
+	newShark->freq = (sudoRandomSeed % 20) + 1.5*PLAYER_HEIGHT + 1;
 	newShark->count = 0;
 	sharkCount++;
 }

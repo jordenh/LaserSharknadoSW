@@ -214,15 +214,15 @@ void obtainUserInitials(char * initials){
 			atariDown = atariButtons & 0x04;
 
 			alt_up_char_buffer_string(char_buffer, initials, xPos, yPos);
-			if ((!key0 || !atariFire) && (edgeDetect0 == 0)) {
+			if ((!key0 && !atariFire) && (edgeDetect0 == 0)) {
 				edgeDetect0 = 1;
-			} else if ((key0 || atariFire) && (edgeDetect0 == 1)) {
+			} else if ((key0 ^ atariFire) && (edgeDetect0 == 1)) {
 				edgeDetect0 = 0;
 				break;
 			}
-			if ((!key1 || !atariUp) && (edgeDetect1 == 0)) {
+			if ((!key1 && !atariUp) && (edgeDetect1 == 0)) {
 				edgeDetect1 = 1;
-			} else if ((key1 || atariUp) && (edgeDetect1 == 1)) {
+			} else if ((key1 ^ atariUp) && (edgeDetect1 == 1)) {
 				edgeDetect1 = 0;
 				if(charChoice < 25){
 					charChoice++;
@@ -230,9 +230,9 @@ void obtainUserInitials(char * initials){
 					charChoice = 0;
 				}
 			}
-			if ((!key2 || !atariDown) && (edgeDetect2 == 0)) {
+			if ((!key2 && !atariDown) && (edgeDetect2 == 0)) {
 				edgeDetect2 = 1;
-			} else if ((key2 || atariDown) && (edgeDetect2 == 1)) {
+			} else if ((key2 ^ atariDown) && (edgeDetect2 == 1)) {
 				edgeDetect2 = 0;
 				if(charChoice > 0) {
 					charChoice--;
