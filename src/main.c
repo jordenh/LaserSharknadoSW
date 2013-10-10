@@ -87,7 +87,7 @@ int main() {
 
 				handleKeyInput();
 				handleSwitchInput();
-				handleAtariInput();
+				//handleAtariInput();
 
 				moveAllBullets();
 
