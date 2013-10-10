@@ -1,6 +1,7 @@
 #include "shark.h"
 #include "audio.h"
 #include "score.h"
+#include "displacement.h"
 
 Shark *sharkList = NULL;
 Shark *deadSharkList = NULL;
@@ -108,7 +109,9 @@ void createShark(int sudoRandomSeed, int x, int y, Displacement *displacement) {
 
 	newShark->x = x;
 	newShark->y = y;
-	newShark->displacement = displacement;
+	newShark->prevX = x;
+	newShark->prevY = y;
+	newShark->displacement = (Displacement *)&circularDisplacementFunction;
 	newShark->prev = NULL;
 	if (sharkList == NULL) {
 		sharkList = newShark;

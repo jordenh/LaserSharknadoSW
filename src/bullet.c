@@ -2,6 +2,8 @@
 
 Bullet *playerBulletList = NULL;
 Bullet *sharkBulletList = NULL;
+int playerLaserColor;
+int sharkLaserColor;
 
 void initBullets() {
 	int i = 0;
@@ -10,6 +12,9 @@ void initBullets() {
 		bulletArray[i].next = NULL;
 		bulletArray[i].prev = NULL;
 	}
+
+	playerLaserColor = convert24BitRgbTo16(0xFF0000);
+	sharkLaserColor = convert24BitRgbTo16(0x0000FF);
 }
 
 void createBullet(bullettype type, int x, int y) {
@@ -58,11 +63,13 @@ void createBullet(bullettype type, int x, int y) {
 		if ((unsigned int)playerBulletList > (unsigned int)newBullet
 				|| playerBulletList == NULL) {
 			playerBulletList = newBullet;
+			newBullet->laserColor = playerLaserColor;
 		}
-	} else {
+	} else if (type == SHARKBULLET){
 		if ((unsigned int)sharkBulletList > (unsigned int)newBullet
 				|| playerBulletList == NULL) {
 			sharkBulletList = newBullet;
+			newBullet->laserColor = sharkLaserColor;
 		}
 	}
 
@@ -102,7 +109,7 @@ void drawBullet(Bullet *bullet) {
 	int i;
 	for (i = 0; i < BULLET_LENGTH; i++) {
 		if (bullet != NULL) {
-			drawPixel(bullet->x + i, bullet->y, convert24BitRgbTo16(0xFF000C));
+			drawPixel(bullet->x + i, bullet->y, bullet->laserColor);
 		} else {
 			printf("Attempt to draw null bullet.\n");
 		}

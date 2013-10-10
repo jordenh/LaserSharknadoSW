@@ -10,6 +10,7 @@
 #define SHARK_HEIGHT 20
 #define NUM_SHARKS 32
 #define SHARK_LASER_LOCATION 13
+#define NUM_DISPLACEMENT_TYPES = 5
 
 #define LIVE 1
 #define RECENTLY_DEAD 2
