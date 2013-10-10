@@ -7,6 +7,7 @@ void initVga()
 	pixel_buffer_addr2 = PIXEL_BUFFER_BASE + (320 * 240 * 2);
 
 	alt_up_pixel_buffer_dma_change_back_buffer_address(pixel_buffer, pixel_buffer_addr1);
+
 	alt_up_pixel_buffer_dma_swap_buffers(pixel_buffer);
 	while(alt_up_pixel_buffer_dma_check_swap_buffers_status(pixel_buffer));
 
@@ -24,6 +25,11 @@ void initVga()
 void clearScreen()
 {
 	alt_up_pixel_buffer_dma_clear_screen(pixel_buffer, 0);
+}
+
+void swapBuffers() {
+	alt_up_pixel_buffer_dma_swap_buffers(pixel_buffer);
+	while(alt_up_pixel_buffer_dma_check_swap_buffers_status(pixel_buffer));
 }
 
 void drawPixel(int x, int y, int color) {
@@ -65,9 +71,9 @@ void drawLine(int x0, int y0, int x1, int y1, int color)
 	}
 }
 
-void printLine(void)
+void printLine(char *str, int x, int y)
 {
-	alt_up_char_buffer_string(char_buffer, "LaserSharknado", 40, 30);
+	alt_up_char_buffer_string(char_buffer, str, x, y);
 }
 
 void drawBox(int x0, int y0, int x1, int y1, int color)
