@@ -69,6 +69,10 @@ void timer_test(void) {
 	printf(" 5 seconds timer is done\n");
 }
 
+void initHardwareTimer() {
+	setHardwareTimerPeriod(CLOCK_FREQ/30);
+}
+
 // Period is in clock cycles
 // ie 5 seconds would be 5 * CLOCK_FREQ
 void setHardwareTimerPeriod(int period)

@@ -37,7 +37,10 @@ int init(void) {
 	initSharks();
 	initCollision();
 
-	setHardwareTimerPeriod(CLOCK_FREQ/30);
+	initHardwareTimer();
+
+	swapSplashScreenText();
+
 	return 0;
 }
 
@@ -54,7 +57,6 @@ int main() {
 	drawAllSharks();
 	startHardwareTimer();
 
-	printf("%d: count \n", count);
 	// main game loop;
 	while(1) {
 		if (hasHardwareTimerExpired() == 1) {
@@ -90,8 +92,8 @@ int main() {
 
 				drawAllBullets();
 
-				alt_up_pixel_buffer_dma_swap_buffers(pixel_buffer);
-				while(alt_up_pixel_buffer_dma_check_swap_buffers_status(pixel_buffer));
+				swapBuffers();
+
 				cleanupDeadSharks();
 				eraseAllSharks();
 				eraseAllBullets();

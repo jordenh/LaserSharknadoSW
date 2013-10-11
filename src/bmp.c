@@ -56,10 +56,14 @@ void parseBmp (char *fileName, BMP *bmp) {
 
 void parseBmps() {
 	splashBmp = malloc(sizeof(BMP));
+	loadBmp = malloc(sizeof(BMP));
+	pressBmp = malloc(sizeof(BMP));
 	sharkBmp = malloc(sizeof(BMP));
 	playerBmp = malloc(sizeof(BMP));
 
 	parseBmp("splash.bmp", splashBmp);
+	parseBmp("loadtx.bmp", loadBmp);
+	parseBmp("press.bmp", pressBmp);
 	parseBmp("shark.bmp", sharkBmp);
 	parseBmp("player.bmp", playerBmp);
 }
@@ -80,11 +84,13 @@ void freeSplash() {
 
 void drawBmp (BMP *bmp, int x, int y) {
 	int i,j;
+	int offset;
 	int color;
 
 	for(i = 0; i < bmp->infoheader.height; i++) {
+		offset = i * bmp->infoheader.width;
 		for(j = 0; j < bmp->infoheader.width; j++){
-			color = ((bmp->rgb + i*bmp->infoheader.width +j)->r << 11) | ((bmp->rgb + i*bmp->infoheader.width +j)->g << 5) | (bmp->rgb + i*bmp->infoheader.width +j)->b;
+			color = ((bmp->rgb + offset +j)->r << 11) | ((bmp->rgb + offset +j)->g << 5) | (bmp->rgb + offset + j)->b;
 
 			if(color == 0)
 				continue;
