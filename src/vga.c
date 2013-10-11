@@ -14,17 +14,17 @@ void initVga()
 	// Set the 2nd buffer address
 	alt_up_pixel_buffer_dma_change_back_buffer_address(pixel_buffer, pixel_buffer_addr2);
 
-	// Clear both buffers (this makes all pixels black)
-	alt_up_pixel_buffer_dma_clear_screen(pixel_buffer, 0);
-	alt_up_pixel_buffer_dma_clear_screen(pixel_buffer, 1);
-
 	char_buffer = alt_up_char_buffer_open_dev("/dev/char_drawer");
 	alt_up_char_buffer_init(char_buffer);
+
+	clearScreen();
 }
 
 void clearScreen()
 {
+	alt_up_char_buffer_clear(char_buffer);
 	alt_up_pixel_buffer_dma_clear_screen(pixel_buffer, 0);
+	alt_up_pixel_buffer_dma_clear_screen(pixel_buffer, 1);
 }
 
 void swapBuffers() {
