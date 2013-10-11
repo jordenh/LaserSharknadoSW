@@ -12,9 +12,14 @@ int sharkArrayCursor = 0;;
 void initSharks(void) {
 	int i;
 	Shark *cursor;
+	sharkList = NULL;
+	deadSharkList = NULL;
 	for (i = 0; i < NUM_SHARKS; i++) {
 		cursor = &(sharkArray[i]);
 		cursor->state = DEAD;
+		cursor->next = NULL;
+		cursor->prev = NULL;
+		cursor->displacement = NULL;
 	}
 }
 
@@ -126,7 +131,7 @@ void createShark(int sudoRandomSeed, int x, int y, Displacement *displacement) {
 		newShark->next = sharkList;
 		sharkList = newShark;
 	}
-	newShark->freq = (sudoRandomSeed % 10) + PLAYER_HEIGHT + 1;
+	newShark->freq = (sudoRandomSeed % 20) + 1.5*PLAYER_HEIGHT + 1;
 	newShark->count = 0;
 	sharkCount++;
 }

@@ -28,6 +28,7 @@ void updateHighScoreBoard(void);
 void obtainUserInitials(char * initials);
 
 void updateCurrentPlayerScore(int deltaScore);
+void setCurrentPlayerScore(int score);
 int getCurrentPlayerScore(void);
 void setCurrentPlayerLives(int newNumLives);
 int getCurrentPlayerLives(void);

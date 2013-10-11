@@ -28,7 +28,7 @@ void handleKeyInput(void){
 		edgeDetect0 = 1;
 	} else if (key0 && (edgeDetect0 == 1)) {
 		edgeDetect0 = 0;
-		createBullet(PLAYERBULLET, player.x + PLAYER_WIDTH + 1, player.y + 0.5 * PLAYER_HEIGHT);
+		createBullet(PLAYERBULLET, player.x + PLAYER_WIDTH - 1, player.y + 0.5 * PLAYER_HEIGHT - GUN_OFFSET);
 	}
 
 	/*
@@ -45,7 +45,7 @@ void handleKeyInput(void){
 		edgeDetect2 = 0;
 		//updateHighScoreBoard();
 		//playTheme();
-	}
+	} //
 
 	if (!key3 && (edgeDetect3 == 0)) {
 		edgeDetect3 = 1;
@@ -103,7 +103,7 @@ void handleAtariInput(void){
 		edgeDetect = 1;
 	} else if ((atariFire != 0x00) && (edgeDetect == 1)) {
 		edgeDetect = 0;
-		createBullet(PLAYERBULLET, player.x + PLAYER_WIDTH + 1, player.y + 0.5 * PLAYER_HEIGHT);
+		createBullet(PLAYERBULLET, player.x + PLAYER_WIDTH - 1, player.y + 0.5 * PLAYER_HEIGHT - GUN_OFFSET);
 	}
 
 	//movements - no edge detect
@@ -113,17 +113,38 @@ void handleAtariInput(void){
 		moveDownPlayer();
 	} else {
 		keepPlayerStationary();
-	}*/
+	} */
 }
 
-int startGame() {
+void delayUntilUPAndButtonPressed(void) {
 	char atariButtons;
 	char atariFire;
-
-	atariButtons = (IORD_8DIRECT(KEYS_BASE, 0) & 0x0F);
-	atariFire = atariButtons & 0x8;
+	char keys;
+	char key4;
 	
-	if (atariFire) {
+	while(1) {
+		atariButtons = (IORD_8DIRECT(PROCESSORGPIN_BASE, 0) & 0x0F);
+		keys = (IORD_8DIRECT(KEYS_BASE, 0) & 0x0F);
+		atariFire = atariButtons & 0x8;
+		key4 = keys & 0x8;
+		if (atariFire || key4) {
+			break;
+		}
+	}
+}
+
+int gameStart(void){
+	char atariButtons;
+	char atariFire;
+	char keys;
+	char key4;
+
+	atariButtons = (IORD_8DIRECT(PROCESSORGPIN_BASE, 0) & 0x0F);
+	keys = (IORD_8DIRECT(KEYS_BASE, 0) & 0x0F);
+	atariFire = atariButtons & 0x8;
+	key4 = keys & 0x8;
+
+	if (atariFire || key4) {
 		return 1;
 	} else {
 		return 0;
