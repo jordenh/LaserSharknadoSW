@@ -49,5 +49,6 @@ void loadSharkDeath(void);
 void loadTheme(void);
 void updateAudioWithVolume(char switchValues);
 void changeBufferVolume(struct audioInfo, char switchValues);
+void stopTheme(void);
 
 #endif
