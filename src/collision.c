@@ -33,9 +33,10 @@ void initCollision(void) {
 		yOffset = PLAYER_WIDTH * y;
 		for (x = 0; x < PLAYER_WIDTH; x++) {
 			cursor = &colourArray[yOffset + x];
-			if (cursor->r > 0 &&
-				cursor->g > 0 &&
-				cursor->b > 0) {
+			//printf("r: 0x%x; g: 0x%x; b: 0x%x\n", cursor->r, cursor->g, cursor->b);
+			if (!(cursor->r == 0xff && cursor->b == 0xff) &&
+				!(cursor->r == 0x00 && cursor->b == 0x00 && cursor->g == 0x00) &&
+				 (cursor->r >  0x05 || cursor->b >  0x05 || cursor->g >  0x05)) {
 				relativePlayerHit[x][y] = TRUE;
 			} else {
 				relativePlayerHit[x][y] = FALSE;

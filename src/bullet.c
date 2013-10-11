@@ -90,6 +90,7 @@ void eraseBullet(Bullet *bullet) {
 	for (i = 0; i < BULLET_LENGTH; i++) {
 		if (bullet != NULL) {
 			drawPixel(bullet->prevX + i, bullet->prevY, 0x0000);
+			bullet->type = bullet->type == DELETED ? NOTACTIVE : bullet->type;
 		} else {
 			printf("Attempt to draw null bullet.\n");
 		}
@@ -113,7 +114,8 @@ void moveBulletRight(Bullet *bullet) {
 }
 
 void deleteBullet(Bullet *bullet) {
-	bullet->type = NOTACTIVE;
+	eraseBullet(bullet);
+	bullet->type = DELETED;
 	Bullet *nextBullet = bullet->next;
 	Bullet *prevBullet = bullet->prev;
 	bullet->next = NULL;

@@ -11,7 +11,8 @@
 typedef enum {
 	PLAYERBULLET,
 	SHARKBULLET,
-	NOTACTIVE
+	NOTACTIVE,
+	DELETED
 } bullettype;
 
 struct Bullet {
