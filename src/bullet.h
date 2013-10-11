@@ -38,5 +38,6 @@ void eraseBullet(Bullet *bullet);
 void moveRight(Bullet *bullet);
 void moveBulletRight(Bullet *bullet);
 void moveBulletLeft(Bullet *bullet);
+void deleteBullet(Bullet *bullet);
 
 #endif

@@ -108,18 +108,22 @@ void moveBulletRight(Bullet *bullet) {
 	bullet->x = bullet->x + 2;
 
 	if ((bullet->x >= SCREEN_WIDTH) || (bullet->x <= -BULLET_LENGTH - 1)) {
-		bullet->type = NOTACTIVE;
-		Bullet *nextBullet = bullet->next;
-		Bullet *prevBullet = bullet->prev;
-		bullet->next = NULL;
-		bullet->prev = NULL;
+		deleteBullet(bullet);
+	}
+}
 
-		if (nextBullet != NULL) {
-			nextBullet->prev = prevBullet;
-		}
-		if (prevBullet != NULL) {
-			prevBullet->next = nextBullet;
-		}
+void deleteBullet(Bullet *bullet) {
+	bullet->type = NOTACTIVE;
+	Bullet *nextBullet = bullet->next;
+	Bullet *prevBullet = bullet->prev;
+	bullet->next = NULL;
+	bullet->prev = NULL;
+
+	if (nextBullet != NULL) {
+		nextBullet->prev = prevBullet;
+	}
+	if (prevBullet != NULL) {
+		prevBullet->next = nextBullet;
 	}
 }
 
@@ -135,17 +139,6 @@ void moveBulletLeft(Bullet *bullet) {
 	bullet->x = bullet->x - 2;
 
 	if ((bullet->x >= SCREEN_WIDTH) || (bullet->x <= -BULLET_LENGTH - 1)) {
-		bullet->type = NOTACTIVE;
-		Bullet *nextBullet = bullet->next;
-		Bullet *prevBullet = bullet->prev;
-		bullet->next = NULL;
-		bullet->prev = NULL;
-
-		if (nextBullet != NULL) {
-			nextBullet->prev = prevBullet;
-		}
-		if (prevBullet != NULL) {
-			prevBullet->next = nextBullet;
-		}
+		deleteBullet(bullet);
 	}
 }

@@ -125,6 +125,7 @@ void doSharkBulletCollision(void) {
 		toKill = findSharkIfHit(bulletCursor);
 		if (toKill != NULL) {
 			killShark(toKill);
+			deleteBullet(bulletCursor);
 		}
 		bulletCursor = bulletCursor->next;
 		i++;
@@ -139,6 +140,7 @@ void doPlayerBulletCollision(void) {
 			&& i < NUM_BULLETS) {
 		if (isBulletCollidingWithPlayer(&player, bulletCursor) == TRUE) {
 			hitPlayer();
+			deleteBullet(bulletCursor);
 			break;
 		}
 		i++;
