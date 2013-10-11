@@ -52,6 +52,9 @@ void moveAllBullets() {
 			moveBulletRight(&bulletArray[i]);
 		} else if (bulletArray[i].type == SHARKBULLET) {
 			moveBulletLeft(&bulletArray[i]);
+		} else if (bulletArray[i].type == DELETED || bulletArray[i].type == ONEMORE) {
+			bulletArray[i].prevX = bulletArray[i].x;
+			bulletArray[i].prevY = bulletArray[i].y;
 		}
 	}
 }
@@ -90,6 +93,8 @@ void eraseBullet(Bullet *bullet) {
 	for (i = 0; i < BULLET_LENGTH; i++) {
 		if (bullet != NULL) {
 			drawPixel(bullet->prevX + i, bullet->prevY, 0x0000);
+			bullet->type = bullet->type == DELETED ? ONEMORE : bullet->type;
+			bullet->type = bullet->type == ONEMORE ? NOTACTIVE : bullet->type;
 		} else {
 			printf("Attempt to draw null bullet.\n");
 		}
@@ -108,18 +113,25 @@ void moveBulletRight(Bullet *bullet) {
 	bullet->x = bullet->x + 2;
 
 	if ((bullet->x >= SCREEN_WIDTH) || (bullet->x <= -BULLET_LENGTH - 1)) {
-		bullet->type = NOTACTIVE;
-		Bullet *nextBullet = bullet->next;
-		Bullet *prevBullet = bullet->prev;
-		bullet->next = NULL;
-		bullet->prev = NULL;
+		deleteBullet(bullet);
+	}
+}
 
-		if (nextBullet != NULL) {
-			nextBullet->prev = prevBullet;
-		}
-		if (prevBullet != NULL) {
-			prevBullet->next = nextBullet;
-		}
+void deleteBullet(Bullet *bullet) {
+	eraseBullet(bullet);
+	bullet->type = DELETED;
+	bullet->prevX = bullet->x;
+	bullet->prevY = bullet->y;
+	Bullet *nextBullet = bullet->next;
+	Bullet *prevBullet = bullet->prev;
+	bullet->next = NULL;
+	bullet->prev = NULL;
+
+	if (nextBullet != NULL) {
+		nextBullet->prev = prevBullet;
+	}
+	if (prevBullet != NULL) {
+		prevBullet->next = nextBullet;
 	}
 }
 
@@ -135,17 +147,6 @@ void moveBulletLeft(Bullet *bullet) {
 	bullet->x = bullet->x - 2;
 
 	if ((bullet->x >= SCREEN_WIDTH) || (bullet->x <= -BULLET_LENGTH - 1)) {
-		bullet->type = NOTACTIVE;
-		Bullet *nextBullet = bullet->next;
-		Bullet *prevBullet = bullet->prev;
-		bullet->next = NULL;
-		bullet->prev = NULL;
-
-		if (nextBullet != NULL) {
-			nextBullet->prev = prevBullet;
-		}
-		if (prevBullet != NULL) {
-			prevBullet->next = nextBullet;
-		}
+		deleteBullet(bullet);
 	}
 }
