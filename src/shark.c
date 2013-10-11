@@ -70,6 +70,7 @@ void moveShark(Shark *shark) {
 	Displacement *disp = shark->displacement;
 	shark->x += disp->dx;
 	shark->y += disp->dy;
+	shark->displacement = shark->displacement->next;
 }
 
 void moveAllSharks(void) {

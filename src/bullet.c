@@ -14,7 +14,7 @@ void initBullets() {
 	}
 
 	playerLaserColor = convert24BitRgbTo16(0xFF0000);
-	sharkLaserColor = convert24BitRgbTo16(0x0000FF);
+	sharkLaserColor = convert24BitRgbTo16(0x66FFCC);
 }
 
 void createBullet(bullettype type, int x, int y) {
