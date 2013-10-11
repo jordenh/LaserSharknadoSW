@@ -17,8 +17,6 @@ alt_up_audio_dev *audio = NULL;
 alt_up_av_config_dev *config = NULL;
 
 int DEBUG = 0;
-int toneLength = 122;
-unsigned int tone[122];
 
 volatile short int status;
 volatile short int loaded;
@@ -322,7 +320,6 @@ static void playSoundISR(void* isr_context, alt_u32 id) {
 }
 
 void updateAudioWithVolume(char switchValues) {
-
 	if (laser.mainBuffer != NULL && laser.volumeBuffer != NULL){
 		changeBufferVolume(laser, switchValues);
 	}
