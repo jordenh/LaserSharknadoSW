@@ -28,13 +28,9 @@ typedef struct {
 } INFOHEADER;
 
 typedef struct {
-	unsigned char r, g, b;
-} RGB;
-
-typedef struct {
 	HEADER header;
 	INFOHEADER infoheader;
-	RGB *rgb;
+	short int *color;
 } BMP;
 
 BMP *splashBmp;
