@@ -54,6 +54,8 @@ int main() {
 	drawAllSharks();
 	startHardwareTimer();
 
+	playTheme();
+
 	printf("%d: count \n", count);
 	// main game loop;
 	while(1) {
@@ -63,6 +65,7 @@ int main() {
 			if (displaySplashScreen) {
 				if(gameStart()) {
 					clearSplashScreen();
+					stopTheme();
 					displaySplashScreen = 0;	
 				}
 			} else {

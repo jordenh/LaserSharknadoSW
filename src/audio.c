@@ -280,6 +280,10 @@ void playTheme(void) {
 	alt_up_audio_enable_write_interrupt(audio);
 }
 
+void stopTheme(void) {
+	status = NONE;
+}
+
 #ifdef ALT_ENHANCED_INTERRUPT_API_PRESENT
 static void playSoundISR(void* isr_context) {
 #else
@@ -297,7 +301,13 @@ static void playSoundISR(void* isr_context, alt_u32 id) {
 			 (playedWords + free) >= audioFileWordLength) {
 			// Last chunk to play
 			len = end - (int)playCursor;
-			alt_up_audio_disable_write_interrupt(audio);
+			if (status == THEME) {
+				loadTheme();
+				playCursor = audioVolumeBuffer;
+				playedWords = 0;
+			} else {
+				alt_up_audio_disable_write_interrupt(audio);
+			}
 		} else {
 			len = free;
 		}
