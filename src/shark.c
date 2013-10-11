@@ -11,9 +11,14 @@ int sharkArrayCursor = 0;;
 void initSharks(void) {
 	int i;
 	Shark *cursor;
+	sharkList = NULL;
+	deadSharkList = NULL;
 	for (i = 0; i < NUM_SHARKS; i++) {
 		cursor = &(sharkArray[i]);
 		cursor->state = DEAD;
+		cursor->next = NULL;
+		cursor->prev = NULL;
+		cursor->displacement = NULL;
 	}
 }
 
@@ -104,6 +109,10 @@ void createShark(int sudoRandomSeed, int x, int y, Displacement *displacement) {
 
 	//Shark *newShark = malloc(sizeof(Shark));
 	Shark *newShark = getFreeShark();
+	if (newShark == NULL) {
+		return;
+	}
+
 	newShark->state = LIVE;
 
 	newShark->x = x;
@@ -118,7 +127,7 @@ void createShark(int sudoRandomSeed, int x, int y, Displacement *displacement) {
 		newShark->next = sharkList;
 		sharkList = newShark;
 	}
-	newShark->freq = (sudoRandomSeed % 10) + PLAYER_HEIGHT + 1;
+	newShark->freq = (sudoRandomSeed % 20) + 1.5*PLAYER_HEIGHT + 1;
 	newShark->count = 0;
 	sharkCount++;
 }
@@ -133,16 +142,16 @@ void killShark(Shark *shark) {
 
 	Shark *previousShark = shark->prev;
 	Shark *nextShark = shark->next;
-
-	if (deadSharkList == NULL) {
-		deadSharkList = shark;
-		deadSharkList->next == NULL;
-	}
-	else {
-		deadSharkList->prev = shark;
-		shark->next = deadSharkList;
-		deadSharkList = shark;
-	}
+//
+//	if (deadSharkList == NULL) {
+//		deadSharkList = shark;
+//		deadSharkList->next = NULL;
+//	}
+//	else {
+//		deadSharkList->prev = shark;
+//		shark->next = deadSharkList;
+//		deadSharkList = shark;
+//	}
 
 	playSharkDeath();
 	// Need to erase now because we free the shark

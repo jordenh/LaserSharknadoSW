@@ -15,6 +15,7 @@
 #include "score.h"
 #include "input.h"
 #include "splash.h"
+#include "gameEnd.h"
 
 int init(void) {
 	if (openSdCard() == -1) {
@@ -61,7 +62,7 @@ int main() {
 			startHardwareTimer();
 
 			if (displaySplashScreen) {
-				if(startGame()) {
+				if(gameStart()) {
 					clearSplashScreen();
 					displaySplashScreen = 0;	
 				}
@@ -82,6 +83,11 @@ int main() {
 
 				doSharkBulletCollision();
 				doPlayerBulletCollision();
+				if(getCurrentPlayerLives() == 0) {
+					gameEndSequence();
+					//displaySplashScreen = 1;
+					continue;
+				}
 
 				drawAllBullets();
 

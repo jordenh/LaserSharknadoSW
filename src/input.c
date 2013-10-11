@@ -14,7 +14,7 @@ void handleKeyInput(void){
 	char key2 = keyInput & 0x04;
 	char key3 = keyInput & 0x08;
 
-	/*
+	// / *
 	//functionality for keys being held
 	if(key1) {
 		moveDownPlayer();
@@ -29,7 +29,7 @@ void handleKeyInput(void){
 		edgeDetect0 = 1;
 	} else if (key0 && (edgeDetect0 == 1)) {
 		edgeDetect0 = 0;
-		createBullet(PLAYERBULLET, player.x + PLAYER_WIDTH + 1, player.y + 0.5 * PLAYER_HEIGHT);
+		createBullet(PLAYERBULLET, player.x + PLAYER_WIDTH - 1, player.y + 0.5 * PLAYER_HEIGHT - GUN_OFFSET);
 	}
 
 	if (!key1 && (edgeDetect1 == 0)) {
@@ -45,7 +45,7 @@ void handleKeyInput(void){
 		edgeDetect2 = 0;
 		//updateHighScoreBoard();
 		//playTheme();
-	} */
+	} // */
 
 	if (!key3 && (edgeDetect3 == 0)) {
 		edgeDetect3 = 1;
@@ -97,7 +97,7 @@ void handleAtariInput(void){
 	atariUp = atariButtons & 0x02;
 	atariDown = atariButtons & 0x04;
 	IOWR_16DIRECT(LEDS_BASE, 0, atariButtons);
-
+	/*
 	if ((atariFire == 0x00) && (edgeDetect == 0)) {
 		edgeDetect = 1;
 	} else if ((atariFire != 0x00) && (edgeDetect == 1)) {
@@ -112,17 +112,38 @@ void handleAtariInput(void){
 		moveDownPlayer();
 	} else {
 		keepPlayerStationary();
+	} */
+}
+
+void delayUntilUPAndButtonPressed(void) {
+	char atariButtons;
+	char atariFire;
+	char keys;
+	char key4;
+	
+	while(1) {
+		atariButtons = (IORD_8DIRECT(PROCESSORGPIN_BASE, 0) & 0x0F);
+		keys = (IORD_8DIRECT(KEYS_BASE, 0) & 0x0F);
+		atariFire = atariButtons & 0x8;
+		key4 = keys & 0x8;
+		if (atariFire || key4) {
+			break;
+		}
 	}
 }
 
-int startGame() {
+int gameStart(void){
 	char atariButtons;
 	char atariFire;
+	char keys;
+	char key4;
 
-	atariButtons = (IORD_8DIRECT(KEYS_BASE, 0) & 0x0F);
+	atariButtons = (IORD_8DIRECT(PROCESSORGPIN_BASE, 0) & 0x0F);
+	keys = (IORD_8DIRECT(KEYS_BASE, 0) & 0x0F);
 	atariFire = atariButtons & 0x8;
-	
-	if (atariFire) {
+	key4 = keys & 0x8;
+
+	if (atariFire || key4) {
 		return 1;
 	} else {
 		return 0;

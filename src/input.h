@@ -23,7 +23,6 @@
 #include "altera_nios2_qsys_irq.h"
 #include "sys/alt_irq.h"
 #include "score.h"
-#include "input.h"
 
 #define GUN_OFFSET 6
 
@@ -33,6 +32,8 @@ void handleSwitchInput(void);
 
 void handleAtariInput(void);
 
-int startGame();
+void delayUntilUPAndButtonPressed(void);
+
+int gameStart(void);
 
 #endif /* INPUT_H_ */

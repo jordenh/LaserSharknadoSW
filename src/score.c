@@ -122,10 +122,11 @@ void updateHighScoreBoard(void) {
 			if(i == scoreReplaceIndex){
 				printf("replacing score code at index %d\n", i);
 
-				char * newInitials = malloc(3*sizeof(char));
+				char * newInitials = malloc(4*sizeof(char));
 				*newInitials = '-';
 				*(newInitials + 1) = '-';
 				*(newInitials + 2) = '-';
+				*(newInitials + 3) = '\0';
 				obtainUserInitials(newInitials);
 				for(j = 0; j < NUMINITIALS; j++){
 					alt_up_sd_card_write(fileHandle, newInitials[j]);
@@ -186,6 +187,10 @@ void obtainUserInitials(char * initials){
 	short int edgeDetect1 = 0;
 	short int edgeDetect2 = 0;
 	keyInput = IORD_8DIRECT(KEYS_BASE, 0);
+	static char atariButtons;
+	static char atariUp;
+	static char atariDown;
+	static char atariFire;
 	char key0 = keyInput & 0x01;
 	char key1 = keyInput & 0x02;
 	char key2 = keyInput & 0x04;
@@ -203,17 +208,21 @@ void obtainUserInitials(char * initials){
 			key0 = keyInput & 0x01;
 			key1 = keyInput & 0x02;
 			key2 = keyInput & 0x04;
+			atariButtons = (IORD_8DIRECT(PROCESSORGPIN_BASE, 0) & 0x0F);
+			atariFire = atariButtons & 0x08;
+			atariUp = atariButtons & 0x02;
+			atariDown = atariButtons & 0x04;
 
 			alt_up_char_buffer_string(char_buffer, initials, xPos, yPos);
-			if (!key0 && (edgeDetect0 == 0)) {
+			if ((!key0 && !atariFire) && (edgeDetect0 == 0)) {
 				edgeDetect0 = 1;
-			} else if (key0 && (edgeDetect0 == 1)) {
+			} else if ((key0 ^ atariFire) && (edgeDetect0 == 1)) {
 				edgeDetect0 = 0;
 				break;
 			}
-			if (!key1 && (edgeDetect1 == 0)) {
+			if ((!key1 && !atariUp) && (edgeDetect1 == 0)) {
 				edgeDetect1 = 1;
-			} else if (key1 && (edgeDetect1 == 1)) {
+			} else if ((key1 ^ atariUp) && (edgeDetect1 == 1)) {
 				edgeDetect1 = 0;
 				if(charChoice < 25){
 					charChoice++;
@@ -221,9 +230,9 @@ void obtainUserInitials(char * initials){
 					charChoice = 0;
 				}
 			}
-			if (!key2 && (edgeDetect2 == 0)) {
+			if ((!key2 && !atariDown) && (edgeDetect2 == 0)) {
 				edgeDetect2 = 1;
-			} else if (key2 && (edgeDetect2 == 1)) {
+			} else if ((key2 ^ atariDown) && (edgeDetect2 == 1)) {
 				edgeDetect2 = 0;
 				if(charChoice > 0) {
 					charChoice--;
@@ -247,6 +256,12 @@ void obtainUserInitials(char * initials){
 //increment player score by deltaScore
 void updateCurrentPlayerScore(int deltaScore) {
 	gameScores->currentPlayerScore += deltaScore;
+	return;
+}
+
+//mutator: set playerScore to score
+void setCurrentPlayerScore(int score) {
+	gameScores->currentPlayerScore = score;
 	return;
 }
 
