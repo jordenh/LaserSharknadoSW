@@ -38,6 +38,8 @@ typedef struct {
 } BMP;
 
 BMP *splashBmp;
+BMP *loadBmp;
+BMP *pressBmp;
 BMP *playerBmp;
 BMP *sharkBmp;
 

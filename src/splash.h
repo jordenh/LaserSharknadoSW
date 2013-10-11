@@ -5,6 +5,7 @@
 #include "bmp.h"
 
 void drawSplashScreen();
+void swapSplashScreenText();
 void clearSplashScreen();
 
 #endif
