@@ -116,7 +116,7 @@ void createShark(int sudoRandomSeed, int x, int y, Displacement *displacement) {
 	newShark->y = y;
 	newShark->prevX = x;
 	newShark->prevY = y;
-	newShark->displacement = (Displacement *)&circularDisplacementFunction;
+	newShark->displacement = (Displacement *)&arcDisplacementFunction;
 	newShark->prev = NULL;
 	if (sharkList == NULL) {
 		sharkList = newShark;

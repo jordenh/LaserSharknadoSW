@@ -114,7 +114,7 @@ void moveBulletRight(Bullet *bullet) {
 
 	bullet->x = bullet->x + 2;
 
-	if ((bullet->x >= SCREEN_WIDTH) || (bullet->x <= -BULLET_LENGTH - 1)) {
+	if ((bullet->x >= SCREEN_WIDTH) || (bullet->x <= -BULLET_LENGTH)) {
 		bullet->type = NOTACTIVE;
 		Bullet *nextBullet = bullet->next;
 		Bullet *prevBullet = bullet->prev;
