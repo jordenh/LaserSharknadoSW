@@ -4,7 +4,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "lcd.h"
 #include "audio.h"
 #include "timer.h"
 #include "sd_card.h"

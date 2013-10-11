@@ -29,7 +29,7 @@ void handleKeyInput(void){
 		edgeDetect0 = 1;
 	} else if (key0 && (edgeDetect0 == 1)) {
 		edgeDetect0 = 0;
-		createBullet(PLAYERBULLET, player.x + PLAYER_WIDTH + 1, player.y + 0.5 * PLAYER_HEIGHT);
+		createBullet(PLAYERBULLET, player.x + PLAYER_WIDTH - 1, player.y + 0.5 * PLAYER_HEIGHT - GUN_OFFSET);
 	}
 
 	if (!key1 && (edgeDetect1 == 0)) {
