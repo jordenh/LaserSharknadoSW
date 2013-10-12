@@ -6,24 +6,10 @@ Displacement circularDisplacementFunction[DISPLACEMENT_LENGTH];
 Displacement arcDisplacementFunction[DISPLACEMENT_LENGTH];
 Displacement doNotMove[DISPLACEMENT_LENGTH];
 
-void setupHorizontalDisplacementFunction(void);
-void setupCircularDisplacementFunction(void);
-void setupArcDisplacementFunction(void);
-void setupNoDisplcaementFunction(void);
-
 static Displacement right;
 static Displacement left;
 static Displacement up;
 static Displacement down;
-
-void makeRight(Displacement *disp);
-void makeLeft(Displacement *disp);
-void makeUp(Displacement *disp);
-void makeDown(Displacement *disp);
-void makeDownRight(Displacement *disp);
-void makeDownLeft(Displacement *disp);
-void makeUpRight(Displacement *disp);
-void makeUpLeft(Displacement *disp);
 
 void setupDisplacement(void) {
 	right.dx = 1;
@@ -36,16 +22,16 @@ void setupDisplacement(void) {
 	up.dy = -1;
 
 	down.dx = 0;
-	up.dy = 1;
+	down.dy = 1;
 
-	setupHorizontalDisplacementFunction();
+	setupVerticalDisplacementFunction();
 	setupCircularDisplacementFunction();
 	setupArcDisplacementFunction();
 
 	printf("Setup displacement functions.\n");
 }
 
-void setupHorizontalDisplacementFunction(void) {
+void setupVerticalDisplacementFunction(void) {
 	int i;
 	Displacement *ptr;
 	for (i = 0; i < DISPLACEMENT_LENGTH; i++) {
@@ -54,7 +40,7 @@ void setupHorizontalDisplacementFunction(void) {
 		ptr->next = &verticalDisplacementFunctionUp[i + 1];
 
 		ptr = &verticalDisplacementFunctionDown[i];
-		makeUp(ptr);
+		makeDown(ptr);
 		ptr-> next = &verticalDisplacementFunctionDown[i + 1];
 	}
 	ptr = &verticalDisplacementFunctionUp[DISPLACEMENT_LENGTH];
@@ -69,11 +55,11 @@ void setupCircularDisplacementFunction(void) {
 	for (i = 0; i < DISPLACEMENT_LENGTH; i++) {
 		ptr = &circularDisplacementFunction[i];
 		if (i < DISPLACEMENT_LENGTH / 4) {
-			makeLeft(ptr);
+			makeRight(ptr);
 		} else if (i < DISPLACEMENT_LENGTH / 2) {
 			makeDown(ptr);
 		} else if (i < 3 * DISPLACEMENT_LENGTH / 4) {
-			makeRight(ptr);
+			makeLeft(ptr);
 		} else {
 			makeUp(ptr);
 		}
@@ -88,10 +74,14 @@ void setupArcDisplacementFunction(void) {
 	Displacement *ptr;
 	for (i = 0; i < DISPLACEMENT_LENGTH; i++) {
 		ptr = &arcDisplacementFunction[i];
-		if (i < DISPLACEMENT_LENGTH / 2) {
-			makeDownLeft(ptr);
-		} else {
+		if (i < DISPLACEMENT_LENGTH / 4) {
 			makeDownRight(ptr);
+		} else if (i < DISPLACEMENT_LENGTH / 2) {
+			makeDownLeft(ptr);
+		} else if (i < 3 * DISPLACEMENT_LENGTH / 4) {
+			makeUpRight(ptr);
+		} else {
+			makeUpLeft(ptr);
 		}
 		ptr->next = &arcDisplacementFunction[i + 1];
 	}
@@ -99,7 +89,7 @@ void setupArcDisplacementFunction(void) {
 	ptr->next = arcDisplacementFunction;
 }
 
-void setupNoDisplcaementFunction(void) {
+void setupNoDisplcementFunction(void) {
 	int i;
 	for (i = 0; i < DISPLACEMENT_LENGTH; i++) {
 		doNotMove[i].dx = 0;

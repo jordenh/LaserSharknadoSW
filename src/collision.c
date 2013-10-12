@@ -9,9 +9,9 @@ int relativeSharkHit[SHARK_WIDTH][SHARK_HEIGHT];
 int relativePlayerHit[PLAYER_WIDTH][PLAYER_HEIGHT];
 
 void initCollision(void) {
-	RGB *colourArray;
-	RGB *cursor;
-	colourArray = playerBmp->rgb;
+	short int *colourArray;
+	short int *cursor;
+	colourArray = playerBmp->color;
 	int x, y;
 	int yOffset;
 
@@ -19,9 +19,7 @@ void initCollision(void) {
 		yOffset = SHARK_WIDTH * y;
 		for (x = 0; x < SHARK_WIDTH; x++) {
 			cursor = &colourArray[yOffset + x];
-			if (cursor->r > 0 &&
-				cursor->g > 0 &&
-				cursor->b > 0) {
+			if (*cursor > 0) {
 				relativeSharkHit[x][y] = TRUE;
 			} else {
 				relativeSharkHit[x][y] = FALSE;
@@ -34,9 +32,7 @@ void initCollision(void) {
 		for (x = 0; x < PLAYER_WIDTH; x++) {
 			cursor = &colourArray[yOffset + x];
 			//printf("r: 0x%x; g: 0x%x; b: 0x%x\n", cursor->r, cursor->g, cursor->b);
-			if (!(cursor->r == 0xff && cursor->b == 0xff) &&
-				!(cursor->r == 0x00 && cursor->b == 0x00 && cursor->g == 0x00) &&
-				 (cursor->r >  0x05 || cursor->b >  0x05 || cursor->g >  0x05)) {
+			if (*cursor > 0xff) {
 				relativePlayerHit[x][y] = TRUE;
 			} else {
 				relativePlayerHit[x][y] = FALSE;
@@ -70,12 +66,12 @@ int isBulletCollidingWithShark(Shark *shark, Bullet *bullet) {
 		printf("Error: sharkbullet present in player bullet list.\n");
 		return FALSE;
 	}
-	
+
 	if (bullet->x >= shark->x &&
 		bullet->x <= shark->x + SHARK_WIDTH) {
 		// Have x region correct
 		//printf("x-hit\n");
-		
+
 		if (bullet->y >= shark->y &&
 			bullet->y <= shark->y + SHARK_HEIGHT) {
 			// Have y region correct
@@ -104,7 +100,7 @@ int isBulletCollidingWithPlayer(Player *player, Bullet *bullet) {
 	if (bullet->x >= player->x &&
 		bullet->x <= player->x + PLAYER_WIDTH) {
 		// Have x region
-		
+
 		if (bullet->y >= player->y &&
 			bullet->y <= player->y + PLAYER_HEIGHT) {
 			// Have y

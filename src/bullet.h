@@ -20,6 +20,7 @@ struct Bullet {
 	int x, prevX;
 	int y, prevY;
 	bullettype type;
+	int laserColor;
 	struct Bullet *next;
 	struct Bullet *prev;
 };

@@ -10,6 +10,7 @@
 #include "shark.h"
 #include "score.h"
 #include "splash.h"
+#include "input.h"
 
 
 void gameEndSequence(void);

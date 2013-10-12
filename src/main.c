@@ -38,7 +38,10 @@ int init(void) {
 	initSharks();
 	initCollision();
 
-	setHardwareTimerPeriod(CLOCK_FREQ/30);
+	initHardwareTimer();
+
+	swapSplashScreenText();
+
 	return 0;
 }
 
@@ -58,7 +61,6 @@ int main() {
 
 	playTheme();
 
-	printf("%d: count \n", count);
 	// main game loop;
 	while(1) {
 		if (hasHardwareTimerExpired() == 1) {
@@ -69,6 +71,7 @@ int main() {
 					clearSplashScreen();
 					stopTheme();
 					displaySplashScreen = 0;	
+					drawInGameInfo();
 				}
 			} else {
 				if (nadoCounter < 2) {
@@ -93,11 +96,11 @@ int main() {
 
 				moveAllSharks();
 				drawAllSharks();
-				drawInGameInfo(); // TBD: in actual game loop, only call this function when an event happens (like score inc/dec, or lives inc/dec)
+				//drawInGameInfo(); // TBD: in actual game loop, only call this function when an event happens (like score inc/dec, or lives inc/dec)
 
 				handleKeyInput();
 				handleSwitchInput();
-				handleAtariInput();
+				//handleAtariInput();
 
 				moveAllBullets();
 
@@ -113,8 +116,8 @@ int main() {
 
 				drawAllBullets();
 
-				alt_up_pixel_buffer_dma_swap_buffers(pixel_buffer);
-				while(alt_up_pixel_buffer_dma_check_swap_buffers_status(pixel_buffer));
+				swapBuffers();
+
 				cleanupDeadSharks();
 				eraseAllSharks();
 				eraseAllBullets();
