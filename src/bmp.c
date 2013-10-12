@@ -91,8 +91,12 @@ void drawBmp (BMP *bmp, int x, int y) {
 	for(i = 0; i < bmp->infoheader.height; i++) {
 		offset = i * bmp->infoheader.width;
 		for(j = 0; j < bmp->infoheader.width; j++){
-			if(bmp->color[offset + j] == 0 || x + j >= SCREEN_WIDTH || y + i >= SCREEN_HEIGHT || x < 0 || y < 0)
+			if(bmp->color[offset + j] == 0 || x + j >= SCREEN_WIDTH || y + i >= SCREEN_HEIGHT || x + j <= 0 || y + i <= 0)
 				continue;
+
+			if(x + j <= 0 || y + i <= 0){
+				printf("in drawBmp, should not be here...\n");
+			}
 
 			drawPixelFast(x + j, y + i, bmp->color[offset +j]);
 		}

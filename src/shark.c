@@ -72,6 +72,10 @@ void moveShark(Shark *shark) {
 //		shark->type = RECENTLYDEAD;
 //	}
 
+	if(shark->y <= 0) {
+		printf("shark disp <= 0...\n");
+	}
+
 	Displacement *disp = shark->displacement;
 	shark->x += disp->dx;
 	shark->y += disp->dy;
