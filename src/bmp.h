@@ -28,18 +28,22 @@ typedef struct {
 } INFOHEADER;
 
 typedef struct {
-	unsigned char r, g, b;
-} RGB;
-
-typedef struct {
 	HEADER header;
 	INFOHEADER infoheader;
-	RGB *rgb;
+	short int *color;
 } BMP;
 
 BMP *splashBmp;
+BMP *loadBmp;
+BMP *pressBmp;
 BMP *playerBmp;
 BMP *sharkBmp;
+
+BMP *cnadoBmp;
+BMP *pnadoaBmp;
+BMP *pnadobBmp;
+BMP *nnadoaBmp;
+BMP *nnadobBmp;
 
 void parseBmp(char *fileName, BMP *bmp);
 void parseBmps();

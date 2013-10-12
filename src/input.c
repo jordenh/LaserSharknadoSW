@@ -14,7 +14,6 @@ void handleKeyInput(void){
 	char key2 = keyInput & 0x04;
 	char key3 = keyInput & 0x08;
 
-	// / *
 	//functionality for keys being held
 	if(key1) {
 		moveDownPlayer();
@@ -32,6 +31,7 @@ void handleKeyInput(void){
 		createBullet(PLAYERBULLET, player.x + PLAYER_WIDTH - 1, player.y + 0.5 * PLAYER_HEIGHT - GUN_OFFSET);
 	}
 
+	/*
 	if (!key1 && (edgeDetect1 == 0)) {
 		edgeDetect1 = 1;
 	} else if (key1 && (edgeDetect1 == 1)) {
@@ -45,7 +45,7 @@ void handleKeyInput(void){
 		edgeDetect2 = 0;
 		//updateHighScoreBoard();
 		//playTheme();
-	} // */
+	} //
 
 	if (!key3 && (edgeDetect3 == 0)) {
 		edgeDetect3 = 1;
@@ -55,6 +55,7 @@ void handleKeyInput(void){
 		//updateCurrentPlayerScore(250);
 		//playSharkDeath();
 	}
+	*/
 }
 
 void handleSwitchInput(void){

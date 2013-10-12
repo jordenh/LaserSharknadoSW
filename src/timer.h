@@ -6,6 +6,7 @@
 #define CLOCK_FREQ 50000000
 
 void timer_test(void);
+void initHardwareTimer();
 void setHardwareTimerPeriod(int period);
 int isHardwareTimerRunning(void);
 int hasHardwareTimerExpired(void);
