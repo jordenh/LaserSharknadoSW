@@ -47,7 +47,7 @@ void initCollision(void) {
 		yOffset = NADO_WIDTH * y;
 		for (x = 0; x < NADO_WIDTH; x++) {
 			cursor = &colourArray[yOffset + x];
-			if (*cursor > 0) {
+			if (*cursor != 0) {
 				relativeNadoHit[x][y] = TRUE;
 			} else {
 				relativeNadoHit[x][y] = FALSE;
@@ -60,7 +60,7 @@ void initCollision(void) {
 		yOffset = NADO_WIDTH * y;
 		for (x = 0; x < NADO_WIDTH; x++) {
 			cursor = &colourArray[yOffset + x];
-			if (*cursor > 0) {
+			if (*cursor != 0) {
 				relativeNadoHit[x][y] = TRUE;
 			}
 		}
@@ -71,7 +71,7 @@ void initCollision(void) {
 		yOffset = NADO_WIDTH * y;
 		for (x = 0; x < NADO_WIDTH; x++) {
 			cursor = &colourArray[yOffset + x];
-			if (*cursor > 0) {
+			if (*cursor != 0) {
 				relativeNadoHit[x][y] = TRUE;
 			}
 		}
@@ -150,8 +150,8 @@ int isBulletCollidingWithPlayer(Player *player, Bullet *bullet) {
 }
 
 short int isBulletCollidingWithNado(Bullet *bullet) {
-	if (bullet->x >= SCREEN_WIDTH - NADO_WIDTH) {
-		int xRelative = bullet->x - (SCREEN_WIDTH - NADO_WIDTH);
+	if (bullet->x >= nadoDrawX - 6) {
+		int xRelative = bullet->x - nadoDrawX + 4;
 		int yRelative = bullet->y;
 		return relativeNadoHit[xRelative][yRelative];
 	}
@@ -200,5 +200,7 @@ void doNadoBulletCollision(void) {
 		if (isBulletCollidingWithNado(bulletCursor) == TRUE) {
 			deleteBullet(bulletCursor);
 		}
+		i++;
+		bulletCursor = bulletCursor->next;
 	}
 }
