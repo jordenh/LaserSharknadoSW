@@ -14,6 +14,10 @@
 #define LIVE 1
 #define RECENTLY_DEAD 2
 #define DEAD 3
+#define TOPWALL 0
+#define RIGHTWALL 1
+#define BOTTOMWALL 2
+#define ENTRANCESTEPS 128
 
 struct Displacement {
 	short int dx;
@@ -28,6 +32,8 @@ struct Shark {
 	struct Shark *next;
 	struct Shark *prev;
 	struct Displacement *displacement;
+	unsigned short initialWall;
+	unsigned short entranceCount;
 	short int state;
 };
 
@@ -42,7 +48,7 @@ void initSharks(void);
 void drawShark(Shark *shark);
 void eraseShark(Shark *shark);
 void moveShark(Shark *shark);
-void createShark(int sudoRandomSeed, int x, int y, Displacement *displacement);
+void createShark(int sudoRandomSeed, int x, int y, Displacement *displacement, unsigned short wall);
 void killShark(Shark *shark);
 void moveAllSharks(void);
 void drawAllSharks(void);

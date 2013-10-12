@@ -53,8 +53,8 @@ int main() {
 
 	//createShark(22, 100, 0, (Displacement *)&doNotMove);
 	//createShark(45, 200, 200, (Displacement *)&doNotMove);
-	createShark(22, 100, 0, (Displacement *)&circularDisplacementFunction);
-	createShark(45, 200, 200, (Displacement *)&circularDisplacementFunction);
+	createShark(22, 100, 0, (Displacement *)&arcDisplacementFunction, RIGHTWALL);
+	createShark(45, 200, 200, (Displacement *)&arcDisplacementFunction, RIGHTWALL);
 
 	drawAllSharks();
 	startHardwareTimer();

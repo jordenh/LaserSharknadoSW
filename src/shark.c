@@ -20,6 +20,7 @@ void initSharks(void) {
 		cursor->next = NULL;
 		cursor->prev = NULL;
 		cursor->displacement = NULL;
+		cursor->entranceCount = 0;
 	}
 }
 
@@ -72,10 +73,24 @@ void moveShark(Shark *shark) {
 //		shark->type = RECENTLYDEAD;
 //	}
 
-	Displacement *disp = shark->displacement;
-	shark->x += disp->dx;
-	shark->y += disp->dy;
-	shark->displacement = shark->displacement->next;
+	if(shark->entranceCount >= ENTRANCESTEPS) {
+		Displacement *disp = shark->displacement;
+		shark->x += disp->dx;
+		shark->y += disp->dy;
+		shark->displacement = shark->displacement->next;
+	} else {
+		shark->entranceCount++;
+		if(shark->initialWall == TOPWALL) {
+			shark->x += 0;
+			shark->y += 1;
+		} else if(shark->initialWall == RIGHTWALL) {
+			shark->x += -1;
+			shark->y += 0;
+		} else if(shark->initialWall == BOTTOMWALL) {
+			shark->x += 0;
+			shark->y += -1;
+		}
+	}
 }
 
 void moveAllSharks(void) {
@@ -103,7 +118,7 @@ void eraseAllSharks(void) {
 	}
 }
 
-void createShark(int sudoRandomSeed, int x, int y, Displacement *displacement) {
+void createShark(int sudoRandomSeed, int x, int y, Displacement *displacement, unsigned short wall) {
 	if (displacement == NULL) {
 		printf("Attempt to create shark with null displacement.\n");
 		return;
@@ -116,11 +131,20 @@ void createShark(int sudoRandomSeed, int x, int y, Displacement *displacement) {
 	}
 
 	newShark->state = LIVE;
+	newShark->initialWall = wall % 3; //% 3 to ensure that value is always between 0-2, even if caller messes up.
+	if(newShark->initialWall == TOPWALL) {
+		newShark->x = x;
+		newShark->y = 0 - SHARK_HEIGHT;
+	} else if(newShark->initialWall == BOTTOMWALL) {
+		newShark->x = x;
+		newShark->y = SCREEN_HEIGHT + SHARK_HEIGHT;
+	} else if(newShark->initialWall == RIGHTWALL) {
+		newShark->x = SCREEN_WIDTH + SHARK_WIDTH;
+		newShark->y = y;
+	}
+	newShark->prevX = newShark->x;
+	newShark->prevY = newShark->y;
 
-	newShark->x = x;
-	newShark->y = y;
-	newShark->prevX = x;
-	newShark->prevY = y;
 	newShark->displacement = displacement;
 	newShark->prev = NULL;
 	if (sharkList == NULL) {
@@ -133,6 +157,7 @@ void createShark(int sudoRandomSeed, int x, int y, Displacement *displacement) {
 	}
 	newShark->freq = (sudoRandomSeed % 20) + 1.5*PLAYER_HEIGHT + 1;
 	newShark->count = 0;
+	newShark->entranceCount = 0;
 	sharkCount++;
 }
 
