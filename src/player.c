@@ -41,6 +41,7 @@ void keepPlayerStationary() {
 }
 
 void hitPlayer() {
+	playPlayerDeath();
 	int playerLives = getCurrentPlayerLives();
 	if (playerLives > 1) {
 		setCurrentPlayerLives(playerLives - 1);
@@ -52,7 +53,7 @@ void hitPlayer() {
 }
 
 void killPlayer() {
-	playPlayerDeath();
+	//playPlayerDeath();
 	//updateHighScoreBoard();
 	// Some game over stuff
 }

@@ -5,13 +5,14 @@
 #define TRUE 1
 #define FALSE 0
 
-int relativeSharkHit[SHARK_WIDTH][SHARK_HEIGHT];
-int relativePlayerHit[PLAYER_WIDTH][PLAYER_HEIGHT];
+short int relativeSharkHit[SHARK_WIDTH][SHARK_HEIGHT];
+short int relativePlayerHit[PLAYER_WIDTH][PLAYER_HEIGHT];
+short int relativeNadoHit[NADO_WIDTH][NADO_HEIGHT];
 
 void initCollision(void) {
 	short int *colourArray;
 	short int *cursor;
-	colourArray = playerBmp->color;
+	colourArray = sharkBmp->color;
 	int x, y;
 	int yOffset;
 
@@ -19,7 +20,7 @@ void initCollision(void) {
 		yOffset = SHARK_WIDTH * y;
 		for (x = 0; x < SHARK_WIDTH; x++) {
 			cursor = &colourArray[yOffset + x];
-			if (*cursor > 0) {
+			if (*cursor != 0) {
 				relativeSharkHit[x][y] = TRUE;
 			} else {
 				relativeSharkHit[x][y] = FALSE;
@@ -27,15 +28,52 @@ void initCollision(void) {
 		}
 	}
 
+	colourArray = playerBmp->color;
 	for (y = 0; y < PLAYER_HEIGHT; y++) {
 		yOffset = PLAYER_WIDTH * y;
 		for (x = 0; x < PLAYER_WIDTH; x++) {
 			cursor = &colourArray[yOffset + x];
 			//printf("r: 0x%x; g: 0x%x; b: 0x%x\n", cursor->r, cursor->g, cursor->b);
-			if (*cursor > 0x0) {
+
+			if (*cursor != 0) {
 				relativePlayerHit[x][y] = TRUE;
 			} else {
 				relativePlayerHit[x][y] = FALSE;
+			}
+		}
+	}
+
+	colourArray = cnadoBmp->color;
+	for (y = 0; y < NADO_HEIGHT; y++) {
+		yOffset = NADO_WIDTH * y;
+		for (x = 0; x < NADO_WIDTH; x++) {
+			cursor = &colourArray[yOffset + x];
+			if (*cursor != 0) {
+				relativeNadoHit[x][y] = TRUE;
+			} else {
+				relativeNadoHit[x][y] = FALSE;
+			}
+		}
+	}
+
+	colourArray = pnadoaBmp->color;
+	for (y = 0; y < NADO_HEIGHT; y++) {
+		yOffset = NADO_WIDTH * y;
+		for (x = 0; x < NADO_WIDTH; x++) {
+			cursor = &colourArray[yOffset + x];
+			if (*cursor != 0) {
+				relativeNadoHit[x][y] = TRUE;
+			}
+		}
+	}
+
+	colourArray = pnadobBmp->color;
+	for (y = 0; y < NADO_HEIGHT; y++) {
+		yOffset = NADO_WIDTH * y;
+		for (x = 0; x < NADO_WIDTH; x++) {
+			cursor = &colourArray[yOffset + x];
+			if (*cursor != 0) {
+				relativeNadoHit[x][y] = TRUE;
 			}
 		}
 	}
@@ -112,6 +150,15 @@ int isBulletCollidingWithPlayer(Player *player, Bullet *bullet) {
 	return FALSE;
 }
 
+short int isBulletCollidingWithNado(Bullet *bullet) {
+	if (bullet->x >= nadoDrawX - 6) {
+		int xRelative = bullet->x - nadoDrawX + 4;
+		int yRelative = bullet->y;
+		return relativeNadoHit[xRelative][yRelative];
+	}
+	return FALSE;
+}
+
 void doSharkBulletCollision(void) {
 	Bullet *bulletCursor = playerBulletList;
 	Shark *toKill = NULL;
@@ -139,6 +186,20 @@ void doPlayerBulletCollision(void) {
 			hitPlayer();
 			deleteBullet(bulletCursor);
 			break;
+		}
+		i++;
+		bulletCursor = bulletCursor->next;
+	}
+}
+
+void doNadoBulletCollision(void) {
+	Bullet *bulletCursor = playerBulletList;
+	int i = 0;
+	while (bulletCursor != NULL
+			&& bulletCursor->type == PLAYERBULLET
+			&& i < NUM_BULLETS) {
+		if (isBulletCollidingWithNado(bulletCursor) == TRUE) {
+			deleteBullet(bulletCursor);
 		}
 		i++;
 		bulletCursor = bulletCursor->next;

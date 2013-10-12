@@ -39,6 +39,12 @@ BMP *pressBmp;
 BMP *playerBmp;
 BMP *sharkBmp;
 
+BMP *cnadoBmp;
+BMP *pnadoaBmp;
+BMP *pnadobBmp;
+BMP *nnadoaBmp;
+BMP *nnadobBmp;
+
 void parseBmp(char *fileName, BMP *bmp);
 void parseBmps();
 void freeBmps();

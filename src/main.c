@@ -16,6 +16,7 @@
 #include "input.h"
 #include "splash.h"
 #include "gameEnd.h"
+#include "nado.h"
 
 int init(void) {
 	if (openSdCard() == -1) {
@@ -46,10 +47,12 @@ int init(void) {
 
 int main() {
 	int count = 0;
+	int nadoCounter = 0;
 	short int displaySplashScreen = 1;
 
 	if (init() == -1)
 		return -1;
+
 
 	//createShark(22, 100, 0, (Displacement *)&doNotMove);
 	//createShark(45, 200, 200, (Displacement *)&doNotMove);
@@ -72,8 +75,15 @@ int main() {
 					stopTheme();
 					displaySplashScreen = 0;	
 					drawInGameInfo();
+					nadoCounter = 0;
+					createShark(22, 100, 0, (Displacement *)&arcDisplacementFunction, RIGHTWALL);
+					createShark(45, 200, 200, (Displacement *)&arcDisplacementFunction, RIGHTWALL);
 				}
 			} else {
+				if (nadoCounter < 2) {
+					drawInitialNado(nadoCounter);
+					nadoCounter++;
+				}
 				count++;
 
 				moveAllSharks();
@@ -90,9 +100,10 @@ int main() {
 
 				doSharkBulletCollision();
 				doPlayerBulletCollision();
+				doNadoBulletCollision();
 				if(getCurrentPlayerLives() == 0) {
 					gameEndSequence();
-					//displaySplashScreen = 1;
+					displaySplashScreen = 1;
 					continue;
 				}
 

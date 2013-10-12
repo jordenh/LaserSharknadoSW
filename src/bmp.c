@@ -63,11 +63,23 @@ void parseBmps() {
 	sharkBmp = malloc(sizeof(BMP));
 	playerBmp = malloc(sizeof(BMP));
 
+	cnadoBmp = malloc(sizeof(BMP));
+	pnadoaBmp = malloc(sizeof(BMP));
+	pnadobBmp = malloc(sizeof(BMP));
+	//nnadoaBmp = malloc(sizeof(BMP));
+	//nnadobBmp = malloc(sizeof(BMP));
+
 	parseBmp("splash.bmp", splashBmp);
 	parseBmp("loadtx.bmp", loadBmp);
 	parseBmp("press.bmp", pressBmp);
 	parseBmp("shark.bmp", sharkBmp);
 	parseBmp("player.bmp", playerBmp);
+
+	parseBmp("cnado.bmp", cnadoBmp);
+	parseBmp("pnadoa.bmp", pnadoaBmp);
+	parseBmp("pnadob.bmp", pnadobBmp);
+	//parseBmp("nnadoa.bmp", nnadoaBmp);
+	//parseBmp("nnadob.bmp", nnadobBmp);
 }
 
 void freeBmps(){
@@ -94,15 +106,11 @@ void drawBmp (BMP *bmp, int x, int y) {
 			if(bmp->color[offset + j] == 0 || x + j >= SCREEN_WIDTH || y + i >= SCREEN_HEIGHT || x + j <= 0 || y + i <= 0)
 				continue;
 
-			if(x + j <= 0 || y + i <= 0){
-				printf("in drawBmp, should not be here...\n");
-			}
-
 			drawPixelFast(x + j, y + i, bmp->color[offset +j]);
 		}
 	}
 }
 
 void eraseBmp (BMP *bmp, int x, int y) {
-	drawBox(x, y, x  + bmp->infoheader.width, y + bmp->infoheader.height, 0);
+	drawBox(x, y, x + bmp->infoheader.width, y + bmp->infoheader.height, 0);
 }
