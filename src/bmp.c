@@ -59,9 +59,27 @@ void parseBmps() {
 	sharkBmp = malloc(sizeof(BMP));
 	playerBmp = malloc(sizeof(BMP));
 
+	cnadoBmp = malloc(sizeof(BMP));
+	pnadoaBmp = malloc(sizeof(BMP));
+	pnadobBmp = malloc(sizeof(BMP));
+	nnadoaBmp = malloc(sizeof(BMP));
+	nnadobBmp = malloc(sizeof(BMP));
+
 	parseBmp("splash.bmp", splashBmp);
 	parseBmp("shark.bmp", sharkBmp);
 	parseBmp("player.bmp", playerBmp);
+
+	printf("Loading nado bmps.\n");
+	parseBmp("cnado.bmp", cnadoBmp);
+	printf("Loaded cnado.\n");
+	parseBmp("pnadoa.bmp", pnadoaBmp);
+	printf("Loaded pnadoa.\n");
+	parseBmp("pnadob.bmp", pnadobBmp);
+	printf("Loaded pnadob.\n");
+	parseBmp("nnadoa.bmp", nnadoaBmp);
+	printf("Loaded nnadoa.\n");
+	parseBmp("nnadob.bmp", nnadobBmp);
+	printf("Loaded nado bmps.\n");
 }
 
 void freeBmps(){

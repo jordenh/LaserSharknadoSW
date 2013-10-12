@@ -16,6 +16,7 @@
 #include "input.h"
 #include "splash.h"
 #include "gameEnd.h"
+#include "nado.h"
 
 int init(void) {
 	if (openSdCard() == -1) {
@@ -43,6 +44,7 @@ int init(void) {
 
 int main() {
 	int count = 0;
+	int nadoCounter = 0;
 	short int displaySplashScreen = 1;
 
 	if (init() == -1)
@@ -69,7 +71,25 @@ int main() {
 					displaySplashScreen = 0;	
 				}
 			} else {
+				if (nadoCounter < 2) {
+					drawCommonNado();
+					if (nadoCounter == 0) {
+						drawANado();
+					} else {
+						drawBNado();
+					}
+					nadoCounter++;
+				}
 				count++;
+				if (count == 1 || count == 2) {
+					//drawANado();
+					//eraseBNado();
+				} else if (count == 15 || count == 16) {
+					//drawBNado();
+					//eraseANado();
+				} else if (count >= 30) {
+					count = 0;
+				}
 
 				moveAllSharks();
 				drawAllSharks();
