@@ -19,11 +19,15 @@
 #define SHARK_DEATH 3
 #define THEME 4
 #define FAIL -1
+#define PLAYBUFFER_LEN 128
 
 struct audioInfo{
 	unsigned int *mainBuffer;
 	unsigned int *volumeBuffer;
 	unsigned int bufferLength;
+	unsigned int playedWords;
+	bool active;
+	volatile unsigned int *playCursor;
 };
 
 void setupAudio(void);
