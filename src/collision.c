@@ -20,7 +20,7 @@ void initCollision(void) {
 		yOffset = SHARK_WIDTH * y;
 		for (x = 0; x < SHARK_WIDTH; x++) {
 			cursor = &colourArray[yOffset + x];
-			if (*cursor > 0) {
+			if (*cursor != 0) {
 				relativeSharkHit[x][y] = TRUE;
 			} else {
 				relativeSharkHit[x][y] = FALSE;
@@ -34,7 +34,7 @@ void initCollision(void) {
 		for (x = 0; x < PLAYER_WIDTH; x++) {
 			cursor = &colourArray[yOffset + x];
 			//printf("r: 0x%x; g: 0x%x; b: 0x%x\n", cursor->r, cursor->g, cursor->b);
-			if (*cursor > 0) {
+			if (*cursor != 0) {
 				relativePlayerHit[x][y] = TRUE;
 			} else {
 				relativePlayerHit[x][y] = FALSE;
