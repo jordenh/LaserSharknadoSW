@@ -5,9 +5,6 @@ Displacement verticalDisplacementFunctionDown[DISPLACEMENT_LENGTH];
 Displacement circularDisplacementFunction[DISPLACEMENT_LENGTH];
 Displacement arcDisplacementFunction[DISPLACEMENT_LENGTH];
 Displacement doNotMove[DISPLACEMENT_LENGTH];
-Displacement enterScreenFromRight[DISPLACEMENT_LENGTH];
-Displacement enterScreenFromTop[DISPLACEMENT_LENGTH];
-Displacement enterScreenFromBottom[DISPLACEMENT_LENGTH];
 
 static Displacement right;
 static Displacement left;
@@ -48,9 +45,9 @@ void setupVerticalDisplacementFunction(void) {
 		ptr-> next = &verticalDisplacementFunctionDown[i + 1];
 	}
 	ptr = &verticalDisplacementFunctionUp[DISPLACEMENT_LENGTH - 1];
-	ptr->next = verticalDisplacementFunctionUp;
-	ptr = &verticalDisplacementFunctionDown[DISPLACEMENT_LENGTH - 1];
 	ptr->next = verticalDisplacementFunctionDown;
+	ptr = &verticalDisplacementFunctionDown[DISPLACEMENT_LENGTH - 1];
+	ptr->next = verticalDisplacementFunctionUp;
 }
 
 void setupCircularDisplacementFunction(void) {
@@ -100,34 +97,6 @@ void setupNoDisplcementFunction(void) {
 		doNotMove[i].dy = 0;
 		doNotMove[i].next = doNotMove;
 	}
-}
-
-void setupEnterScreenFunctions(void){
-	int i;
-	Displacement *rightPtr;
-	Displacement *topPtr;
-	Displacement *bottomPtr;
-	for(i = 0; i < DISPLACEMENT_LENGTH; i++) {
-		rightPtr = &enterScreenFromRight[i];
-		makeLeft(rightPtr);
-		rightPtr->next = &enterScreenFromRight[i + 1];
-
-		topPtr = &enterScreenFromTop[i];
-		makeDown(topPtr);
-		topPtr->next = &enterScreenFromTop[i + 1];
-
-		bottomPtr = &enterScreenFromBottom[i];
-		makeUp(bottomPtr);
-		bottomPtr->next = &enterScreenFromBottom[i + 1];
-	}
-	rightPtr = &enterScreenFromRight[DISPLACEMENT_LENGTH - 1];
-	rightPtr->next = enterScreenFromRight; //WRONG
-
-	topPtr = &enterScreenFromTop[DISPLACEMENT_LENGTH - 1];
-	topPtr->next = enterScreenFromTop;
-
-	bottomPtr = &enterScreenFromBottom[DISPLACEMENT_LENGTH - 1];
-	bottomPtr->next = enterScreenFromBottom;
 }
 
 void makeRight(Displacement *disp) {

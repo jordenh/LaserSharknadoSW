@@ -56,8 +56,8 @@ int main() {
 
 	//createShark(22, 100, 0, (Displacement *)&doNotMove);
 	//createShark(45, 200, 200, (Displacement *)&doNotMove);
-	createShark(22, 100, 0, (Displacement *)&arcDisplacementFunction, RIGHTWALL);
-	createShark(45, 200, 200, (Displacement *)&arcDisplacementFunction, RIGHTWALL);
+	//createShark(22, 100, 0, (Displacement *)&arcDisplacementFunction, TOPWALL);
+	//createShark(45, 200, 200, (Displacement *)&arcDisplacementFunction, RIGHTWALL);
 
 	drawAllSharks();
 	startHardwareTimer();
@@ -76,8 +76,8 @@ int main() {
 					displaySplashScreen = 0;	
 					drawInGameInfo();
 					nadoCounter = 0;
-					createShark(22, 100, 0, (Displacement *)&arcDisplacementFunction, RIGHTWALL);
-					createShark(45, 200, 200, (Displacement *)&arcDisplacementFunction, RIGHTWALL);
+					createShark(22, 100, 0, (Displacement *)&arcDisplacementFunction, BOTTOMWALL);
+					createShark(45, 200, 100, (Displacement *)&verticalDisplacementFunctionUp, RIGHTWALL);
 				}
 			} else {
 				if (nadoCounter < 2) {
@@ -92,7 +92,7 @@ int main() {
 
 				handleKeyInput();
 				handleSwitchInput();
-				//handleAtariInput();
+				handleAtariInput();
 
 				moveAllBullets();
 

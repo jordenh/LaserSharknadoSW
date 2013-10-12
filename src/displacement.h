@@ -16,7 +16,6 @@ void setupVerticalDisplacementFunction(void);
 void setupCircularDisplacementFunction(void);
 void setupArcDisplacementFunction(void);
 void setupNoDisplcaementFunction(void);
-void setupEnterScreenFunctions(void);
 
 void makeRight(Displacement *disp);
 void makeLeft(Displacement *disp);
@@ -32,8 +31,6 @@ extern Displacement verticalDisplacementFunctionDown[DISPLACEMENT_LENGTH];
 extern Displacement circularDisplacementFunction[DISPLACEMENT_LENGTH];
 extern Displacement arcDisplacementFunction[DISPLACEMENT_LENGTH];
 extern Displacement doNotMove[DISPLACEMENT_LENGTH];
-extern Displacement enterScreenFromRight[DISPLACEMENT_LENGTH];
-extern Displacement enterScreenFromTop[DISPLACEMENT_LENGTH];
-extern Displacement enterScreenFromBottom[DISPLACEMENT_LENGTH];
+
 
 #endif

@@ -4,6 +4,7 @@
 //#include "bmp.h"
 #include "bullet.h"
 #include "audio.h"
+#include "nado.h"
 //#include "score.h" // TBD - FIX AND INCLUDE!!
 
 #define SHARK_WIDTH 37

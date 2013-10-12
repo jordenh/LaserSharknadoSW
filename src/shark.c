@@ -36,7 +36,10 @@ Shark *getFreeShark(void) {
 
 void drawShark(Shark *shark) {
 	if (shark != NULL) {
-		drawBmp(sharkBmp, shark->x, shark->y);
+		if(shark->x > (SCREEN_WIDTH + SHARK_WIDTH) || shark->y < (-SHARK_HEIGHT) || shark->y > (SCREEN_WIDTH + SHARK_HEIGHT)) {
+		} else {
+			drawBmp(sharkBmp, shark->x, shark->y);
+		}
 	} else {
 		printf("Attempt to draw null shark.\n");
 	}
@@ -139,7 +142,7 @@ void createShark(int sudoRandomSeed, int x, int y, Displacement *displacement, u
 		newShark->x = x;
 		newShark->y = SCREEN_HEIGHT + SHARK_HEIGHT;
 	} else if(newShark->initialWall == RIGHTWALL) {
-		newShark->x = SCREEN_WIDTH + SHARK_WIDTH;
+		newShark->x = SCREEN_WIDTH - (NADO_WIDTH * 1.5) - SHARK_WIDTH;
 		newShark->y = y;
 	}
 	newShark->prevX = newShark->x;
