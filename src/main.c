@@ -16,6 +16,7 @@
 #include "input.h"
 #include "splash.h"
 #include "gameEnd.h"
+#include "nado.h"
 
 int init(void) {
 	if (openSdCard() == -1) {
@@ -37,26 +38,26 @@ int init(void) {
 	initSharks();
 	initCollision();
 
-	setHardwareTimerPeriod(CLOCK_FREQ/30);
+	initHardwareTimer();
+
+	swapSplashScreenText();
+
 	return 0;
 }
 
 int main() {
 	int count = 0;
+	int nadoCounter = 0;
 	short int displaySplashScreen = 1;
 
 	if (init() == -1)
 		return -1;
-
-	createShark(22, 100, 0, (Displacement *)&doNotMove);
-	createShark(45, 200, 200, (Displacement *)&doNotMove);
 
 	drawAllSharks();
 	startHardwareTimer();
 
 	playTheme();
 
-	printf("%d: count \n", count);
 	// main game loop;
 	while(1) {
 		if (hasHardwareTimerExpired() == 1) {
@@ -67,17 +68,25 @@ int main() {
 					clearSplashScreen();
 					stopTheme();
 					displaySplashScreen = 0;	
+					drawInGameInfo();
+					nadoCounter = 0;
+					createShark(22, 100, 0, (Displacement *)&circularDisplacementFunction);
+					createShark(45, 200, 200, (Displacement *)&circularDisplacementFunction);
 				}
 			} else {
+				if (nadoCounter < 2) {
+					drawInitialNado(nadoCounter);
+					nadoCounter++;
+				}
 				count++;
 
 				moveAllSharks();
 				drawAllSharks();
-				drawInGameInfo(); // TBD: in actual game loop, only call this function when an event happens (like score inc/dec, or lives inc/dec)
+				//drawInGameInfo(); // TBD: in actual game loop, only call this function when an event happens (like score inc/dec, or lives inc/dec)
 
 				handleKeyInput();
 				handleSwitchInput();
-				handleAtariInput();
+				//handleAtariInput();
 
 				moveAllBullets();
 
@@ -85,16 +94,17 @@ int main() {
 
 				doSharkBulletCollision();
 				doPlayerBulletCollision();
+				doNadoBulletCollision();
 				if(getCurrentPlayerLives() == 0) {
 					gameEndSequence();
-					//displaySplashScreen = 1;
+					displaySplashScreen = 1;
 					continue;
 				}
 
 				drawAllBullets();
 
-				alt_up_pixel_buffer_dma_swap_buffers(pixel_buffer);
-				while(alt_up_pixel_buffer_dma_check_swap_buffers_status(pixel_buffer));
+				swapBuffers();
+
 				cleanupDeadSharks();
 				eraseAllSharks();
 				eraseAllBullets();
