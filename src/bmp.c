@@ -66,8 +66,8 @@ void parseBmps() {
 	cnadoBmp = malloc(sizeof(BMP));
 	pnadoaBmp = malloc(sizeof(BMP));
 	pnadobBmp = malloc(sizeof(BMP));
-	nnadoaBmp = malloc(sizeof(BMP));
-	nnadobBmp = malloc(sizeof(BMP));
+	//nnadoaBmp = malloc(sizeof(BMP));
+	//nnadobBmp = malloc(sizeof(BMP));
 
 	parseBmp("splash.bmp", splashBmp);
 	parseBmp("loadtx.bmp", loadBmp);
@@ -75,17 +75,11 @@ void parseBmps() {
 	parseBmp("shark.bmp", sharkBmp);
 	parseBmp("player.bmp", playerBmp);
 
-	printf("Loading nado bmps.\n");
 	parseBmp("cnado.bmp", cnadoBmp);
-	printf("Loaded cnado.\n");
 	parseBmp("pnadoa.bmp", pnadoaBmp);
-	printf("Loaded pnadoa.\n");
 	parseBmp("pnadob.bmp", pnadobBmp);
-	printf("Loaded pnadob.\n");
-	parseBmp("nnadoa.bmp", nnadoaBmp);
-	printf("Loaded nnadoa.\n");
-	parseBmp("nnadob.bmp", nnadobBmp);
-	printf("Loaded nado bmps.\n");
+	//parseBmp("nnadoa.bmp", nnadoaBmp);
+	//parseBmp("nnadob.bmp", nnadobBmp);
 }
 
 void freeBmps(){
@@ -122,5 +116,5 @@ void drawBmp (BMP *bmp, int x, int y) {
 }
 
 void eraseBmp (BMP *bmp, int x, int y) {
-	drawBox(x, y, x  + bmp->infoheader.width, y + bmp->infoheader.height, 0);
+	drawBox(x, y, x + bmp->infoheader.width, y + bmp->infoheader.height, 0);
 }

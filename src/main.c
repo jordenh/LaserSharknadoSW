@@ -108,6 +108,7 @@ int main() {
 
 				doSharkBulletCollision();
 				doPlayerBulletCollision();
+				doNadoBulletCollision();
 				if(getCurrentPlayerLives() == 0) {
 					gameEndSequence();
 					//displaySplashScreen = 1;

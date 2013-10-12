@@ -5,6 +5,7 @@
 #include "bullet.h"
 #include "shark.h"
 #include "bmp.h"
+#include "nado.h"
 
 #define GREY 0x6e
 
@@ -14,5 +15,6 @@ int isBulletCollidingWithPlayer(Player *player, Bullet *bullet);
 Shark *findSharkIfHit(Bullet *bullet);
 void doSharkBulletCollision(void);
 void doPlayerBulletCollision(void);
+void doNadoBulletCollision(void);
 
 #endif
