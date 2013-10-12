@@ -53,8 +53,10 @@ int main() {
 	if (init() == -1)
 		return -1;
 
-	createShark(22, 100, 0, (Displacement *)&doNotMove);
-	createShark(45, 200, 200, (Displacement *)&doNotMove);
+	//createShark(22, 100, 0, (Displacement *)&doNotMove);
+	//createShark(45, 200, 200, (Displacement *)&doNotMove);
+	createShark(22, 100, 0, (Displacement *)&circularDisplacementFunction);
+	createShark(45, 200, 200, (Displacement *)&circularDisplacementFunction);
 
 	drawAllSharks();
 	startHardwareTimer();

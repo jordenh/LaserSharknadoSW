@@ -27,6 +27,7 @@ void setupDisplacement(void) {
 	setupVerticalDisplacementFunction();
 	setupCircularDisplacementFunction();
 	setupArcDisplacementFunction();
+	setupNoDisplcementFunction();
 
 	printf("Setup displacement functions.\n");
 }
@@ -43,9 +44,9 @@ void setupVerticalDisplacementFunction(void) {
 		makeDown(ptr);
 		ptr-> next = &verticalDisplacementFunctionDown[i + 1];
 	}
-	ptr = &verticalDisplacementFunctionUp[DISPLACEMENT_LENGTH];
+	ptr = &verticalDisplacementFunctionUp[DISPLACEMENT_LENGTH - 1];
 	ptr->next = verticalDisplacementFunctionUp;
-	ptr = &verticalDisplacementFunctionDown[DISPLACEMENT_LENGTH];
+	ptr = &verticalDisplacementFunctionDown[DISPLACEMENT_LENGTH - 1];
 	ptr->next = verticalDisplacementFunctionDown;
 }
 
@@ -65,7 +66,7 @@ void setupCircularDisplacementFunction(void) {
 		}
 		ptr->next = &circularDisplacementFunction[i + 1];
 	}
-	ptr = &circularDisplacementFunction[DISPLACEMENT_LENGTH];
+	ptr = &circularDisplacementFunction[DISPLACEMENT_LENGTH - 1];
 	ptr->next = circularDisplacementFunction;
 }
 
@@ -85,7 +86,7 @@ void setupArcDisplacementFunction(void) {
 		}
 		ptr->next = &arcDisplacementFunction[i + 1];
 	}
-	ptr = &arcDisplacementFunction[DISPLACEMENT_LENGTH];
+	ptr = &arcDisplacementFunction[DISPLACEMENT_LENGTH - 1];
 	ptr->next = arcDisplacementFunction;
 }
 

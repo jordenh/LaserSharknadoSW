@@ -72,10 +72,6 @@ void moveShark(Shark *shark) {
 //		shark->type = RECENTLYDEAD;
 //	}
 
-	if(shark->y <= 0) {
-		printf("shark disp <= 0...\n");
-	}
-
 	Displacement *disp = shark->displacement;
 	shark->x += disp->dx;
 	shark->y += disp->dy;
@@ -125,7 +121,7 @@ void createShark(int sudoRandomSeed, int x, int y, Displacement *displacement) {
 	newShark->y = y;
 	newShark->prevX = x;
 	newShark->prevY = y;
-	newShark->displacement = (Displacement *)&arcDisplacementFunction;
+	newShark->displacement = displacement;
 	newShark->prev = NULL;
 	if (sharkList == NULL) {
 		sharkList = newShark;
