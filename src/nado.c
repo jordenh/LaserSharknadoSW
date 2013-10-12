@@ -29,3 +29,14 @@ void drawBNado(void) {
 void eraseBNado(void) {
 	drawNado(nnadobBmp);
 }
+
+// Needs to be called once per buffer
+// nadoCounter should be incremented
+void drawInitialNado(int nadoCounter) {
+	drawCommonNado();
+	if (nadoCounter == 0) {
+		drawANado();
+	} else {
+		drawBNado();
+	}
+}

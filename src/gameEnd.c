@@ -22,8 +22,9 @@ void gameEndSequence(void) {
 	//DO ALL BULLET CLEARING/INITIALIZATION STUFF
 
 	drawSplashScreen();
-	delayUntilUPAndButtonPressed();
+	swapSplashScreenText();
+	//delayUntilUPAndButtonPressed();
 
-	clearScreen();
+	//clearScreen();
 }
 

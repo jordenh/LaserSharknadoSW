@@ -53,11 +53,6 @@ int main() {
 	if (init() == -1)
 		return -1;
 
-	//createShark(22, 100, 0, (Displacement *)&doNotMove);
-	//createShark(45, 200, 200, (Displacement *)&doNotMove);
-	createShark(22, 100, 0, (Displacement *)&circularDisplacementFunction);
-	createShark(45, 200, 200, (Displacement *)&circularDisplacementFunction);
-
 	drawAllSharks();
 	startHardwareTimer();
 
@@ -74,27 +69,16 @@ int main() {
 					stopTheme();
 					displaySplashScreen = 0;	
 					drawInGameInfo();
+					nadoCounter = 0;
+					createShark(22, 100, 0, (Displacement *)&circularDisplacementFunction);
+					createShark(45, 200, 200, (Displacement *)&circularDisplacementFunction);
 				}
 			} else {
 				if (nadoCounter < 2) {
-					drawCommonNado();
-					if (nadoCounter == 0) {
-						drawANado();
-					} else {
-						drawBNado();
-					}
+					drawInitialNado(nadoCounter);
 					nadoCounter++;
 				}
 				count++;
-				if (count == 1 || count == 2) {
-					//drawANado();
-					//eraseBNado();
-				} else if (count == 15 || count == 16) {
-					//drawBNado();
-					//eraseANado();
-				} else if (count >= 30) {
-					count = 0;
-				}
 
 				moveAllSharks();
 				drawAllSharks();
@@ -113,7 +97,7 @@ int main() {
 				doNadoBulletCollision();
 				if(getCurrentPlayerLives() == 0) {
 					gameEndSequence();
-					//displaySplashScreen = 1;
+					displaySplashScreen = 1;
 					continue;
 				}
 

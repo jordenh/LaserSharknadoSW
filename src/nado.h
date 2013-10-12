@@ -15,5 +15,6 @@ void drawANado(void);
 void drawBNado(void);
 void eraseANado(void);
 void eraseBNado(void);
+void drawInitialNado(int nadoCounter);
 
 #endif
