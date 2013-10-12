@@ -80,16 +80,15 @@ void freeSplash() {
 
 void drawBmp (BMP *bmp, int x, int y) {
 	int i,j;
-	int color;
+	int offset;
 
 	for(i = 0; i < bmp->infoheader.height; i++) {
+		offset = i * bmp->infoheader.width;
 		for(j = 0; j < bmp->infoheader.width; j++){
-			color = ((bmp->rgb + i*bmp->infoheader.width +j)->r << 11) | ((bmp->rgb + i*bmp->infoheader.width +j)->g << 5) | (bmp->rgb + i*bmp->infoheader.width +j)->b;
-
-			if(color == 0)
+			if(bmp->color[offset + j] == 0 || x + j >= SCREEN_WIDTH || y + i >= SCREEN_HEIGHT || x <= 0 || y <= 0)
 				continue;
 
-			drawPixelFast(x + j, y + i, color);
+			drawPixelFast(x + j, y + i, bmp->color[offset +j]);
 		}
 	}
 }

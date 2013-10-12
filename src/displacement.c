@@ -6,24 +6,10 @@ Displacement circularDisplacementFunction[DISPLACEMENT_LENGTH];
 Displacement arcDisplacementFunction[DISPLACEMENT_LENGTH];
 Displacement doNotMove[DISPLACEMENT_LENGTH];
 
-void setupHorizontalDisplacementFunction(void);
-void setupCircularDisplacementFunction(void);
-void setupArcDisplacementFunction(void);
-void setupNoDisplcaementFunction(void);
-
 static Displacement right;
 static Displacement left;
 static Displacement up;
 static Displacement down;
-
-void makeRight(Displacement *disp);
-void makeLeft(Displacement *disp);
-void makeUp(Displacement *disp);
-void makeDown(Displacement *disp);
-void makeDownRight(Displacement *disp);
-void makeDownLeft(Displacement *disp);
-void makeUpRight(Displacement *disp);
-void makeUpLeft(Displacement *disp);
 
 void setupDisplacement(void) {
 	right.dx = 1;
