@@ -195,7 +195,6 @@ void playSound(struct audioInfo info) {
 	alt_up_audio_enable_write_interrupt(audio);
 }
 
-// Plays laser once, using interrupts
 void playLaser(void) {
 	playSound(laser);
 }
@@ -259,26 +258,22 @@ static void playSoundISR(void* isr_context, alt_u32 id) {
 #endif
 	int len;
 	unsigned int free = alt_up_audio_write_fifo_space(audio, ALT_UP_AUDIO_LEFT);
-	unsigned end;
 	int i;
+	bool atLeastOneActive = false;
 
 	clearPlayBuffer();
 
-	end = (unsigned)(audioVolumeBuffer) + (2 * audioFileWordLength);
 	if (free >= 1) {
-
 		for (i = 0; i < numSounds; i++) {
 			if (sounds[i]->active == true) {
+				atLeastOneActive = true;
 				addChunkToPlayBuffer(sounds[i], free);
 			}
 		}
-
-
-
 		playAudioMono(len);
+	}
 
-	} else {
-		// Interrupt should not be triggered if there is no space
+	if (atLeastOneActive == false) {
 		alt_up_audio_disable_write_interrupt(audio);
 	}
 }
