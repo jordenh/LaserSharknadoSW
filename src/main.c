@@ -18,6 +18,10 @@
 #include "gameEnd.h"
 #include "nado.h"
 
+#define SHARKS_PER_LVL 4
+
+void sharkSpawner(void);
+
 int init(void) {
 	if (openSdCard() == -1) {
 		printf("Error: Failed to open sd card\n");
@@ -47,6 +51,7 @@ int init(void) {
 
 int main() {
 	int count = 0;
+	int spawnLvl = 0;
 	int nadoCounter = 0;
 	short int displaySplashScreen = 1;
 
@@ -85,6 +90,16 @@ int main() {
 					nadoCounter++;
 				}
 				count++;
+
+				if (sharkCount == 0) {
+					spawnLvl = 1;
+				}
+				if (spawnLvl == 1 && count%15 == 0) {
+					sharkSpawner();
+					if (sharkCount == 4){
+						spawnLvl = 0;
+					}
+				}
 
 				moveAllSharks();
 				drawAllSharks();
@@ -125,3 +140,45 @@ int main() {
 	freeBmps();
 	return 0;
 }
+
+void sharkSpawner(void){
+	static int lvlSharkCount = 0;
+	int shotSpeed;
+	int sharkX, sharkY;
+
+	//while(sharkCount < SHARKS_PER_LVL) {
+		if (lvlSharkCount == SHARKS_PER_LVL*8) {
+			lvlSharkCount = 0;
+		}
+
+		shotSpeed = 20*rand();
+		sharkX = (((lvlSharkCount%4) + 1) * SHARK_WIDTH) + PLAYER_WIDTH;
+		sharkY = ((lvlSharkCount%4) * PLAYER_HEIGHT) + PLAYER_HEIGHT ;
+
+		if(lvlSharkCount < SHARKS_PER_LVL*1 && sharkCount ){
+			createShark(shotSpeed, sharkX, 0, (Displacement *)&doNotMove, BOTTOMWALL);
+		} else if(lvlSharkCount < SHARKS_PER_LVL*2){
+			createShark(shotSpeed, sharkX, 0, (Displacement *)&verticalDisplacementFunctionDown, TOPWALL);
+		} else if(lvlSharkCount < SHARKS_PER_LVL*3){
+			createShark(shotSpeed, sharkX, 0, (Displacement *)&circularDisplacementFunction, BOTTOMWALL);
+		} else if(lvlSharkCount < SHARKS_PER_LVL*4){
+			createShark(shotSpeed, sharkX, 0, (Displacement *)&arcDisplacementFunction, TOPWALL);
+		} else if(lvlSharkCount < SHARKS_PER_LVL*5){
+			createShark(shotSpeed, 0, sharkY, (Displacement *)&doNotMove, RIGHTWALL); // FROM HERE DOWN, should make smart sharks
+		} else if(lvlSharkCount < SHARKS_PER_LVL*6){
+			createShark(shotSpeed, 0, sharkY, (Displacement *)&circularDisplacementFunction, RIGHTWALL);
+		} else if(lvlSharkCount < SHARKS_PER_LVL*7){
+			createShark(shotSpeed, 0, sharkY, (Displacement *)&arcDisplacementFunction, RIGHTWALL);
+		} else if(lvlSharkCount < SHARKS_PER_LVL*8){
+			createShark(shotSpeed, 0, sharkY, (Displacement *)&verticalDisplacementFunctionDown, RIGHTWALL);
+		}
+		lvlSharkCount++;
+	//}
+
+	return;
+}
+
+
+
+
+

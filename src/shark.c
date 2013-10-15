@@ -126,6 +126,9 @@ void createShark(int sudoRandomSeed, int x, int y, Displacement *displacement, u
 		printf("Attempt to create shark with null displacement.\n");
 		return;
 	}
+	if (sharkCount >= NUM_SHARKS - 1) {
+		return;
+	}
 
 	//Shark *newShark = malloc(sizeof(Shark));
 	Shark *newShark = getFreeShark();
