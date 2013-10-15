@@ -7,5 +7,6 @@
 void drawSplashScreen();
 void swapSplashScreenText();
 void clearSplashScreen();
+void drawSplashAfterDeath();
 
 #endif
