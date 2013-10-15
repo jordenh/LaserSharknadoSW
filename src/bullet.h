@@ -33,7 +33,7 @@ extern Bullet *playerBulletList;
 extern Bullet *sharkBulletList;
 
 void initBullets();
-void createBullet(bullettype status, int x, int y, int sudoRandomSeed);
+void createBullet(bullettype status, int x, int y, int aimed);
 void moveAllBullets();
 void drawAllBullets();
 void eraseAllBullets();
