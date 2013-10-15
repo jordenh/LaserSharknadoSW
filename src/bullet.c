@@ -123,7 +123,7 @@ void moveBulletRight(Bullet *bullet) {
 
 	bullet->x = bullet->x + 2;
 
-	if ((bullet->x >= SCREEN_WIDTH) || (bullet->x <= -BULLET_LENGTH - 1)) {
+	if (bullet->x >= SCREEN_WIDTH) {
 		deleteBullet(bullet);
 	}
 }
@@ -131,8 +131,6 @@ void moveBulletRight(Bullet *bullet) {
 void deleteBullet(Bullet *bullet) {
 	eraseBullet(bullet);
 	bullet->type = DELETE;
-	bullet->prevX = bullet->x;
-	bullet->prevY = bullet->y;
 	Bullet *nextBullet = bullet->next;
 	Bullet *prevBullet = bullet->prev;
 	bullet->next = NULL;
@@ -158,7 +156,7 @@ void moveBulletLeft(Bullet *bullet) {
 	bullet->x = bullet->x - 2;
 	bullet->y = bullet->y - 2*bullet->slope;
 
-	if ((bullet->x >= SCREEN_WIDTH) || (bullet->x <= -BULLET_LENGTH - 1)) {
+	if (bullet->x <= 0) {
 		deleteBullet(bullet);
 	}
 }
