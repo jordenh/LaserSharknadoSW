@@ -17,11 +17,11 @@ typedef enum {
 } bullettype;
 
 struct Bullet {
-	int x, prevX;
-	int y, prevY;
+	float x, prevX;
+	float y, prevY;
 	bullettype type;
 	char isAimed;
-	int slope;
+	float slope;
 	int laserColor;
 	struct Bullet *next;
 	struct Bullet *prev;
