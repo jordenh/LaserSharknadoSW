@@ -17,7 +17,7 @@ void initBullets() {
 	sharkLaserColor = convert24BitRgbTo16(0x66FFCC);
 }
 
-void createBullet(bullettype type, int x, int y) {
+void createBullet(bullettype type, int x, int y, int sudoRandomSeed) {
 	int index;
 	Bullet *newBullet = NULL;
 	for (index = 0; index < NUM_BULLETS; index++) {
@@ -39,13 +39,18 @@ void createBullet(bullettype type, int x, int y) {
 		}
 		newBullet->next = playerBulletList;
 		newBullet->laserColor = playerLaserColor;
+		newBullet->isAimed = 0;
+		newBullet->slope = 0;
 		playerBulletList = newBullet;
-	} else if (type == SHARKBULLET){
+	} else if (type == SHARKBULLET) {
 		if (sharkBulletList != NULL) {
 			sharkBulletList->prev = newBullet;
 		}
 		newBullet->next = sharkBulletList;
 		newBullet->laserColor = sharkLaserColor;
+		newBullet->isAimed = 1;
+		//newBullet->isAimed = sudoRandomSeed%2;
+		newBullet->slope = (y - (player.y + 0.5*PLAYER_HEIGHT))/(x - (player.x + 0.5*PLAYER_WIDTH));
 		sharkBulletList = newBullet;
 	}
 
@@ -88,7 +93,7 @@ void drawBullet(Bullet *bullet) {
 	int i;
 	for (i = 0; i < BULLET_LENGTH; i++) {
 		if (bullet != NULL) {
-			drawPixel(bullet->x + i, bullet->y, bullet->laserColor);
+			drawPixel(bullet->x + i, bullet->y + i*bullet->slope, bullet->laserColor);
 		} else {
 			printf("Attempt to draw null bullet.\n");
 		}
@@ -99,7 +104,7 @@ void eraseBullet(Bullet *bullet) {
 	int i;
 	for (i = 0; i < BULLET_LENGTH; i++) {
 		if (bullet != NULL) {
-			drawPixel(bullet->prevX + i, bullet->prevY, 0x0000);
+			drawPixel(bullet->prevX + i, bullet->y + i*bullet->slope, 0x0000);
 			bullet->type = bullet->type == DELETED ? ONEMORE : bullet->type;
 			bullet->type = bullet->type == ONEMORE ? NOTACTIVE : bullet->type;
 		} else {
@@ -152,6 +157,7 @@ void moveBulletLeft(Bullet *bullet) {
 	bullet->prevY = bullet->y;
 
 	bullet->x = bullet->x - 2;
+	bullet->y = bullet->y - 2*bullet->slope;
 
 	if ((bullet->x >= SCREEN_WIDTH) || (bullet->x <= -BULLET_LENGTH - 1)) {
 		deleteBullet(bullet);

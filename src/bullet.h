@@ -16,16 +16,12 @@ typedef enum {
 	ONEMORE
 } bullettype;
 
-typedef enum {
-	NOTAIMED,
-	AIMED
-} buttletaiming;
-
 struct Bullet {
 	int x, prevX;
 	int y, prevY;
 	bullettype type;
-	bulletaiming isAimed;
+	char isAimed;
+	int slope;
 	int laserColor;
 	struct Bullet *next;
 	struct Bullet *prev;
@@ -38,7 +34,7 @@ extern Bullet *playerBulletList;
 extern Bullet *sharkBulletList;
 
 void initBullets();
-void createBullet(bullettype status, int x, int y);
+void createBullet(bullettype status, int x, int y, int sudoRandomSeed);
 void moveAllBullets();
 void drawAllBullets();
 void eraseAllBullets();
