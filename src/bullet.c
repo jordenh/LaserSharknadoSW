@@ -59,9 +59,6 @@ void moveAllBullets() {
 			moveBulletRight(&bulletArray[i]);
 		} else if (bulletArray[i].type == SHARKBULLET) {
 			moveBulletLeft(&bulletArray[i]);
-		} else if (bulletArray[i].type == DELETED || bulletArray[i].type == ONEMORE) {
-			bulletArray[i].prevX = bulletArray[i].x;
-			bulletArray[i].prevY = bulletArray[i].y;
 		}
 	}
 }
@@ -69,7 +66,7 @@ void moveAllBullets() {
 void drawAllBullets() {
 	int i;
 	for (i = 0; i < NUM_BULLETS; i++) {
-		if (bulletArray[i].type != NOTACTIVE) {
+		if (bulletArray[i].type != NOTACTIVE && bulletArray[i].type != DELETE) {
 			drawBullet(&bulletArray[i]);
 		}
 	}
@@ -80,6 +77,9 @@ void eraseAllBullets() {
 	for (i = 0; i < NUM_BULLETS; i++) {
 		if (bulletArray[i].type != NOTACTIVE) {
 			eraseBullet(&bulletArray[i]);
+
+			if (bulletArray[i].type == DELETE)
+				bulletArray[i].type = NOTACTIVE;
 		}
 	}
 }
@@ -97,14 +97,13 @@ void drawBullet(Bullet *bullet) {
 
 void eraseBullet(Bullet *bullet) {
 	int i;
-	for (i = 0; i < BULLET_LENGTH; i++) {
-		if (bullet != NULL) {
+
+	if (bullet != NULL) {
+		for (i = 0; i < BULLET_LENGTH; i++) {
 			drawPixel(bullet->prevX + i, bullet->prevY, 0x0000);
-			bullet->type = bullet->type == DELETED ? ONEMORE : bullet->type;
-			bullet->type = bullet->type == ONEMORE ? NOTACTIVE : bullet->type;
-		} else {
-			printf("Attempt to draw null bullet.\n");
 		}
+	} else {
+		printf("Attempt to draw null bullet.\n");
 	}
 }
 
@@ -126,7 +125,7 @@ void moveBulletRight(Bullet *bullet) {
 
 void deleteBullet(Bullet *bullet) {
 	eraseBullet(bullet);
-	bullet->type = DELETED;
+	bullet->type = DELETE;
 	bullet->prevX = bullet->x;
 	bullet->prevY = bullet->y;
 	Bullet *nextBullet = bullet->next;
