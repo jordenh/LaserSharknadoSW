@@ -49,18 +49,18 @@ void handleKeyInput(void){
 */
 
 	static int testXVal = PLAYER_WIDTH*2;
-	static dir = 0;
+	static int dir = 0;
 	if (!key3 && (edgeDetect3 == 0)) {
 		edgeDetect3 = 1;
 	} else if (key3 && (edgeDetect3 == 1)) {
 		edgeDetect3 = 0;
 		if(dir == 0){
 			createShark(100, testXVal, 0, (Displacement *)&verticalDisplacementFunctionUp, BOTTOMWALL);
-			if(testXVal < SCREEN_WIDTH - NADO_WIDTH*2){
+			if(testXVal < SCREEN_WIDTH - NADO_WIDTH*2 - SHARK_WIDTH){
 				testXVal += 25;
 			} else {
 				testXVal -= 25;
-				dir == 1;
+				dir = 1;
 			}
 		} else if(dir == 1){
 			createShark(100, testXVal, 0, (Displacement *)&verticalDisplacementFunctionDown, TOPWALL);
@@ -68,7 +68,7 @@ void handleKeyInput(void){
 				testXVal -= 25;
 			} else {
 				testXVal += 25;
-				dir == 0;
+				dir = 0;
 			}
 		}
 		//hitPlayer();
