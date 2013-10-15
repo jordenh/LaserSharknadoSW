@@ -15,7 +15,7 @@ void handleKeyInput(void){
 	char key3 = keyInput & 0x08;
 
 	//functionality for keys being held
-	if(key1) {
+	/* if(key1) {
 		moveDownPlayer();
 	} else if (key2) {
 		moveUpPlayer();
@@ -29,7 +29,7 @@ void handleKeyInput(void){
 	} else if (key0 && (edgeDetect0 == 1)) {
 		edgeDetect0 = 0;
 		createBullet(PLAYERBULLET, player.x + PLAYER_WIDTH - 1, player.y + 0.5 * PLAYER_HEIGHT - GUN_OFFSET);
-	}
+	} */
 
 	/*
 	if (!key1 && (edgeDetect1 == 0)) {
@@ -46,16 +46,14 @@ void handleKeyInput(void){
 		//updateHighScoreBoard();
 		//playTheme();
 	} //
-
+*/
 	if (!key3 && (edgeDetect3 == 0)) {
 		edgeDetect3 = 1;
 	} else if (key3 && (edgeDetect3 == 1)) {
 		edgeDetect3 = 0;
-		hitPlayer(); // TEST only
-		//updateCurrentPlayerScore(250);
-		//playSharkDeath();
+		hitPlayer();
 	}
-	*/
+
 }
 
 void handleSwitchInput(void){
@@ -98,7 +96,7 @@ void handleAtariInput(void){
 	atariUp = atariButtons & 0x02;
 	atariDown = atariButtons & 0x04;
 	IOWR_16DIRECT(LEDS_BASE, 0, atariButtons);
-	/*
+
 	if ((atariFire == 0x00) && (edgeDetect == 0)) {
 		edgeDetect = 1;
 	} else if ((atariFire != 0x00) && (edgeDetect == 1)) {
@@ -113,7 +111,7 @@ void handleAtariInput(void){
 		moveDownPlayer();
 	} else {
 		keepPlayerStationary();
-	} */
+	}
 }
 
 void delayUntilUPAndButtonPressed(void) {

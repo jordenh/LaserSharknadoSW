@@ -45,9 +45,9 @@ void setupVerticalDisplacementFunction(void) {
 		ptr-> next = &verticalDisplacementFunctionDown[i + 1];
 	}
 	ptr = &verticalDisplacementFunctionUp[DISPLACEMENT_LENGTH - 1];
-	ptr->next = verticalDisplacementFunctionUp;
-	ptr = &verticalDisplacementFunctionDown[DISPLACEMENT_LENGTH - 1];
 	ptr->next = verticalDisplacementFunctionDown;
+	ptr = &verticalDisplacementFunctionDown[DISPLACEMENT_LENGTH - 1];
+	ptr->next = verticalDisplacementFunctionUp;
 }
 
 void setupCircularDisplacementFunction(void) {
