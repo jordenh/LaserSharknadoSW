@@ -35,7 +35,7 @@ void audioTest(void);
 void runAudioDiagnostics(void);
 void testTone(void);
 void playLaser1(void);
-void readWavFile(char *wavFileName, unsigned int fileWordLength);
+void readWavFile(char *wavFileName, struct audioInfo *info);
 void playAudioMono(int length);
 void playLaser(void);
 void playPlayerDeath(void);
@@ -52,7 +52,7 @@ void loadPlayerDeath(void);
 void loadSharkDeath(void);
 void loadTheme(void);
 void updateAudioWithVolume(char switchValues);
-void changeBufferVolume(struct audioInfo, char switchValues);
+void changeBufferVolume(struct audioInfo *, char switchValues);
 void stopTheme(void);
 
 #endif
