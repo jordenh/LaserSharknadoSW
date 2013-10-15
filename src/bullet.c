@@ -93,7 +93,7 @@ void drawBullet(Bullet *bullet) {
 	int i;
 	for (i = 0; i < BULLET_LENGTH; i++) {
 		if (bullet != NULL) {
-			drawPixel(bullet->x + i, bullet->y + i*bullet->slope, bullet->laserColor);
+			drawPixelFast(bullet->x + i, bullet->y + i*bullet->slope, bullet->laserColor);
 		} else {
 			printf("Attempt to draw null bullet.\n");
 		}
@@ -104,7 +104,7 @@ void eraseBullet(Bullet *bullet) {
 	int i;
 	for (i = 0; i < BULLET_LENGTH; i++) {
 		if (bullet != NULL) {
-			drawPixel(bullet->prevX + i, bullet->y + i*bullet->slope, 0x0000);
+			drawPixelFast(bullet->prevX + i, bullet->prevY + i*bullet->slope, 0x0000);
 			bullet->type = bullet->type == DELETED ? ONEMORE : bullet->type;
 			bullet->type = bullet->type == ONEMORE ? NOTACTIVE : bullet->type;
 		} else {
