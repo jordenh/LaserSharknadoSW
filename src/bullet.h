@@ -16,10 +16,16 @@ typedef enum {
 	ONEMORE
 } bullettype;
 
+typedef enum {
+	NOTAIMED,
+	AIMED
+} buttletaiming;
+
 struct Bullet {
 	int x, prevX;
 	int y, prevY;
 	bullettype type;
+	bulletaiming isAimed;
 	int laserColor;
 	struct Bullet *next;
 	struct Bullet *prev;
