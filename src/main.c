@@ -88,7 +88,6 @@ int main() {
 
 				moveAllSharks();
 				drawAllSharks();
-				//drawInGameInfo(); // TBD: in actual game loop, only call this function when an event happens (like score inc/dec, or lives inc/dec)
 
 				handleKeyInput();
 				handleSwitchInput();
@@ -115,6 +114,10 @@ int main() {
 				eraseAllSharks();
 				eraseAllBullets();
 				erasePlayer();
+
+				if (hasHardwareTimerExpired() == 1) {
+					printf("We lost the race.\n");
+				}
 			}
 		}
 	}
