@@ -15,7 +15,7 @@ void handleKeyInput(void){
 	char key3 = keyInput & 0x08;
 
 	//functionality for keys being held
-	/* if(key1) {
+	if(key1) {
 		moveDownPlayer();
 	} else if (key2) {
 		moveUpPlayer();
@@ -28,8 +28,8 @@ void handleKeyInput(void){
 		edgeDetect0 = 1;
 	} else if (key0 && (edgeDetect0 == 1)) {
 		edgeDetect0 = 0;
-		createBullet(PLAYERBULLET, player.x + PLAYER_WIDTH - 1, player.y + 0.5 * PLAYER_HEIGHT - GUN_OFFSET);
-	} */
+		createBullet(PLAYERBULLET, player.x + PLAYER_WIDTH - 1, player.y + 0.5 * PLAYER_HEIGHT - GUN_OFFSET, 0);
+	}
 
 	/*
 	if (!key1 && (edgeDetect1 == 0)) {
@@ -84,7 +84,7 @@ void handleSwitchInput(void){
 
 }
 
-void handleAtariInput(void){
+void handleAtariInput(){
 	static char atariButtons;
 	static char atariUp;
 	static char atariDown;
@@ -101,17 +101,17 @@ void handleAtariInput(void){
 		edgeDetect = 1;
 	} else if ((atariFire != 0x00) && (edgeDetect == 1)) {
 		edgeDetect = 0;
-		createBullet(PLAYERBULLET, player.x + PLAYER_WIDTH - 1, player.y + 0.5 * PLAYER_HEIGHT - GUN_OFFSET);
+		createBullet(PLAYERBULLET, player.x + PLAYER_WIDTH - 1, player.y + 0.5 * PLAYER_HEIGHT - GUN_OFFSET, 0);
 	}
 
 	//movements - no edge detect
-	if (atariUp != 0x00) {
+	/*if (atariUp != 0x00) {
 		moveUpPlayer();
 	} else if (atariDown != 0x00) {
 		moveDownPlayer();
 	} else {
 		keepPlayerStationary();
-	}
+	}*/
 }
 
 void delayUntilUPAndButtonPressed(void) {
