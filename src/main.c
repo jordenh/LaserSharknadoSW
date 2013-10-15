@@ -81,8 +81,8 @@ int main() {
 					displaySplashScreen = 0;	
 					drawInGameInfo();
 					nadoCounter = 0;
-					createShark(22, 100, 0, (Displacement *)&arcDisplacementFunction, BOTTOMWALL);
-					createShark(45, 200, 100, (Displacement *)&verticalDisplacementFunctionUp, RIGHTWALL);
+					createShark(22, 100, 0, (Displacement *)&arcDisplacementFunction, BOTTOMWALL, 0);
+					createShark(45, 200, 100, (Displacement *)&verticalDisplacementFunctionUp, RIGHTWALL, 1);
 				}
 			} else {
 				if (nadoCounter < 2) {

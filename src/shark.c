@@ -66,7 +66,7 @@ void moveShark(Shark *shark) {
 
 	if (shark->count >= shark->freq) {
 		shark->count = 0;
-		createBullet(SHARKBULLET, shark->x + BULLET_LENGTH, shark->y + SHARK_LASER_LOCATION);
+		createBullet(SHARKBULLET, shark->x + BULLET_LENGTH, shark->y + SHARK_LASER_LOCATION, shark->smart);
 	}
 
 	// TODO: get rid of sharks that leave the screen
@@ -121,7 +121,7 @@ void eraseAllSharks(void) {
 	}
 }
 
-void createShark(int sudoRandomSeed, int x, int y, Displacement *displacement, unsigned short wall) {
+void createShark(int sudoRandomSeed, int x, int y, Displacement *displacement, unsigned short wall, short smart) {
 	if (displacement == NULL) {
 		printf("Attempt to create shark with null displacement.\n");
 		return;
@@ -137,6 +137,7 @@ void createShark(int sudoRandomSeed, int x, int y, Displacement *displacement, u
 	}
 
 	newShark->state = LIVE;
+	newShark->smart = smart;
 	newShark->initialWall = wall % 3; //% 3 to ensure that value is always between 0-2, even if caller messes up.
 	if(newShark->initialWall == TOPWALL) {
 		newShark->x = x;
