@@ -16,9 +16,11 @@ typedef enum {
 } bullettype;
 
 struct Bullet {
-	int x, prevX;
-	int y, prevY;
+	float x, prevX;
+	float y, prevY;
 	bullettype type;
+	char isAimed;
+	float slope;
 	int laserColor;
 	struct Bullet *next;
 	struct Bullet *prev;
@@ -31,7 +33,7 @@ extern Bullet *playerBulletList;
 extern Bullet *sharkBulletList;
 
 void initBullets();
-void createBullet(bullettype status, int x, int y);
+void createBullet(bullettype status, int x, int y, int sudoRandomSeed);
 void moveAllBullets();
 void drawAllBullets();
 void eraseAllBullets();

@@ -66,7 +66,7 @@ void moveShark(Shark *shark) {
 
 	if (shark->count >= shark->freq) {
 		shark->count = 0;
-		createBullet(SHARKBULLET, shark->x + BULLET_LENGTH, shark->y + SHARK_LASER_LOCATION);
+		createBullet(SHARKBULLET, shark->x + BULLET_LENGTH, shark->y + SHARK_LASER_LOCATION, shark->count);
 	}
 
 	// TODO: get rid of sharks that leave the screen
