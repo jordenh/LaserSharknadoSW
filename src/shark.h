@@ -30,6 +30,7 @@ struct Shark {
 	int x, prevX;
 	int y, prevY;
 	int freq, count;
+	short smart;
 	struct Shark *next;
 	struct Shark *prev;
 	struct Displacement *displacement;
@@ -49,7 +50,7 @@ void initSharks(void);
 void drawShark(Shark *shark);
 void eraseShark(Shark *shark);
 void moveShark(Shark *shark);
-void createShark(int sudoRandomSeed, int x, int y, Displacement *displacement, unsigned short wall);
+void createShark(int sudoRandomSeed, int x, int y, Displacement *displacement, unsigned short wall, short smart);
 void killShark(Shark *shark);
 void moveAllSharks(void);
 void drawAllSharks(void);
