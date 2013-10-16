@@ -29,7 +29,6 @@
 void handleKeyInput(void);
 
 void handleSwitchInput(void);
-
 void handleAtariInput(void);
 
 void delayUntilUPAndButtonPressed(void);

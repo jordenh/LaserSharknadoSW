@@ -77,6 +77,18 @@ void initCollision(void) {
 			}
 		}
 	}
+
+	bool shouldCollideForRestOfRow = false;
+	for (y = 0; y < NADO_HEIGHT; y++) {
+		yOffset = NADO_HEIGHT;
+		shouldCollideForRestOfRow = false;
+		for (x = 0; x < NADO_WIDTH; x++) {
+			if (relativeNadoHit[x][y] == 1 || shouldCollideForRestOfRow == true) {
+				shouldCollideForRestOfRow = true;
+				relativeNadoHit[x][y] = 1;
+			}
+		}
+	}
 }
 
 Shark *findSharkIfHit(Bullet *bullet) {
@@ -194,14 +206,16 @@ void doPlayerBulletCollision(void) {
 
 void doNadoBulletCollision(void) {
 	Bullet *bulletCursor = playerBulletList;
+	Bullet *nextBullet = playerBulletList->next;
 	int i = 0;
 	while (bulletCursor != NULL
 			&& bulletCursor->type == PLAYERBULLET
 			&& i < NUM_BULLETS) {
+		nextBullet = bulletCursor->next;
 		if (isBulletCollidingWithNado(bulletCursor) == TRUE) {
 			deleteBullet(bulletCursor);
 		}
 		i++;
-		bulletCursor = bulletCursor->next;
+		bulletCursor = nextBullet;
 	}
 }

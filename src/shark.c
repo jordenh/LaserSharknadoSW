@@ -21,6 +21,7 @@ void initSharks(void) {
 		cursor->prev = NULL;
 		cursor->displacement = NULL;
 		cursor->entranceCount = 0;
+		cursor->entranceSteps = 20;
 	}
 }
 
@@ -66,10 +67,10 @@ void moveShark(Shark *shark) {
 
 	if (shark->count >= shark->freq) {
 		shark->count = 0;
-		createBullet(SHARKBULLET, shark->x + BULLET_LENGTH, shark->y + SHARK_LASER_LOCATION);
+		createBullet(SHARKBULLET, shark->x + BULLET_LENGTH, shark->y + SHARK_LASER_LOCATION, shark->smart);
 	}
 
-	if(shark->entranceCount >= ENTRANCESTEPS) {
+	if(shark->entranceCount >= shark->entranceSteps) {
 		Displacement *disp = shark->displacement;
 		shark->x += disp->dx;
 		shark->y += disp->dy;
@@ -114,7 +115,7 @@ void eraseAllSharks(void) {
 	}
 }
 
-void createShark(int sudoRandomSeed, int x, int y, Displacement *displacement, unsigned short wall) {
+void createShark(int sudoRandomSeed, int x, int y, Displacement *displacement, unsigned short wall, short smart, unsigned short entranceStep) {
 	if (displacement == NULL) {
 		printf("Attempt to create shark with null displacement.\n");
 		return;
@@ -127,6 +128,10 @@ void createShark(int sudoRandomSeed, int x, int y, Displacement *displacement, u
 	}
 
 	newShark->state = LIVE;
+	newShark->smart = smart;
+	if ((entranceStep >= 20) && (entranceStep <= 200)) {
+		newShark->entranceSteps = entranceStep;
+	}
 	newShark->initialWall = wall % 3; //% 3 to ensure that value is always between 0-2, even if caller messes up.
 	if(newShark->initialWall == TOPWALL) {
 		newShark->x = x;

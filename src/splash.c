@@ -25,6 +25,19 @@ void swapSplashScreenText() {
 	swapBuffers();
 }
 
+void drawSplashAfterDeath() {
+	int pressXPosition, pressYPosition;
+
+	pressXPosition = (SCREEN_WIDTH - pressBmp->infoheader.width)/2;
+	pressYPosition = SCREEN_HEIGHT - 8*pressBmp->infoheader.height;
+
+	clearScreen();
+	drawBmp(splashBmp, 0, 0);
+	drawBmp(pressBmp, pressXPosition, pressYPosition);
+
+	swapBuffers();
+}
+
 void clearSplashScreen() {
 	clearScreen();
 
