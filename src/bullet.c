@@ -19,6 +19,11 @@ void initBullets() {
 
 void createBullet(bullettype type, int x, int y, int aimed) {
 	int index;
+
+	if(y > SCREEN_HEIGHT && y < 0){
+		return;
+	}
+
 	Bullet *newBullet = NULL;
 	for (index = 0; index < NUM_BULLETS; index++) {
 		if (bulletArray[index].type == NOTACTIVE)	{
@@ -54,8 +59,8 @@ void createBullet(bullettype type, int x, int y, int aimed) {
 		sharkBulletList = newBullet;
 	}
 
-	newBullet->dx = BULLET_SPEED/(sqrt(1 + newBullet->slope*newBullet->slope));
-	newBullet->dy = (BULLET_SPEED*newBullet->slope)/(sqrt(1 + newBullet->slope*newBullet->slope));
+	newBullet->dx = BULLET_SPEED/(1 + newBullet->slope*newBullet->slope);
+	newBullet->dy = (BULLET_SPEED*newBullet->slope)/(1 + newBullet->slope*newBullet->slope);
 
 	playLaser();
 }
@@ -126,7 +131,7 @@ void moveBulletRight(Bullet *bullet) {
 
 	bullet->x = bullet->x + bullet->dx;
 
-	if (bullet->x >= SCREEN_WIDTH) {
+	if (bullet->x >= nadoDrawX - 2) {
 		deleteBullet(bullet);
 	}
 }

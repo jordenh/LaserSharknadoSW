@@ -163,11 +163,16 @@ int isBulletCollidingWithPlayer(Player *player, Bullet *bullet) {
 }
 
 short int isBulletCollidingWithNado(Bullet *bullet) {
-	if (bullet->x >= nadoDrawX - 6) {
-		int xRelative = bullet->x - nadoDrawX + 4;
+	if (bullet->x >= nadoDrawX) {
+		int xRelative = bullet->x - nadoDrawX;
 		int yRelative = bullet->y;
 		return relativeNadoHit[xRelative][yRelative];
 	}
+	/*if (bullet->x >= nadoDrawX - 6) {
+		int xRelative = bullet->x - nadoDrawX + 4;
+		int yRelative = bullet->y;
+		return relativeNadoHit[xRelative][yRelative];
+	} */
 	return FALSE;
 }
 

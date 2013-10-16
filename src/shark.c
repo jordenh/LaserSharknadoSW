@@ -65,7 +65,7 @@ void moveShark(Shark *shark) {
 
 	shark->count++;
 
-	if (shark->count >= shark->freq) {
+	if (shark->count >= shark->freq && shark->y + SHARK_LASER_LOCATION > 0 && shark->y + SHARK_LASER_LOCATION < SCREEN_HEIGHT) {
 		shark->count = 0;
 		createBullet(SHARKBULLET, shark->x + BULLET_LENGTH, shark->y + SHARK_LASER_LOCATION, shark->smart);
 	}
@@ -118,6 +118,9 @@ void eraseAllSharks(void) {
 void createShark(int sudoRandomSeed, int x, int y, Displacement *displacement, unsigned short wall, short smart, unsigned short entranceStep) {
 	if (displacement == NULL) {
 		printf("Attempt to create shark with null displacement.\n");
+		return;
+	}
+	if (sharkCount >= NUM_SHARKS - 1) {
 		return;
 	}
 
