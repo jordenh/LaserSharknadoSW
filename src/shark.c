@@ -70,13 +70,6 @@ void moveShark(Shark *shark) {
 		createBullet(SHARKBULLET, shark->x + BULLET_LENGTH, shark->y + SHARK_LASER_LOCATION, shark->smart);
 	}
 
-	// TODO: get rid of sharks that leave the screen
-//	if ((shark->x >= SCREEN_WIDTH) || (shark->x <= -SHARK_WIDTH)) {
-//		shark->type = RECENTLYDEAD;
-//	} else if ((shark->y >= SCREEN_HEIGHT) || (shark->y <= -SHARK_HEIGHT)) {
-//		shark->type = RECENTLYDEAD;
-//	}
-
 	if(shark->entranceCount >= shark->entranceSteps) {
 		Displacement *disp = shark->displacement;
 		shark->x += disp->dx;

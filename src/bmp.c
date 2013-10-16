@@ -101,8 +101,9 @@ void drawBmp (BMP *bmp, int x, int y) {
 	int offset;
 
 	for(i = 0; i < bmp->infoheader.height; i++) {
-		offset = i * bmp->infoheader.width;
 		if(y + i < SCREEN_HEIGHT && y + i > 0) {
+			offset = i * bmp->infoheader.width;
+
 			for(j = 0; j < bmp->infoheader.width; j++){
 				if(bmp->color[offset + j] == 0 || x + j >= SCREEN_WIDTH || x + j <= 0)
 					continue;
@@ -114,14 +115,19 @@ void drawBmp (BMP *bmp, int x, int y) {
 }
 
 void eraseBmp (BMP *bmp, int x, int y) {
-	if (x >= 0 && x < SCREEN_WIDTH && y >= 0 && y < SCREEN_HEIGHT) {
-		drawBox(x, y, x + bmp->infoheader.width, y + bmp->infoheader.height, 0);
-	} else {
-		if (x < 0 && x > -(bmp->infoheader.width)) {
-			drawBox(0, y, x + bmp->infoheader.width, y + bmp->infoheader.height, 0);
-		}
-		if (y < 0 && y > -(bmp->infoheader.height)) {
-			drawBox(x, 0, x + bmp->infoheader.width, (y + bmp->infoheader.height + y), 0);
+	int i,j;
+	int offset;
+
+	for(i = 0; i < bmp->infoheader.height; i++) {
+		if(y + i < SCREEN_HEIGHT && y + i > 0) {
+			offset = i * bmp->infoheader.width;
+
+			for(j = 0; j < bmp->infoheader.width; j++){
+				if(x + j >= SCREEN_WIDTH || x + j <= 0)
+					continue;
+
+				drawPixelFast(x + j, y + i, 0);
+			}
 		}
 	}
 }
