@@ -126,9 +126,6 @@ int main() {
 				eraseAllBullets();
 				erasePlayer();
 
-				if (hasHardwareTimerExpired() == 1) {
-					printf("We lost the race.\n");
-				}
 			}
 		}
 	}
@@ -140,35 +137,36 @@ int main() {
 void sharkSpawner(void){
 	int shotSpeed;
 	int sharkX, sharkY;
+	int sharkEntrance;
+	static int sharkEntranceDefault = 128;
 
-	//while(sharkCount < SHARKS_PER_LVL) {
-		if (lvlSharkCount == SHARKS_PER_LVL*8) {
-			lvlSharkCount = 0;
-		}
+	if (lvlSharkCount == SHARKS_PER_LVL*8) {
+		lvlSharkCount = 0;
+	}
 
-		shotSpeed = 20*rand();
-		sharkX = (((lvlSharkCount%4) + 1) * SHARK_WIDTH) + PLAYER_WIDTH;
-		sharkY = ((lvlSharkCount%4) * PLAYER_HEIGHT) + PLAYER_HEIGHT ;
+	sharkEntrance = ((lvlSharkCount%4) + 1) * 49;
+	shotSpeed = 20*rand();
+	sharkX = (((lvlSharkCount%4) + 1) * SHARK_WIDTH) + PLAYER_WIDTH;
+	sharkY = ((lvlSharkCount%4) * PLAYER_HEIGHT) + PLAYER_HEIGHT ;
 
-		if(lvlSharkCount < SHARKS_PER_LVL*1 && sharkCount ){
-			createShark(shotSpeed, sharkX, 0, (Displacement *)&doNotMove, BOTTOMWALL, DUMB);
-		} else if(lvlSharkCount < SHARKS_PER_LVL*2){
-			createShark(shotSpeed, sharkX, 0, (Displacement *)&verticalDisplacementFunctionDown, TOPWALL, DUMB);
-		} else if(lvlSharkCount < SHARKS_PER_LVL*3){
-			createShark(shotSpeed, sharkX, 0, (Displacement *)&circularDisplacementFunction, BOTTOMWALL, DUMB);
-		} else if(lvlSharkCount < SHARKS_PER_LVL*4){
-			createShark(shotSpeed, sharkX, 0, (Displacement *)&arcDisplacementFunction, TOPWALL, DUMB);
-		} else if(lvlSharkCount < SHARKS_PER_LVL*5){
-			createShark(shotSpeed, 0, sharkY, (Displacement *)&doNotMove, RIGHTWALL, SMART);
-		} else if(lvlSharkCount < SHARKS_PER_LVL*6){
-			createShark(shotSpeed, 0, sharkY, (Displacement *)&circularDisplacementFunction, RIGHTWALL, SMART);
-		} else if(lvlSharkCount < SHARKS_PER_LVL*7){
-			createShark(shotSpeed, 0, sharkY, (Displacement *)&arcDisplacementFunction, RIGHTWALL, SMART);
-		} else if(lvlSharkCount < SHARKS_PER_LVL*8){
-			createShark(shotSpeed, 0, sharkY, (Displacement *)&verticalDisplacementFunctionDown, RIGHTWALL, SMART);
-		}
-		lvlSharkCount++;
-	//}
+	if(lvlSharkCount < SHARKS_PER_LVL*1){
+		createShark(shotSpeed, sharkX, 0, (Displacement *)&doNotMove, BOTTOMWALL, DUMB, sharkEntrance);
+	} else if(lvlSharkCount < SHARKS_PER_LVL*2){
+		createShark(shotSpeed, sharkX, 0, (Displacement *)&verticalDisplacementFunctionDown, TOPWALL, DUMB, sharkEntranceDefault);
+	} else if(lvlSharkCount < SHARKS_PER_LVL*3){
+		createShark(shotSpeed, sharkX, 0, (Displacement *)&circularDisplacementFunction, BOTTOMWALL, DUMB, sharkEntranceDefault);
+	} else if(lvlSharkCount < SHARKS_PER_LVL*4){
+		createShark(shotSpeed, sharkX, 0, (Displacement *)&arcDisplacementFunction, TOPWALL, DUMB, sharkEntranceDefault);
+	} else if(lvlSharkCount < SHARKS_PER_LVL*5){
+		createShark(shotSpeed, 0, sharkY, (Displacement *)&doNotMove, RIGHTWALL, SMART, sharkEntrance);
+	} else if(lvlSharkCount < SHARKS_PER_LVL*6){
+		createShark(shotSpeed, 0, sharkY, (Displacement *)&circularDisplacementFunction, RIGHTWALL, SMART, sharkEntranceDefault);
+	} else if(lvlSharkCount < SHARKS_PER_LVL*7){
+		createShark(shotSpeed, 0, sharkY, (Displacement *)&arcDisplacementFunction, RIGHTWALL, SMART, sharkEntranceDefault);
+	} else if(lvlSharkCount < SHARKS_PER_LVL*8){
+		createShark(shotSpeed, 0, sharkY, (Displacement *)&verticalDisplacementFunctionDown, RIGHTWALL, SMART, sharkEntranceDefault);
+	}
+	lvlSharkCount++;
 
 	return;
 }

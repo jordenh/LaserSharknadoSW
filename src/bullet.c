@@ -19,6 +19,11 @@ void initBullets() {
 
 void createBullet(bullettype type, int x, int y, int aimed) {
 	int index;
+
+	if(y > SCREEN_HEIGHT && y < 0){
+		return;
+	}
+
 	Bullet *newBullet = NULL;
 	for (index = 0; index < NUM_BULLETS; index++) {
 		if (bulletArray[index].type == NOTACTIVE)	{
