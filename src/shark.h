@@ -18,7 +18,6 @@
 #define TOPWALL 0
 #define RIGHTWALL 1
 #define BOTTOMWALL 2
-#define ENTRANCESTEPS 128
 
 struct Displacement {
 	short int dx;
@@ -36,6 +35,7 @@ struct Shark {
 	struct Displacement *displacement;
 	unsigned short initialWall;
 	unsigned short entranceCount;
+	unsigned short entranceSteps;
 	short int state;
 };
 
@@ -50,7 +50,7 @@ void initSharks(void);
 void drawShark(Shark *shark);
 void eraseShark(Shark *shark);
 void moveShark(Shark *shark);
-void createShark(int sudoRandomSeed, int x, int y, Displacement *displacement, unsigned short wall, short smart);
+void createShark(int sudoRandomSeed, int x, int y, Displacement *displacement, unsigned short wall, short smart, unsigned short entranceStep);
 void killShark(Shark *shark);
 void moveAllSharks(void);
 void drawAllSharks(void);
