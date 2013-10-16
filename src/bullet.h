@@ -4,6 +4,7 @@
 #include "vga.h"
 #include "player.h"
 #include "audio.h"
+#include "nado.h"
 
 #define NUM_BULLETS 128
 #define BULLET_LENGTH 3
