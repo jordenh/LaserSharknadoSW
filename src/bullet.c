@@ -128,7 +128,7 @@ void moveBulletRight(Bullet *bullet) {
 
 	bullet->x = bullet->x + 2;
 
-	if (bullet->x >= SCREEN_WIDTH) {
+	if (bullet->x >= nadoDrawX - 2) {
 		deleteBullet(bullet);
 	}
 }

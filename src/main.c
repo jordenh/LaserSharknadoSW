@@ -68,7 +68,7 @@ int main() {
 
 	// main game loop;
 	while(1) {
-		if (hasHardwareTimerExpired() == 1) {
+		if (1) { //hasHardwareTimerExpired() == 1) {
 			startHardwareTimer();
 
 			if (displaySplashScreen) {
@@ -109,7 +109,7 @@ int main() {
 
 				doSharkBulletCollision();
 				doPlayerBulletCollision();
-				doNadoBulletCollision();
+				//doNadoBulletCollision();
 				if(getCurrentPlayerLives() == 0) {
 					gameEndSequence();
 					displaySplashScreen = 1;
