@@ -158,8 +158,8 @@ void moveBulletLeft(Bullet *bullet) {
 	bullet->prevX = bullet->x;
 	bullet->prevY = bullet->y;
 
-	bullet->x = bullet->x - 2/(sqrt(1 + bullet->slope*bullet->slope));
-	bullet->y = bullet->y - (2*bullet->slope)/(sqrt(1 + bullet->slope*bullet->slope));
+	bullet->x = bullet->x - 2/(1 + bullet->slope*bullet->slope);
+	bullet->y = bullet->y - (2*bullet->slope)/(1 + bullet->slope*bullet->slope);
 
 	if (bullet->x <= 0) {
 		deleteBullet(bullet);

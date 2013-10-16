@@ -68,7 +68,7 @@ int main() {
 
 	// main game loop;
 	while(1) {
-		if (1) { //hasHardwareTimerExpired() == 1) {
+		if (hasHardwareTimerExpired() == 1) {
 			startHardwareTimer();
 
 			if (displaySplashScreen) {
