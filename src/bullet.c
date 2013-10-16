@@ -17,7 +17,7 @@ void initBullets() {
 	sharkLaserColor = convert24BitRgbTo16(0x66FFCC);
 }
 
-void createBullet(bullettype type, int x, int y, int sudoRandomSeed) {
+void createBullet(bullettype type, int x, int y, int aimed) {
 	int index;
 	Bullet *newBullet = NULL;
 	for (index = 0; index < NUM_BULLETS; index++) {
@@ -48,9 +48,9 @@ void createBullet(bullettype type, int x, int y, int sudoRandomSeed) {
 		}
 		newBullet->next = sharkBulletList;
 		newBullet->laserColor = sharkLaserColor;
-		newBullet->isAimed = 1;
-		//newBullet->isAimed = sudoRandomSeed%2;
-		newBullet->slope = (y - (player.y + 0.5*PLAYER_HEIGHT))/(x - (player.x + 0.5*PLAYER_WIDTH));
+		//newBullet->isAimed = 1;
+		newBullet->isAimed = aimed;
+		newBullet->slope = aimed*(y - (player.y + 0.5*PLAYER_HEIGHT))/(x - (player.x + 0.5*PLAYER_WIDTH));
 		sharkBulletList = newBullet;
 	}
 
