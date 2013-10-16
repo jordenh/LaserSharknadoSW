@@ -8,6 +8,7 @@
 
 #define NUM_BULLETS 128
 #define BULLET_LENGTH 3
+#define BULLET_SPEED 2
 
 typedef enum {
 	PLAYERBULLET,
@@ -17,8 +18,8 @@ typedef enum {
 } bullettype;
 
 struct Bullet {
-	float x, prevX;
-	float y, prevY;
+	float x, prevX, dx;
+	float y, prevY, dy;
 	bullettype type;
 	char isAimed;
 	float slope;

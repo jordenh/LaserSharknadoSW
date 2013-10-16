@@ -59,6 +59,9 @@ void createBullet(bullettype type, int x, int y, int aimed) {
 		sharkBulletList = newBullet;
 	}
 
+	newBullet->dx = BULLET_SPEED/(sqrt(1 + newBullet->slope*newBullet->slope));
+	newBullet->dy = (BULLET_SPEED*newBullet->slope)/(sqrt(1 + newBullet->slope*newBullet->slope));
+
 	playLaser();
 }
 
@@ -126,7 +129,7 @@ void moveBulletRight(Bullet *bullet) {
 	bullet->prevX = bullet->x;
 	bullet->prevY = bullet->y;
 
-	bullet->x = bullet->x + 2;
+	bullet->x = bullet->x + bullet->dx;
 
 	if (bullet->x >= nadoDrawX - 2) {
 		deleteBullet(bullet);
@@ -158,8 +161,8 @@ void moveBulletLeft(Bullet *bullet) {
 	bullet->prevX = bullet->x;
 	bullet->prevY = bullet->y;
 
-	bullet->x = bullet->x - 2/(1 + bullet->slope*bullet->slope);
-	bullet->y = bullet->y - (2*bullet->slope)/(1 + bullet->slope*bullet->slope);
+	bullet->x = bullet->x - bullet->dx;
+	bullet->y = bullet->y - bullet->dy;
 
 	if (bullet->x <= 0) {
 		deleteBullet(bullet);
