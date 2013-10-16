@@ -206,14 +206,16 @@ void doPlayerBulletCollision(void) {
 
 void doNadoBulletCollision(void) {
 	Bullet *bulletCursor = playerBulletList;
+	Bullet *nextBullet = playerBulletList->next;
 	int i = 0;
 	while (bulletCursor != NULL
 			&& bulletCursor->type == PLAYERBULLET
 			&& i < NUM_BULLETS) {
+		nextBullet = bulletCursor->next;
 		if (isBulletCollidingWithNado(bulletCursor) == TRUE) {
 			deleteBullet(bulletCursor);
 		}
 		i++;
-		bulletCursor = bulletCursor->next;
+		bulletCursor = nextBullet;
 	}
 }
