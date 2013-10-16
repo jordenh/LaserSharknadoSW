@@ -115,7 +115,7 @@ void handleAtariInput(){
 	atariFire = atariButtons & 0x08;
 	atariUp = atariButtons & 0x02;
 	atariDown = atariButtons & 0x04;
-	IOWR_16DIRECT(LEDS_BASE, 0, atariButtons);
+	//IOWR_16DIRECT(LEDS_BASE, 0, atariButtons);
 
 	if ((atariFire == 0x00) && (edgeDetect == 0)) {
 		edgeDetect = 1;

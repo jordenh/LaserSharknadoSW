@@ -59,8 +59,8 @@ void createBullet(bullettype type, int x, int y, int aimed) {
 		sharkBulletList = newBullet;
 	}
 
-	newBullet->dx = BULLET_SPEED/(sqrt(1 + newBullet->slope*newBullet->slope));
-	newBullet->dy = (BULLET_SPEED*newBullet->slope)/(sqrt(1 + newBullet->slope*newBullet->slope));
+	newBullet->dx = BULLET_SPEED/(1 + newBullet->slope*newBullet->slope);
+	newBullet->dy = (BULLET_SPEED*newBullet->slope)/(1 + newBullet->slope*newBullet->slope);
 
 	playLaser();
 }
