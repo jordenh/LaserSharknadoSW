@@ -15,7 +15,7 @@ void handleKeyInput(void){
 	char key3 = keyInput & 0x08;
 
 	//functionality for keys being held
-	if(key1) {
+	/*if(key1) {
 		moveDownPlayer();
 	} else if (key2) {
 		moveUpPlayer();
@@ -29,7 +29,7 @@ void handleKeyInput(void){
 	} else if (key0 && (edgeDetect0 == 1)) {
 		edgeDetect0 = 0;
 		createBullet(PLAYERBULLET, player.x + PLAYER_WIDTH - 1, player.y + 0.5 * PLAYER_HEIGHT - GUN_OFFSET, 0);
-	}
+	} */
 
 	/*
 	if (!key1 && (edgeDetect1 == 0)) {
@@ -55,7 +55,7 @@ void handleKeyInput(void){
 	} else if (key3 && (edgeDetect3 == 1)) {
 		edgeDetect3 = 0;
 		if(dir == 0){
-			createShark(100, testXVal, 0, (Displacement *)&verticalDisplacementFunctionUp, BOTTOMWALL);
+			//createShark(100, testXVal, 0, (Displacement *)&verticalDisplacementFunctionUp, BOTTOMWALL);
 			if(testXVal < SCREEN_WIDTH - NADO_WIDTH*2 - SHARK_WIDTH){
 				testXVal += 25;
 			} else {
@@ -63,7 +63,7 @@ void handleKeyInput(void){
 				dir = 1;
 			}
 		} else if(dir == 1){
-			createShark(100, testXVal, 0, (Displacement *)&verticalDisplacementFunctionDown, TOPWALL);
+			//createShark(100, testXVal, 0, (Displacement *)&verticalDisplacementFunctionDown, TOPWALL);
 			if(testXVal > PLAYER_WIDTH*2){
 				testXVal -= 25;
 			} else {
@@ -125,13 +125,13 @@ void handleAtariInput(){
 	}
 
 	//movements - no edge detect
-	/*if (atariUp != 0x00) {
+	if (atariUp != 0x00) {
 		moveUpPlayer();
 	} else if (atariDown != 0x00) {
 		moveDownPlayer();
 	} else {
 		keepPlayerStationary();
-	}*/
+	}
 }
 
 void delayUntilUPAndButtonPressed(void) {

@@ -19,8 +19,11 @@
 #include "nado.h"
 
 #define SHARKS_PER_LVL 4
+#define SMART 1
+#define DUMB 0
 
 void sharkSpawner(void);
+static int lvlSharkCount = 0;
 
 int init(void) {
 	if (openSdCard() == -1) {
@@ -58,12 +61,6 @@ int main() {
 	if (init() == -1)
 		return -1;
 
-
-	//createShark(22, 100, 0, (Displacement *)&doNotMove);
-	//createShark(45, 200, 200, (Displacement *)&doNotMove);
-	//createShark(22, 100, 0, (Displacement *)&arcDisplacementFunction, TOPWALL);
-	//createShark(45, 200, 200, (Displacement *)&arcDisplacementFunction, RIGHTWALL);
-
 	drawAllSharks();
 	startHardwareTimer();
 
@@ -81,8 +78,8 @@ int main() {
 					displaySplashScreen = 0;	
 					drawInGameInfo();
 					nadoCounter = 0;
-					createShark(22, 100, 0, (Displacement *)&arcDisplacementFunction, BOTTOMWALL, 0);
-					createShark(45, 200, 100, (Displacement *)&verticalDisplacementFunctionUp, RIGHTWALL, 1);
+					//createShark(22, 100, 0, (Displacement *)&arcDisplacementFunction, BOTTOMWALL, 0);
+					//createShark(45, 200, 100, (Displacement *)&verticalDisplacementFunctionUp, RIGHTWALL, 1);
 				}
 			} else {
 				if (nadoCounter < 2) {
@@ -118,6 +115,7 @@ int main() {
 				if(getCurrentPlayerLives() == 0) {
 					gameEndSequence();
 					displaySplashScreen = 1;
+					lvlSharkCount = 0;
 					continue;
 				}
 
@@ -142,7 +140,6 @@ int main() {
 }
 
 void sharkSpawner(void){
-	static int lvlSharkCount = 0;
 	int shotSpeed;
 	int sharkX, sharkY;
 
@@ -156,21 +153,21 @@ void sharkSpawner(void){
 		sharkY = ((lvlSharkCount%4) * PLAYER_HEIGHT) + PLAYER_HEIGHT ;
 
 		if(lvlSharkCount < SHARKS_PER_LVL*1 && sharkCount ){
-			createShark(shotSpeed, sharkX, 0, (Displacement *)&doNotMove, BOTTOMWALL);
+			createShark(shotSpeed, sharkX, 0, (Displacement *)&doNotMove, BOTTOMWALL, DUMB);
 		} else if(lvlSharkCount < SHARKS_PER_LVL*2){
-			createShark(shotSpeed, sharkX, 0, (Displacement *)&verticalDisplacementFunctionDown, TOPWALL);
+			createShark(shotSpeed, sharkX, 0, (Displacement *)&verticalDisplacementFunctionDown, TOPWALL, DUMB);
 		} else if(lvlSharkCount < SHARKS_PER_LVL*3){
-			createShark(shotSpeed, sharkX, 0, (Displacement *)&circularDisplacementFunction, BOTTOMWALL);
+			createShark(shotSpeed, sharkX, 0, (Displacement *)&circularDisplacementFunction, BOTTOMWALL, DUMB);
 		} else if(lvlSharkCount < SHARKS_PER_LVL*4){
-			createShark(shotSpeed, sharkX, 0, (Displacement *)&arcDisplacementFunction, TOPWALL);
+			createShark(shotSpeed, sharkX, 0, (Displacement *)&arcDisplacementFunction, TOPWALL, DUMB);
 		} else if(lvlSharkCount < SHARKS_PER_LVL*5){
-			createShark(shotSpeed, 0, sharkY, (Displacement *)&doNotMove, RIGHTWALL); // FROM HERE DOWN, should make smart sharks
+			createShark(shotSpeed, 0, sharkY, (Displacement *)&doNotMove, RIGHTWALL, SMART);
 		} else if(lvlSharkCount < SHARKS_PER_LVL*6){
-			createShark(shotSpeed, 0, sharkY, (Displacement *)&circularDisplacementFunction, RIGHTWALL);
+			createShark(shotSpeed, 0, sharkY, (Displacement *)&circularDisplacementFunction, RIGHTWALL, SMART);
 		} else if(lvlSharkCount < SHARKS_PER_LVL*7){
-			createShark(shotSpeed, 0, sharkY, (Displacement *)&arcDisplacementFunction, RIGHTWALL);
+			createShark(shotSpeed, 0, sharkY, (Displacement *)&arcDisplacementFunction, RIGHTWALL, SMART);
 		} else if(lvlSharkCount < SHARKS_PER_LVL*8){
-			createShark(shotSpeed, 0, sharkY, (Displacement *)&verticalDisplacementFunctionDown, RIGHTWALL);
+			createShark(shotSpeed, 0, sharkY, (Displacement *)&verticalDisplacementFunctionDown, RIGHTWALL, SMART);
 		}
 		lvlSharkCount++;
 	//}
