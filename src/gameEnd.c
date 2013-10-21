@@ -1,5 +1,8 @@
 #include "gameEnd.h"
 
+//purpose: This function is used whenever the player dies and first updates the score board with 
+//		player score information, then allows the player to view the score screen,
+//		then reinitializes the game and displays the splash screen while playing music
 void gameEndSequence(void) {
 	updateHighScoreBoard();
 
