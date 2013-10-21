@@ -5,7 +5,7 @@
 char * scoreFileName = "scores.txt";
 struct scores * gameScores;
 
-//set all gameScores values to initial values - read all high score board info from SD card.
+//purpose: set all gameScores values to initial values - read all high score board info from SD card.
 void initScoreBoard(void) {
 	alt_up_char_buffer_clear(char_buffer); // clear screen
 	gameScores = malloc(sizeof(struct scores));
@@ -16,7 +16,7 @@ void initScoreBoard(void) {
 	readHighScoreBoardFromSD();
 }
 
-//set high score values to defaults - used if reading the SD card fails.s
+//purpose: set high score values to defaults - used if reading the SD card fails.s
 void defaultHighScoreBoard(void) {
 	int i,j;
 	for(i = 0; i < NUMSCORES; i++) {
@@ -28,7 +28,8 @@ void defaultHighScoreBoard(void) {
 	return;
 }
 
-//returns -1 on error in reading scoreboard (and also defaults all current values), returns 0 on success.
+//purpose: populate gameScore with values from SD Card
+// output: returns -1 on error in reading scoreboard (and also defaults all current values), returns 0 on success.
 //function updates all gameScores' variables so that reading them have the most up to date values
 int readHighScoreBoardFromSD(void) {
 	gameScores->currentScoreBoardCorrupt = 0;
@@ -91,7 +92,7 @@ int readHighScoreBoardFromSD(void) {
 	return 0;
 }
 
-//function writes to the SD card, and places current players score into the high scores if
+//Purpose: function writes to the SD card, and places current players score into the high scores if
 //it exceeds any of the current high scores.
 //function returns if the highScore file doesnt open in memory, or if the currentScoreBoard is corrupt.
 void updateHighScoreBoard(void) {
@@ -176,7 +177,8 @@ void updateHighScoreBoard(void) {
 	return;
 }
 
-//get user input for initials if they are on the high score board
+//purpose: get user input for initials if they are on the high score board
+//input: a 3 character string ready to be populated with user initials
 void obtainUserInitials(char * initials){
 
 	int numInitials = 3;
@@ -245,36 +247,41 @@ void obtainUserInitials(char * initials){
 }
 
 
-//increment player score by deltaScore
+//purpose: increment player score by deltaScore
+//input: int value with score offset
 void updateCurrentPlayerScore(int deltaScore) {
 	gameScores->currentPlayerScore += deltaScore;
 	return;
 }
 
-//mutator: set playerScore to score
+//purpose: set playerScore to score
+//input: int value with new score
 void setCurrentPlayerScore(int score) {
 	gameScores->currentPlayerScore = score;
 	return;
 }
 
-//accessor: get score
+//purpose: get current player's score
+//output: int value with current player's score
 int getCurrentPlayerScore() {
 	return gameScores->currentPlayerScore;
 }
 
-//mutator: set lives to newNumLives
+//purpose: set player's lives to newNumLives
+//input: integer value of players lives
 void setCurrentPlayerLives(int newNumLives){
 	gameScores->currentPlayerLives = newNumLives;
 }
 
-//accessor: get lives
+//purpose: get current player lives count
+//output: integer of current player's lives count
 int getCurrentPlayerLives(void) {
 	return gameScores->currentPlayerLives;
 }
 
 //purpose: overlay current scoreboard values onto the screen.
 void drawScore(void){
-	char scoreValues[32];// = malloc(sizeof(char) * NUMINITIALS); // scores wont exceed 10, and names are 3
+	char scoreValues[32]; // scores wont exceed 10, and names are 3 chars
 	int i,j;
 	int digit;
 	int firstNonZeroDig;
@@ -307,11 +314,12 @@ void drawScore(void){
 	}
 }
 
+//purpose: wrapper to clear char buffer
 void clearScore(void) {
 	alt_up_char_buffer_clear(char_buffer);
 }
 
-//draws current lives and playerScore
+//purpose: draws current lives and playerScore in upper left corner of screen
 void drawInGameInfo(void) {
 	char livesLeft[2] = {' ', '\0'};
 	livesLeft[0] = (getCurrentPlayerLives() + '0');
