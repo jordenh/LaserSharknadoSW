@@ -1,6 +1,7 @@
 #include "input.h"
 
-
+//Purpose: Handle events from the DE2 KEYS. the code given below allows any developer to implement functionality
+//		with the keys being pressed down, pressed up, or held down
 void handleKeyInput(void){
 	static char keyInput;
 	static short int edgeDetect0 = 0;
@@ -76,6 +77,8 @@ void handleKeyInput(void){
 
 }
 
+//Purpose: Handle events from the DE2 SWITCHES. the code given below allows any developer to implement functionality
+//		with the switches being held up or down.
 void handleSwitchInput(void){
 	static char SWInput;
 	static short int edgeDetect = 0;
@@ -104,6 +107,9 @@ void handleSwitchInput(void){
 
 }
 
+//Purpose: Handle events from the Externel Atari Joystick - which was fed into the DE2 General Purpose IO ports
+//		the code given below allows any developer to implement functionality
+//		with the Atari buttons/joystick being moved, pressed, or held.
 void handleAtariInput(){
 	static char atariButtons;
 	static char atariUp;
@@ -134,6 +140,8 @@ void handleAtariInput(){
 	}
 }
 
+//purpose: Block the program (except from interrupts) until the user inputs either key4 or AtariFire
+//		used for user interaction screens (such as splash screen)
 void delayUntilUPAndButtonPressed(void) {
 	char atariButtons;
 	char atariFire;
@@ -151,6 +159,8 @@ void delayUntilUPAndButtonPressed(void) {
 	}
 }
 
+//Purpose: used to indicate to main() whether the user is ready to start the game
+//Outputs: Return 1 if atariFire or key4 is pressed, 0 otherwise
 int gameStart(void){
 	char atariButtons;
 	char atariFire;
