@@ -7,8 +7,6 @@
 #include "bmp.h"
 #include "nado.h"
 
-#define GREY 0x6e
-
 void initCollision(void);
 int isBulletCollidingWithShark(Shark *shark, Bullet *bullet);
 int isBulletCollidingWithPlayer(Player *player, Bullet *bullet);

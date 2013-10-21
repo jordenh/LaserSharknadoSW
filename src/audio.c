@@ -1,16 +1,18 @@
 #include "audio.h"
 
-
+// preprocessor directives used to support both the basic and enhanced interrupt apis
 #ifdef ALT_ENHANCED_INTERRUPT_API_PRESENT
 static void playSoundISR(void* isr_context);
 #else
 static void playSoundISR(void* isr_context, alt_u32 id);
 #endif
 
+// Constants used to open devices
 const char *CONFIG_NAME = "/dev/audio_and_video_config_0";
 const char *AUDIO_NAME = "/dev/audio_0";
-alt_up_audio_dev *audio = NULL;
 
+// Pointers to the devices
+alt_up_audio_dev *audio = NULL;
 alt_up_av_config_dev *config = NULL;
 
 int DEBUG = 0;
@@ -36,6 +38,8 @@ volatile int somethingForIrq;
 void setupAudio()
 {
 	bool error = false;
+
+	// Initialize audio video config core
 	config = (alt_up_av_config_dev *)alt_up_av_config_open_dev(CONFIG_NAME);
 	if (config == NULL) {
 		printf("Error: audio video config could not be opened.\n");
@@ -44,6 +48,7 @@ void setupAudio()
 	while (!alt_up_av_config_read_ready(config)) {
 	}
 
+	// Initialize audio core
 	audio = (alt_up_audio_dev *)alt_up_audio_open_dev(AUDIO_NAME);
 	if (config == NULL) {
 		printf("Error: audio codec could not be opened.\n");
@@ -51,8 +56,9 @@ void setupAudio()
 	} else if (DEBUG == 1) {
 		printf("Successfully opened audio codec.\n");
 	}
-    int interruptStatus = setupAudioInterrupt(audio, somethingForIrq);
 
+	// Initialize the audio interrupt
+    int interruptStatus = setupAudioInterrupt(audio, somethingForIrq);
     if (interruptStatus < 0) {
 		printf("Error: audio interrupt could not be setup.\n");
 		error = true;
@@ -60,6 +66,7 @@ void setupAudio()
 		printf("Successfully setup audio interrupts.\n");
 	}
 
+	// Load sound effects
     loadLaser();
     loadPlayerDeath();
     loadSharkDeath();
@@ -71,6 +78,7 @@ void setupAudio()
     sounds[2] = &playerDeath;
     sounds[3] = &theme;
 
+	// Not playing a sound effect yet
 	status = NONE;
 
 	if (DEBUG == 1 && error == false) {
@@ -80,13 +88,14 @@ void setupAudio()
 
 int setupAudioInterrupt(alt_up_audio_dev *audio, volatile int somethingForIrq)
 {
-    // Need to disable both audio interrupts before setting them up
+    // Disable both audio interrupts before setting them up
     // otherwise you get stuck in them when they are setup
     alt_up_audio_disable_read_interrupt(audio);
     alt_up_audio_disable_write_interrupt(audio);
 
     void *irqInt = (void*)&somethingForIrq;
 
+	// Supporting both interupt apis
 	#ifdef ALT_ENHANCED_INTERRUPT_API_PRESENT
 	return alt_ic_isr_register(AUDIO_0_IRQ_INTERRUPT_CONTROLLER_ID, AUDIO_0_IRQ, playSoundISR, irqInt, 0x0);
 	#else
@@ -114,6 +123,7 @@ void loadTheme() {
 	readWavFile("theme.wav", &theme);
 }
 
+// 'Plays' a number of words from the play buffer by writing them into the audio FIFOs
 void playAudioMono(int length) {
 	if (DEBUG == 1) {
 		printf("Playing audio.\n");
@@ -122,18 +132,7 @@ void playAudioMono(int length) {
 	alt_up_audio_write_fifo(audio, (unsigned int *)playBuffer, length, ALT_UP_AUDIO_RIGHT);
 }
 
-void playAudio(unsigned int *leftBuffer, int leftLength, unsigned int *rightBuffer, int rightLength) {
-	int leftWritten = alt_up_audio_write_fifo(audio, leftBuffer, leftLength, ALT_UP_AUDIO_LEFT);
-	if (DEBUG == 1) {
-		printf("Wrote %d to left audio FIFO. with value\n", leftWritten);
-	}
-
-	int rightWritten = alt_up_audio_write_fifo(audio, rightBuffer, rightLength, ALT_UP_AUDIO_RIGHT);
-	if (DEBUG == 1) {
-		printf("Wrote %d to right audio FIFO.\n", rightWritten);
-	}
-}
-
+// Initializes an audioInfo struct with a wav file
 void readWavFile(char *wavFileName, struct audioInfo *info) {
 	info->mainBuffer = malloc(sizeof(unsigned int) * info->bufferLength);
 	info->volumeBuffer = malloc(sizeof(unsigned int) * info->bufferLength);
@@ -147,8 +146,10 @@ void readWavFile(char *wavFileName, struct audioInfo *info) {
 		return;
 	}
 
+	// Move the read cursor past the wav file header
 	readPastWavHeader(fileHandle);
 
+	// Fill the main and volume buffers
 	unsigned int i;
 	unsigned int word;
 	for (i = 0; i < info->bufferLength; i++) {
@@ -163,6 +164,7 @@ void readWavFile(char *wavFileName, struct audioInfo *info) {
 	return;
 }
 
+// Begins playing a sound associated with the audioInfo struct passed in
 void playSound(struct audioInfo *info) {
 	//printf("Playing sound with info at 0x%x.\n", info);
 	info->active = true;
@@ -171,18 +173,22 @@ void playSound(struct audioInfo *info) {
 	alt_up_audio_enable_write_interrupt(audio);
 }
 
+// Used by other modules to play the laser sound effect
 void playLaser(void) {
 	playSound(&laser);
 }
 
+// Used by other modules to play the player death sound effect
 void playPlayerDeath(void) {
 	playSound(&playerDeath);
 }
 
+// Used by other modules to play the shark death sound effect
 void playSharkDeath(void) {
 	playSound(&sharkDeath);
 }
 
+// Used by other modules to play the theme
 void playTheme(void) {
 	playSound(&theme);
 	status = THEME;
@@ -191,6 +197,7 @@ void playTheme(void) {
 	}
 }
 
+// Stops the theme playing
 void stopTheme(void) {
 	status = NONE;
 }
@@ -202,6 +209,7 @@ void clearPlayBuffer(void) {
 	}
 }
 
+// Adds the contents of the argument buffer to the play buffer (superposition)
 void addToPlayBuffer(unsigned int *buffer, unsigned int len) {
 	int i;
 	for (i = 0; i < len; i++) {
@@ -209,13 +217,15 @@ void addToPlayBuffer(unsigned int *buffer, unsigned int len) {
 	}
 }
 
+// Adds a potion of a sound's volume buffer to the play buffer
+// Limited by the free space in the audio FIFOs
 void addChunkToPlayBuffer(struct audioInfo *info, unsigned int free) {
 	unsigned int len, i;
 	unsigned int end = (unsigned)(info->volumeBuffer) + (2 * info->bufferLength);
 	if (((int)info->playCursor + free >= end) ||
 		 (info->playedWords + free) >= info->bufferLength) {
 		// Last chunk to play
-		len = end - (int)playCursor;
+		len = end - (int)playCursor; // should probably be info->playCursor, but things work
 		if (status == THEME && info == &theme) {
 			info->playCursor = info->volumeBuffer;
 			info->playedWords = 0;
@@ -233,6 +243,7 @@ void addChunkToPlayBuffer(struct audioInfo *info, unsigned int free) {
 	info->playCursor += len;
 }
 
+// ISR used to write to the FIFOs
 #ifdef ALT_ENHANCED_INTERRUPT_API_PRESENT
 static void playSoundISR(void* isr_context) {
 #else
@@ -245,6 +256,7 @@ static void playSoundISR(void* isr_context, alt_u32 id) {
 	clearPlayBuffer();
 
 	if (free >= 1) {
+		// Load the play buffer
 		for (i = 0; i < numSounds; i++) {
 			if (sounds[i]->active == true) {
 				//printf("Sounds %d is active.\n", i);
@@ -252,6 +264,7 @@ static void playSoundISR(void* isr_context, alt_u32 id) {
 				addChunkToPlayBuffer(sounds[i], free);
 			}
 		}
+		// Write to the FIFOs
 		playAudioMono(free);
 	}
 
@@ -261,6 +274,8 @@ static void playSoundISR(void* isr_context, alt_u32 id) {
 	}
 }
 
+// Change the volume by refilling the volume buffer of an audioInfo struct
+// Based on the values read from DE2 switches
 void changeBufferVolume(struct audioInfo *currentAudioInfo, char switchValues) {
 	int i;
 	short volumeKeys = switchValues & 0x0F;
@@ -285,6 +300,7 @@ void changeBufferVolume(struct audioInfo *currentAudioInfo, char switchValues) {
 	}
 }
 
+// Update the volumes for all sound effects
 void updateAudioWithVolume(char switchValues) {
 	int i = 0;
 	for (i = 0; i < numSounds; i++) {

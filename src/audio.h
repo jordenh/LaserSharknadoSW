@@ -12,12 +12,13 @@
 #include "alt_types.h"
 #include "sys/alt_irq.h"
 
-#define PI 3.14159265359
+// Status constants
 #define NONE 0
 #define LASER 1
 #define PLAYER_DEATH 2
 #define SHARK_DEATH 3
 #define THEME 4
+
 #define FAIL -1
 #define PLAYBUFFER_LEN 128
 
