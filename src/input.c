@@ -49,6 +49,7 @@ void handleKeyInput(void){
 	} //
 */
 
+	//development code - setting key 3 to spawn sharks
 	static int testXVal = PLAYER_WIDTH*2;
 	static int dir = 0;
 	if (!key3 && (edgeDetect3 == 0)) {
