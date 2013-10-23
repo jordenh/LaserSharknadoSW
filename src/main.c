@@ -25,6 +25,7 @@
 void sharkSpawner(void);
 static int lvlSharkCount = 0;
 
+//initializatino sequence for all components of Laser Sharknado - loads all items from SD Card and sets up data structures
 int init(void) {
 	if (openSdCard() == -1) {
 		printf("Error: Failed to open sd card\n");
@@ -134,6 +135,8 @@ int main() {
 	return 0;
 }
 
+//purpose: Spawn sharks automatically to give the user a progressively more challenging in game experiance.
+//		This function ensures that no more than 4 sharks will ever be spawned at the same time.
 void sharkSpawner(void){
 	int shotSpeed;
 	int sharkX, sharkY;
