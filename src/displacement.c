@@ -11,6 +11,7 @@ static Displacement left;
 static Displacement up;
 static Displacement down;
 
+//Purpose: Set up the shark displacements so that they can be used
 void setupDisplacement(void) {
 	right.dx = 1;
 	right.dy = 0;
@@ -56,12 +57,16 @@ void setupCircularDisplacementFunction(void) {
 	for (i = 0; i < DISPLACEMENT_LENGTH; i++) {
 		ptr = &circularDisplacementFunction[i];
 		if (i < DISPLACEMENT_LENGTH / 4) {
+			// step 1: the sharks starts off going right
 			makeRight(ptr);
 		} else if (i < DISPLACEMENT_LENGTH / 2) {
+			// step 2: the sharks goes down
 			makeDown(ptr);
 		} else if (i < 3 * DISPLACEMENT_LENGTH / 4) {
+			// step 3: the sharks goes left
 			makeLeft(ptr);
 		} else {
+			// step 4: the sharks goes up
 			makeUp(ptr);
 		}
 		ptr->next = &circularDisplacementFunction[i + 1];

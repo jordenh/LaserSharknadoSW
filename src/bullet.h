@@ -18,14 +18,14 @@ typedef enum {
 } bullettype;
 
 struct Bullet {
-	float x, prevX, dx;
-	float y, prevY, dy;
+	float x, prevX, dx;  // x location, prev x location and the distance moved per tick
+	float y, prevY, dy; // y location, prev y location and the distance moved per tick
 	bullettype type;
-	char isAimed;
-	float slope;
-	int laserColor;
-	struct Bullet *next;
-	struct Bullet *prev;
+	char isAimed; // flag if the bullet is aimed
+	float slope; // slope of the bullet trajectory
+	int laserColor; // color of the laser - player and shark have different colors
+	struct Bullet *next; // there is a linked list of active shark and player bullets
+	struct Bullet *prev; // these pointers form the links between the nodes
 };
 
 typedef struct Bullet Bullet;

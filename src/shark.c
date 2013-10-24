@@ -115,6 +115,13 @@ void eraseAllSharks(void) {
 	}
 }
 
+//Purpose: create a shark -
+// 	- sudoRandomSeed is used to select the frequency of the bullets the shark will shoot
+//	- x and y are the starting coordinates
+//	- displacement is the pattern that the shark will be running
+//  - wall is the wall that the shark enters by
+//	- smart is a flag that determines if the shark will shoot aimed bullets
+//  - enteranceStep is the number of steps that the shark will take before stating their pattern
 void createShark(int sudoRandomSeed, int x, int y, Displacement *displacement, unsigned short wall, short smart, unsigned short entranceStep) {
 	if (displacement == NULL) {
 		printf("Attempt to create shark with null displacement.\n");
@@ -159,6 +166,8 @@ void createShark(int sudoRandomSeed, int x, int y, Displacement *displacement, u
 		newShark->next = sharkList;
 		sharkList = newShark;
 	}
+
+	// set the frequency so that it is still possible to get through the bullets
 	newShark->freq = (sudoRandomSeed % 20) + 1.5*PLAYER_HEIGHT + 1;
 	newShark->count = 0;
 	newShark->entranceCount = 0;

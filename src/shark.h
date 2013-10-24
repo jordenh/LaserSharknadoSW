@@ -26,16 +26,16 @@ struct Displacement {
 };
 
 struct Shark {
-	int x, prevX;
-	int y, prevY;
-	int freq, count;
-	short smart;
-	struct Shark *next;
+	int x, prevX; // current and previous x location
+	int y, prevY; // current and previous y location
+	int freq, count; // frequency of bullet fire & count of steps since last bullet
+	short smart; // flag for if the shark shoots smart bullets
+	struct Shark *next; // pointers for the linked list of active sharks
 	struct Shark *prev;
-	struct Displacement *displacement;
-	unsigned short initialWall;
-	unsigned short entranceCount;
-	unsigned short entranceSteps;
+	struct Displacement *displacement; // current displacement
+	unsigned short initialWall; // which wall the shark started at
+	unsigned short entranceCount; // number of steps taken in from the initial wall
+	unsigned short entranceSteps; // number of steps that shark should take in before starting the pattern
 	short int state;
 };
 

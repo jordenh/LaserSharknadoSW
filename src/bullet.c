@@ -13,6 +13,7 @@ void initBullets() {
 		bulletArray[i].prev = NULL;
 	}
 
+	// Get 16 bt RGB value for the color
 	playerLaserColor = convert24BitRgbTo16(0xFF0000);
 	sharkLaserColor = convert24BitRgbTo16(0x66FFCC);
 }
@@ -25,6 +26,8 @@ void createBullet(bullettype type, int x, int y, int aimed) {
 	}
 
 	Bullet *newBullet = NULL;
+
+	// Initialise bullet elements
 	for (index = 0; index < NUM_BULLETS; index++) {
 		if (bulletArray[index].type == NOTACTIVE)	{
 			newBullet = &(bulletArray[index]);
