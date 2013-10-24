@@ -32,6 +32,7 @@ short int readWord(short int fh) {
 	if (byte1 == -1 || byte2 == -1)
 		return -1;
 
+	//Little Endian (least significant byte first)
 	return ((unsigned short int)byte2 << 8) | ((unsigned short int)byte1 & 0x00FF);
 }
 
@@ -46,6 +47,7 @@ int readDWord(short int fh) {
 	if (byte1 == -1 || byte2 == -1 || byte3 == -1 || byte4 == -1)
 			return -1;
 
+	//Little Endian (least significant byte first)
 	return ((unsigned short int)byte4 << 24) | ((unsigned short int)byte3 << 16) | ((unsigned short int)byte2 << 8) | (unsigned short int)byte1;
 }
 

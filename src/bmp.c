@@ -8,12 +8,14 @@ void parseBmp (char *fileName, BMP *bmp) {
 
 	fh = openFile(fileName);
 
+	//Parse BMP header
 	bmp->header.type = readWord(fh);
 	bmp->header.size = readDWord(fh);
 	bmp->header.reserved1 = readWord(fh);
 	bmp->header.reserved2 = readWord(fh);
 	bmp->header.offset = readDWord(fh);
 
+	//Parse BMP info header
 	bmp->infoheader.size = readDWord(fh);
 	bmp->infoheader.width = readDWord(fh);
 	bmp->infoheader.height = readDWord(fh);
@@ -34,6 +36,10 @@ void parseBmp (char *fileName, BMP *bmp) {
 		for(j = 0; j < bmp->infoheader.width; j++ ){
 			offset = pixels - rowOffset - j - 1;
 
+			/*
+			 *RGB values are stored in reverse (BGR) in the .bmp file
+			 *BMP is saved as 24 bit RGB, pixel buffer dma takes 16 bit RGB values
+			 */
 			b = (readByte(fh) & 0xF1) >> 3;
 			g = (readByte(fh) & 0xFC) >> 2;
 			r = (readByte(fh) & 0xF1) >> 3;
@@ -46,6 +52,7 @@ void parseBmp (char *fileName, BMP *bmp) {
 			}
 		}
 
+		//Each pixel row is padded so the amount of pixels is a multiple of 4
 		if((BYTES_PER_PIXEL*bmp->infoheader.width) % 4 != 0) {
 			for (k = 0; k <  (4 - ((BYTES_PER_PIXEL*bmp->infoheader.width) % 4)); k++) {
 				readByte(fh);
@@ -66,8 +73,6 @@ void parseBmps() {
 	cnadoBmp = malloc(sizeof(BMP));
 	pnadoaBmp = malloc(sizeof(BMP));
 	pnadobBmp = malloc(sizeof(BMP));
-	//nnadoaBmp = malloc(sizeof(BMP));
-	//nnadobBmp = malloc(sizeof(BMP));
 
 	parseBmp("splash.bmp", splashBmp);
 	parseBmp("loadtx.bmp", loadBmp);
@@ -78,8 +83,6 @@ void parseBmps() {
 	parseBmp("cnado.bmp", cnadoBmp);
 	parseBmp("pnadoa.bmp", pnadoaBmp);
 	parseBmp("pnadob.bmp", pnadobBmp);
-	//parseBmp("nnadoa.bmp", nnadoaBmp);
-	//parseBmp("nnadob.bmp", nnadobBmp);
 }
 
 void freeBmps(){
@@ -95,12 +98,12 @@ void freeSplash() {
 	free(splashBmp);
 }
 
-
 void drawBmp (BMP *bmp, int x, int y) {
 	int i,j;
 	int offset;
 
 	for(i = 0; i < bmp->infoheader.height; i++) {
+		// drawPixelFast does not check bounds, instead bounds are checked in drawBmp
 		if(y + i < SCREEN_HEIGHT && y + i > 0) {
 			offset = i * bmp->infoheader.width;
 

@@ -25,8 +25,7 @@ void moveUpPlayer() {
 
 	drawBmp(playerBmp, player.x, player.y);
 }
-void moveDownPlayer()
-{
+void moveDownPlayer() {
 	player.prevY = player.y;
 
 	if (player.y < SCREEN_HEIGHT - PLAYER_HEIGHT)
@@ -57,4 +56,3 @@ void killPlayer() {
 	//updateHighScoreBoard();
 	// Some game over stuff
 }
-
